@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Enterprise Alpha",
+    "cuit": "31-41785219-2",
+    "startDate": "22-07-2019"
+  },
+  {
+    "id": 2,
+    "name": "Enterprise Beta",
+    "cuit": "31-12345678-2",
+    "startDate": "15-01-2020"
+  },
+  {
+    "id": 3,
+    "name": "Enterprise Gamma",
+    "cuit": "31-87654321-2",
+    "startDate": "20-09-2021"
+  },
+  {
+    "id": 4,
+    "name": "Enterprise Delta",
+    "cuit": "31-24681357-2",
+    "startDate": "05-11-2018"
+  },
+  {
+    "id": 5,
+    "name": "Enterprise Epsilon",
+    "cuit": "31-15975348-2",
+    "startDate": "30-05-2019"
+  },
+  {
+    "id": 6,
+    "name": "Enterprise Zeta",
+    "cuit": "31-75315984-2",
+    "startDate": "01-12-2017"
+  },
+  {
+    "id": 7,
+    "name": "Enterprise Eta",
+    "cuit": "31-95135746-2",
+    "startDate": "21-03-2018"
+  }
+]
