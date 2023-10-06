@@ -2,6 +2,15 @@
   <img src="https://i.ibb.co/Q8CYGVX/logo-artifact.png" width="200" alt="Crisalis Logo" />
 </p>
 
+# Integrantes del equipo green
+- [Miguel Ángel Maisares](https://github.com/MigueMaisares)
+- [Lucas Sarfati](https://github.com/Lucassarfati1)
+- [Javier Huebra](https://github.com/javierhuebra)
+- [Matias Stewart Usher](https://github.com/matiStewartDev)
+- [Facundo Oliva](https://github.com/FakuGemDa)
+- [Koba Chajchir](https://github.com/kobachajchir)
+- [Yamil Leotta](https://TODO)
+
 # Instalaciones necesarias
 - JDK 11
 - WSL 2
@@ -26,5 +35,5 @@
 - Loguear con credenciales y crear el server con esta config
   <img src="https://i.ibb.co/6tQwg9H/postgres.jpg" width="400" alt="config" />
 
-# Estrategia de branching
-TODO
+# Estrategia de branching propuesta
+![estrategia de branching](https://i.ibb.co/nnbx1YF/estrategia-branching.png)
