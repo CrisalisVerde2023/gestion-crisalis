@@ -1,0 +1,12 @@
+[
+  { "id": 1, "firstName": "John", "lastName": "Doe", "dni": "123456789" },
+  { "id": 2, "firstName": "Jane", "lastName": "Doe", "dni": "987654321" },
+  { "id": 3, "firstName": "Emily", "lastName": "Smith", "dni": "111111111" },
+  { "id": 4, "firstName": "Mike", "lastName": "Johnson", "dni": "222222222" },
+  { "id": 5, "firstName": "Sarah", "lastName": "Williams", "dni": "333333333" },
+  { "id": 6, "firstName": "David", "lastName": "Brown", "dni": "444444444" },
+  { "id": 7, "firstName": "Linda", "lastName": "Jones", "dni": "555555555" },
+  { "id": 8, "firstName": "Robert", "lastName": "Miller", "dni": "666666666" },
+  { "id": 9, "firstName": "Laura", "lastName": "Wilson", "dni": "777777777" },
+  { "id": 10, "firstName": "Steve", "lastName": "Anderson", "dni": "888888888" }
+]
