@@ -9,7 +9,7 @@
 - [Matias Stewart Usher](https://github.com/matiStewartDev)
 - [Facundo Oliva](https://github.com/FakuGemDa)
 - [Koba Chajchir](https://github.com/kobachajchir)
-- [Yamil Leotta](https://TODO)
+- [Yamil Leotta]((https://github.com/YamilLeotta))
 
 # Instalaciones necesarias
 - JDK 11
