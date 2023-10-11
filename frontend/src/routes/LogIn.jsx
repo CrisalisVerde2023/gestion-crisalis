@@ -37,7 +37,7 @@ const LogIn = () => {
     };
 
 
-    const url = ""
+    const url = "http://localhost:8080/"
     const settings = {
         method: "POST",
         headers: {
