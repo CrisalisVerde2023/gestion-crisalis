@@ -1,6 +1,6 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+//import { useState } from "react";
+//import reactLogo from "./assets/react.svg";
+//import viteLogo from "/vite.svg";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import ABMHub from "./components/ABMHub";
@@ -15,6 +15,7 @@ import AM_Personas from "./components/Personas/AM_Personas";
 import ABMEmpresasComponent from "./components/Empresas/ABMEmpresas";
 import ToastNotification from "./components/ToastNotification";
 import AM_Empresa from "./components/Empresas/AM_Empresa";
+import LogIn from "./routes/LogIn";
 
 function App() {
   return (
@@ -92,6 +93,11 @@ function App() {
               exact
               path="/impuestos"
               element={/*<ABMImpuestosComponent />*/ null}
+            />
+            <Route
+              exact
+              path="/login"
+              element={<LogIn/>}
             />
             <Route path="*" element={<NotFoundComponent />} />
           </Routes>
