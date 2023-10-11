@@ -1,6 +1,6 @@
 package com.finnegans.gestioncrisalis.services.impl;
 
-import com.finnegans.gestioncrisalis.models.EmailType;
+import com.finnegans.gestioncrisalis.enums.EmailType;
 import com.finnegans.gestioncrisalis.services.EmailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;

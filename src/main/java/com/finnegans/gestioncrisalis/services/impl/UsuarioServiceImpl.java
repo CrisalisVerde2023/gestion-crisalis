@@ -2,7 +2,7 @@ package com.finnegans.gestioncrisalis.services.impl;
 
 import com.finnegans.gestioncrisalis.dtos.UsuarioDTO;
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
-import com.finnegans.gestioncrisalis.models.EmailType;
+import com.finnegans.gestioncrisalis.enums.EmailType;
 import com.finnegans.gestioncrisalis.models.Usuario;
 import com.finnegans.gestioncrisalis.repositories.UsuarioRepository;
 import com.finnegans.gestioncrisalis.services.EmailService;
