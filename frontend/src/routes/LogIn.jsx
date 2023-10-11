@@ -7,7 +7,7 @@ const LogIn = () => {
 
     const [errors, setErrors] = useState([]);
     const [user, setUser] = useState({
-        email: "",
+        usuario: "",
         password: ""
     });
 
@@ -21,15 +21,15 @@ const LogIn = () => {
     const validateLoginForm = () => {
         const errors = [];
 
-        if (user.email.trim() === '') {
+        if (user.usuario.trim() === '') {
             errors.push('El correo electrónico es obligatorio');
-        } else if (!/\S+@\S+\.\S+/.test(user.email)) {
+        } else if (!/\S+@\S+\.\S+/.test(user.usuario)) {
             errors.push('El correo electrónico es inválido');
         }
 
         if (user.password.trim() === '') {
             errors.push('No olvides ingresar tu contraseña');
-        } else if (user.password.length < 4 || user.password.length > 15) {
+        } else if (user.password.length <= 4 || user.password.length >= 15) {
             errors.push('La contraseña debe contener entre 4 y 15 caracteres');
         }
         setErrors(errors);
@@ -37,7 +37,7 @@ const LogIn = () => {
     };
 
 
-    const url = "http://localhost:8080/"
+    const url = "http://localhost:8080/login"
     const settings = {
         method: "POST",
         headers: {
@@ -47,7 +47,7 @@ const LogIn = () => {
     }
 
     const handleLogin = (e) => {
-        
+
         e.preventDefault();
         console.log(user);
         if (validateLoginForm()) {
@@ -55,13 +55,9 @@ const LogIn = () => {
             fetch(url, settings)
                 .then((response) => {
                     console.log(response)
-                    if (response.status === 200) {
-                        setTimeout(() => {
-                            navigate("/")
-                            window.location.reload()
-                            setCounter(0)
-                        }, 2000);
-
+                    if (response.status === 202) {
+                        navigate("/")
+                        setCounter(0)
                     }
                     if (response.status === 401) {
                         setResponseError(true)
@@ -91,7 +87,7 @@ const LogIn = () => {
     const handleMailChange = (e) => {
         setResponseError(false)
         setErrors([])
-        setUser({ ...user, email: e.target.value })
+        setUser({ ...user, usuario: e.target.value })
     }
 
     const handlePasswordChange = (e) => {
@@ -105,32 +101,32 @@ const LogIn = () => {
             <form className="logInForm" onSubmit={handleLogin}>
                 <h2>Bienvenido!</h2>
                 <div className="logInInputSection">
-                    <input 
-                        type="text" 
-                        name="" 
-                        id="" 
-                        placeholder="Correo electronico" 
+                    <input
+                        type="email"
+                        name=""
+                        id=""
+                        placeholder="Correo electronico"
                         required
                         onChange={(e) => handleMailChange(e)}
-                        value={user.email}
-                        />
+                        value={user.usuario}
+                    />
                     <div className="passwordSection">
-                        <input 
-                            type="password" 
-                            name="" 
-                            id="" 
-                            placeholder="Contraseña" 
+                        <input
+                            type="password"
+                            name=""
+                            id=""
+                            placeholder="Contraseña"
                             required
                             onChange={(e) => handlePasswordChange(e)}
                             value={user.password}
-                            />
+                        />
                         <a href="https://google.com" className="forgotPassword">¿Olvidaste tu contraseña?</a>
                         {
-                        errors.length > 0 ? (errors.map(error => <div className='boxError' key={error}><p>{error}</p></div>)) : undefined
-                    }
-                    {
-                        responseError ? <div className='boxError'><p>{authError}</p></div> : undefined
-                    }
+                            errors.length > 0 ? (errors.map(error => <div className='boxError' key={error}><p>{error}</p></div>)) : undefined
+                        }
+                        {
+                            responseError ? <div className='boxError'><p>{authError}</p></div> : undefined
+                        }
                     </div>
                 </div>
                 <button>Iniciar Sesión</button>
