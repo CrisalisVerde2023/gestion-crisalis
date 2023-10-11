@@ -12,6 +12,8 @@ import { Container } from "react-bootstrap";
 import AM_ProductService from "./components/Productos y Servicios/AM_ProductServices";
 import ABMPersonasComponent from "./components/Personas/ABMPersonasComponent";
 import AM_Personas from "./components/Personas/AM_Personas";
+import ABMUsuariosComponent from "./components/Usuarios/ABMUsuariosComponent";
+import AM_Usuarios from "./components/Usuarios/AM_Usuarios";
 import ABMEmpresasComponent from "./components/Empresas/ABMEmpresas";
 import ToastNotification from "./components/ToastNotification";
 import AM_Empresa from "./components/Empresas/AM_Empresa";
@@ -53,11 +55,23 @@ function App() {
               path="/empresas/AMEmpresas/:idEnterprise"
               element={<AM_Empresa />}
             />
+
             <Route
               exact
               path="/usuarios"
-              element={/*<ABMUsuariosComponent />*/ null}
+              element={<ABMUsuariosComponent />}
             />
+            <Route
+              exact
+              path="/usuarios/AMUsuarios"
+              element={<AM_Usuarios />}
+            />
+            <Route
+              exact
+              path="/usuarios/AMUsuarios/:idUsuario"
+              element={<AM_Usuarios />}
+            />
+
             <Route
               exact
               path="/productos"
