@@ -11,7 +11,6 @@ const LogIn = () => {
         password: ""
     });
 
-    const [counter, setCounter] = useState(0)
 
     const [authError, setAuthError] = useState("");
     const [responseError, setResponseError] = useState(false)
@@ -29,7 +28,7 @@ const LogIn = () => {
 
         if (user.password.trim() === '') {
             errors.push('No olvides ingresar tu contraseña');
-        } else if (user.password.length <= 4 || user.password.length >= 15) {
+        } else if (user.password.length < 4 || user.password.length > 15) {
             errors.push('La contraseña debe contener entre 4 y 15 caracteres');
         }
         setErrors(errors);
@@ -51,26 +50,26 @@ const LogIn = () => {
         e.preventDefault();
         console.log(user);
         if (validateLoginForm()) {
-            setCounter(1)
+
             fetch(url, settings)
                 .then((response) => {
                     console.log(response)
                     if (response.status === 202) {
                         navigate("/")
-                        setCounter(0)
+            
                     }
                     if (response.status === 401) {
                         setResponseError(true)
                         setAuthError("Credenciales inválidas");
-                        setCounter(0)
+            
                     } if (response.status === 403) {
                         setResponseError(true)
                         setAuthError("Usuario o contraseña no válido");
-                        setCounter(0)
+            
                     } if (response.status === 404) {
                         setResponseError(true)
                         setAuthError("Usuario no encontrado");
-                        setCounter(0)
+            
                     }
                     return response.json()
 
