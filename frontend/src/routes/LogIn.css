@@ -39,10 +39,21 @@
 }
 
 .passwordSection p {
+    margin-top: 5px;
+    color: #929292;
+}
+.forgotPassword{
+    text-decoration: none;
     color: #929292;
 }
 
 .logInForm button {
     color: #fff;
     background-color: #a6a6a6;
+}
+
+/* --------------------------------- Errores -------------------------------- */
+.boxError p{
+    color: #b33636;
+    font-weight: 600;
 }

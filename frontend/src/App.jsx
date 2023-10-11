@@ -15,7 +15,7 @@ import AM_Personas from "./components/Personas/AM_Personas";
 import ABMEmpresasComponent from "./components/Empresas/ABMEmpresas";
 import ToastNotification from "./components/ToastNotification";
 import AM_Empresa from "./components/Empresas/AM_Empresa";
-import LogIn from "./components/LogIn/LogIn";
+import LogIn from "./routes/LogIn";
 
 function App() {
   return (
