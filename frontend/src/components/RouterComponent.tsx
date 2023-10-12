@@ -10,6 +10,8 @@ import AM_Personas from "./../components/Personas/AM_Personas";
 import ABMEmpresasComponent from "./../components/Empresas/ABMEmpresas";
 import AM_Empresa from "./../components/Empresas/AM_Empresa";
 import LogIn from "./../routes/LogIn";
+import ABMUsuariosComponent from "./../components/Usuarios/ABMUsuariosComponent";
+import AM_Usuarios from "./../components/Usuarios/AM_Usuarios";
 import { UserLoginContext } from "../contexts/UserLoginContext";
 
 export default function RouterComponent() {
@@ -40,9 +42,12 @@ export default function RouterComponent() {
               path="/empresas/AMEmpresas/:idEnterprise"
               element={<AM_Empresa />}
             />
+
+            <Route path="/usuarios" element={<ABMUsuariosComponent />} />
+            <Route path="/usuarios/AMUsuarios" element={<AM_Usuarios />} />
             <Route
-              path="/usuarios"
-              element={/*<ABMUsuariosComponent />*/ null}
+              path="/usuarios/AMUsuarios/:idUsuario"
+              element={<AM_Usuarios />}
             />
             <Route
               path="/productos"
