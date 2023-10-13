@@ -2,9 +2,11 @@ package com.finnegans.gestioncrisalis.services.impl;
 
 import com.finnegans.gestioncrisalis.dtos.UsuarioDTO;
 import com.finnegans.gestioncrisalis.enums.RoleType;
+import com.finnegans.gestioncrisalis.dtos.mappers.UsuarioDTOMapper;
+import com.finnegans.gestioncrisalis.dtos.request.UsuarioResponseDTO;
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
-import com.finnegans.gestioncrisalis.models.EmailType;
 import com.finnegans.gestioncrisalis.models.Role;
+import com.finnegans.gestioncrisalis.enums.EmailType;
 import com.finnegans.gestioncrisalis.models.Usuario;
 import com.finnegans.gestioncrisalis.repositories.RoleRepository;
 import com.finnegans.gestioncrisalis.repositories.UsuarioRepository;
@@ -19,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -34,7 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario save(UsuarioDTO usuarioDTO) throws MessagingException, UnsupportedEncodingException {
+    public UsuarioResponseDTO save(UsuarioDTO usuarioDTO) throws MessagingException, UnsupportedEncodingException {
         emailService.sendEmailFromTemplate(usuarioDTO.getUsuarioDTO(), EmailType.CREATE);
 
         List<Role> roles = new ArrayList<>();
@@ -42,7 +45,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> new ResourceNotFound("Rol no encontrado."));
         roles.add(rol);
 
-        return this.usuarioRepository.save(
+        Usuario usuario = this.usuarioRepository.save(
                 Usuario.builder()
                 .usuario(usuarioDTO.getUsuarioDTO())
                 .password(passwordEncoder.encode(usuarioDTO.getPasswordDTO()))
@@ -51,18 +54,26 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .fechaCreacion(LocalDateTime.now())
                 .build()
         );
+
+        return UsuarioDTOMapper.builder().setUsuario(usuario).build();
     }
     @Override
-    public List<Usuario> getAll() {
-        return this.usuarioRepository.findAll();
+    public List<UsuarioResponseDTO> getAll() {
+        List<Usuario> usuarios = this.usuarioRepository.findAll();
+
+        return usuarios.stream().map(
+                usuario -> UsuarioDTOMapper.builder().setUsuario(usuario).build()
+        ).collect(Collectors.toList());
     }
     @Override
-    public Usuario getById(Long id) {
-        return this.usuarioRepository.findById(id)
+    public UsuarioResponseDTO getById(Long id) {
+        Usuario usuario = this.usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Usuario no encontrado con id: ".concat(String.valueOf(id))));
+
+        return UsuarioDTOMapper.builder().setUsuario(usuario).build();
     }
     @Override
-    public Usuario update(Long id, UsuarioDTO usuarioDTO) {
+    public UsuarioResponseDTO update(Long id, UsuarioDTO usuarioDTO) {
         Usuario usuario = this.usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Usuario no encontrado con id: ".concat(String.valueOf(id))));
 
@@ -74,13 +85,17 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         usuario.setFechaModificacion(LocalDateTime.now());
-        return this.usuarioRepository.save(usuario);
+        Usuario usuarioSave = this.usuarioRepository.save(usuario);
+
+        return UsuarioDTOMapper.builder().setUsuario(usuarioSave).build();
     }
     @Override
     public void delete(Long id) {
         Usuario usuario = this.usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Usuario no encontrado con id: ".concat(String.valueOf(id))));
-        usuario.setEliminado(true);
+
+        usuario.setEliminado(!usuario.isEliminado());
+
         this.usuarioRepository.save(usuario);
     }
 }

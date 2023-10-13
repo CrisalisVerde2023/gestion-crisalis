@@ -28,6 +28,7 @@
 - Abrir terminal en la raiz del proyecto
 - Construir el compose con Postgres 16 y pgAdmin 7
     ```console
+    # agregar flag -d (detach) para levantar el compose separado
     docker compose up
     ```
 - Para ver la db de manera visual
