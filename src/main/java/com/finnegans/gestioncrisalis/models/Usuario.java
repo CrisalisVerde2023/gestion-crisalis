@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,6 +28,15 @@ public class Usuario {
 
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+
+    @ManyToMany
+    @JoinTable(
+            name = "USUARIOS_ROLES",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "role_id"})
+    )
+    private List<Role> roles;
 
     @Column(name = "ELIMINADO", nullable = false, columnDefinition = "boolean default false")
     private boolean eliminado;
