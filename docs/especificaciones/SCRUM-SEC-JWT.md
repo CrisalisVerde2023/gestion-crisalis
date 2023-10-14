@@ -1,6 +1,6 @@
-# Guia de configuracion de Spring Security e implementacion con JWT
-# Spring Security (SC)
-## Autorizacion
+# Guia de configuracion de Spring Security (SC) e implementacion con JWT
+
+## Autorizacion Spring Security
 Cuando un cliente envía una solicitud al servidor, la solicitud pasará por una secuencia/cadena de filtros antes de llegar al servlet de destino que es realmente responsable de procesar la solicitud segun la siguiente configuracion inicial.
 ```java
 @Configuration
@@ -8,13 +8,14 @@ public class SpringSecurityAuthorization {
     @Bean
     SecurityFilterChain filterChain (HttpSecurity httpSecurity) throws Exception {
     return httpSecurity.authorizeHttpRequests()
-        //Los antMatchers seran nuestras reglas para autorizar/exponer diferentes recursos a nuestra conveniencia
-        .antMatchers(HttpMethod.GET, "/api/usuarios").permitAll()
+        //Los antMatchers seran nuestras reglas para autorizar diferentes recursos a nuestra conveniencia
+        .antMatchers(HttpMethod.POST, "/login").permitAll()
+        .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
         .anyRequest().authenticated()
         .and()
         //Cross Site Request Forgery, API que evita exploit en el patron MCV (JSP, Thymeleaf, forms), React por debajo lo implementa por nosotros, se deshabilita
         .csrf(config -> config.disable())
-        //Deshabilitamos HttpsSesion (por defecto en SC) y en su lugar lo manejamos con JWT y React + StorageSession
+        //Deshabilitamos HttpsSesion (por defecto en SC) y en su lugar lo manejamos con JWT y React + StorageSession + Context
         .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .build();
     }
@@ -22,10 +23,10 @@ public class SpringSecurityAuthorization {
 ```
 
 ## Autenticacion con JWT
-Implementaremos (devolver un HttpStatus, token, json, etc) 3 metodos de UsernamePasswordAuthenticationFilter (es un controlador que intercepta por defecto las request entrantes de tipo POST y la ruta sea "/login") en nuestro filtro que llamaremos al momento del login
+Implementaremos 3 metodos de UsernamePasswordAuthenticationFilter (es un controlador que intercepta por defecto las request entrantes de tipo POST y que la ruta sea "/login") en nuestro filtro que llamaremos al momento del login
 - attemptAuthentication: en el intento de login
-- successfulAuthentication: si acepto las credenciales
-- unsuccessfulAuthentication: si las rechazo
+- successfulAuthentication: si acepto las credenciales y todo salen bien
+- unsuccessfulAuthentication: si rechazo las credenciales
 
 ````java
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
