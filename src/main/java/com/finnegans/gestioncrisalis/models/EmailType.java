@@ -1,4 +1,4 @@
-package com.finnegans.gestioncrisalis.enums;
+package com.finnegans.gestioncrisalis.models;
 
 public enum EmailType {
     CREATE, UPDATE, DELETE
