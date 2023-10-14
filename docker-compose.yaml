@@ -11,9 +11,10 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: CrisalisDB
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
   pg-admin:
+    user: root
     depends_on:
       - java-db
     container_name: pg-admin
@@ -25,3 +26,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: 123456
     volumes:
       - ./pgadmin:/var/lib/pgadmin
+
+volumes:
+  pgdata:

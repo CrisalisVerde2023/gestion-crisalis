@@ -1,6 +1,6 @@
 package com.finnegans.gestioncrisalis.services;
 
-import com.finnegans.gestioncrisalis.models.EmailType;
+import com.finnegans.gestioncrisalis.enums.EmailType;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
