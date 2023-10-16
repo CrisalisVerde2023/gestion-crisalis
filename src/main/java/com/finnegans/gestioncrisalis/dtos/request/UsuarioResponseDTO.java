@@ -12,4 +12,7 @@ public class UsuarioResponseDTO {
 
     @JsonProperty("usuario")
     private String usuarioDTO;
+
+    @JsonProperty("eliminado")
+    private boolean eliminadoDTO;
 }

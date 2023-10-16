@@ -8,6 +8,7 @@ import {
 } from "../../controller/ABMUsuarioController";
 import { UsuariosType } from "../types/userType";
 import LoadingComponent from "../LoadingComponent";
+import Swal from 'sweetalert2';
 
 export default function AM_Usuario() {
   const { idUsuario } = useParams<{ idUsuario: string }>();
@@ -27,9 +28,9 @@ export default function AM_Usuario() {
     const errors = [];
 
     if (!formData.usuario.length)
-      errors.push('El correo electrónico es obligatorio');
+      errors.push('El usuario es obligatorio');
     if (!/\S+@\S+\.\S+/.test(formData.usuario))
-      errors.push('El correo electrónico es inválido');
+      errors.push('El usuario debe ser un email válido');
 
     if ((!idToModify) || (idToModify && formData.password.length)){
       if (!formData.password.length)
@@ -42,26 +43,43 @@ export default function AM_Usuario() {
   };
 
   const fetchData = async () => {
-    const fetchedData = await fetchUsuarios(setIsLoading, idToModify || 0);
-    setFormData({...fetchedData, password: ""});
-    setOldUsuario(fetchedData.usuario);
+    try{
+      return await fetchUsuarios(idToModify || 0);
+    }
+    catch (error) {
+      Swal.fire('Error!', 'No se han podido obtener los datos.', 'error')
+      .then(() => goBack());
+    }
   };
 
   useEffect(() => {
-    if (idToModify) fetchData();
+    if (idToModify)
+      fetchData().then(resp => {
+        setFormData({...resp, password: ""});
+        setOldUsuario(resp.usuario);
+      });
   }, []);
 
-  const handleSubmit = async () => {
-    try {
-      if (isFormComplete() && !errorsForm().length)
-        await (!idToModify ? createUsuario(formData) : modifyUsuario(formData));
-      else
-        console.log("Debe completar los campos requeridos correctamente");
+  const handleSubmit = () => {
+    if (isFormComplete() && !errorsForm().length){
+      Swal.fire({text: 'Espere por favor...', showConfirmButton: false});
+      (!idToModify ? createUsuario(formData) : modifyUsuario(formData))
+      .then(() => {
+        Swal.fire({
+          title: 'Realizado!',
+          text: `Se ha ${!idToModify ? "creado" : "modificado"} el usuario.`,
+          icon: 'success',
+          timer: 2000
+        })
+        .then(() => goBack());
+      })
+      .catch(() => {
+        Swal.fire('Error!', `No se ha podido ${!idToModify ? "crear" : "modificar"} el usuario.`, 'error');
+      });
     }
-    catch (error) {
-      console.error("Error while saving data:", error);
-    }
-  };
+    else
+      Swal.fire('Atención!', 'Debe completar los campos requeridos correctamente.', 'warning');
+  }
 
   return (
     <Container className="containerAM">
@@ -85,6 +103,7 @@ export default function AM_Usuario() {
               <Form.Control
                 type="text"
                 value={formData.usuario}
+                placeholder = "Ejemplo: usuario@dominio.com"
                 onChange={(e) =>
                   setFormData({ ...formData, usuario: e.target.value.trim() })
                 }
@@ -101,23 +120,35 @@ export default function AM_Usuario() {
                 }
               />
             </Col>
-            {errorsForm().length && isFormComplete()
+            {(errorsForm().length)
               ?
                 <Col xs={6}>
-                  {errorsForm().map(el => <p>{el}</p>)}
+                  {errorsForm().map((el, idx) => <p key={idx.toString()}>{el}</p>)}
                 </Col>
               : null
             }
           </>
         )}
       </Row>
-      <Button
-        disabled={!isFormComplete() || !!errorsForm().length}
-        style={{ marginTop: "10px" }}
-        onClick={handleSubmit}
-      >
-        Submit
-      </Button>
+      <Row className="d-flex justify-content-center">
+        <Col>
+          <Button
+            disabled={!isFormComplete() || !!errorsForm().length}
+            style={{ margin: "10px" }}
+            onClick={handleSubmit}
+          >
+            {idToModify ? "Modificar" : "Crear"}
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            style={{ margin: "10px" }}
+            onClick={goBack}
+          >
+            Volver
+          </Button>
+        </Col>
+      </Row>
     </Container>
   );
 }

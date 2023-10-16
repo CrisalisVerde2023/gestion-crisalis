@@ -17,6 +17,6 @@ public class UsuarioDTOMapper {
     public UsuarioResponseDTO build(){
         if (usuario == null) throw new RuntimeException("Debe pasar la entidad Usuario");
 
-        return new UsuarioResponseDTO(usuario.getId(), usuario.getUsuario());
+        return new UsuarioResponseDTO(usuario.getId(), usuario.getUsuario(), usuario.isEliminado());
     }
 }
