@@ -44,9 +44,7 @@ export default function AM_Usuario() {
 
   const fetchData = async () => {
     try{
-      const fetchedData = await fetchUsuarios(setIsLoading, idToModify || 0);
-      setFormData({...fetchedData, password: ""});
-      setOldUsuario(fetchedData.usuario);
+      return await fetchUsuarios(idToModify || 0);
     }
     catch (error) {
       Swal.fire('Error!', 'No se han podido obtener los datos.', 'error')
@@ -55,7 +53,11 @@ export default function AM_Usuario() {
   };
 
   useEffect(() => {
-    if (idToModify) fetchData();
+    if (idToModify)
+      fetchData().then(resp => {
+        setFormData({...resp, password: ""});
+        setOldUsuario(resp.usuario);
+      });
   }, []);
 
   const handleSubmit = () => {
@@ -101,6 +103,7 @@ export default function AM_Usuario() {
               <Form.Control
                 type="text"
                 value={formData.usuario}
+                placeholder = "Ejemplo: usuario@dominio.com"
                 onChange={(e) =>
                   setFormData({ ...formData, usuario: e.target.value.trim() })
                 }

@@ -1,9 +1,6 @@
 import { UsuariosType } from "../components/types/userType";
 
-export const fetchUsuarios = async (
-  setIsLoadingCallback: React.Dispatch<React.SetStateAction<boolean>>,
-  id: number
-) => {
+export const fetchUsuarios = async (id: number) => {
   try {
     return await (await fetch(`http://localhost:8080/api/usuarios${(id > 0) ? `/${id}` : ""}`)).json();
   }
