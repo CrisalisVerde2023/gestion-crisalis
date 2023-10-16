@@ -19,7 +19,7 @@ export default function LB_Users() {
 
   const fetchData = async () => {
     try {
-      return await fetchUsuarios(setIsLoading, 0);
+      return await fetchUsuarios(0);
     }
     catch (error) {
       Swal.fire('Error!', 'No se han podido obtener datos.', 'error')
@@ -27,7 +27,11 @@ export default function LB_Users() {
   };
 
   useEffect(() => {
-    fetchData().then(resp => setData(resp));
+    setIsLoading(true);
+    fetchData().then(resp => {
+      setData(resp);
+      setIsLoading(false);
+    });
   }, [location]);
 
   const onConfirm = (usuario: UsuariosType) => {
