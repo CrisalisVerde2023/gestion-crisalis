@@ -28,15 +28,9 @@ public class LoginServiceImpl implements LoginService {
 
         UsuarioResponseDTO usuarioResponseDTO = UsuarioDTOMapper.builder().setUsuario(usuario).build();
 
-        if (BCrypt.checkpw(loginDTO.getPasswordDTO(), usuario.getPassword())) {
-            if (usuario.isEliminado()) {
-                throw new UserDisabled();
-            } else {
-                return new ResponseEntity<>(usuarioResponseDTO, HttpStatus.ACCEPTED);
-            }
-        } else {
-            return new ResponseEntity<>("Credenciales inválidas.", HttpStatus.NOT_FOUND);
+        if (usuario.isEliminado()) throw new UserDisabled();
+        return  BCrypt.checkpw(loginDTO.getPasswordDTO(), usuario.getPassword()) ?
+             new ResponseEntity<>(usuarioResponseDTO, HttpStatus.ACCEPTED) :
+             new ResponseEntity<>("Credenciales inválidas.", HttpStatus.NOT_FOUND);
         }
-
-    }
 }
