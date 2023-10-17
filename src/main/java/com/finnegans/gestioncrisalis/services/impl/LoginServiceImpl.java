@@ -4,6 +4,7 @@ import com.finnegans.gestioncrisalis.dtos.LoginDTO;
 import com.finnegans.gestioncrisalis.dtos.mappers.UsuarioDTOMapper;
 import com.finnegans.gestioncrisalis.dtos.request.UsuarioResponseDTO;
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
+import com.finnegans.gestioncrisalis.exceptions.custom.UserDisabled;
 import com.finnegans.gestioncrisalis.models.Usuario;
 import com.finnegans.gestioncrisalis.repositories.UsuarioRepository;
 import com.finnegans.gestioncrisalis.services.LoginService;
@@ -27,8 +28,15 @@ public class LoginServiceImpl implements LoginService {
 
         UsuarioResponseDTO usuarioResponseDTO = UsuarioDTOMapper.builder().setUsuario(usuario).build();
 
-        return BCrypt.checkpw(loginDTO.getPasswordDTO(), usuario.getPassword()) ?
-                new ResponseEntity<>(usuarioResponseDTO, HttpStatus.ACCEPTED) :
-                new ResponseEntity<>("Credenciales inválidas.", HttpStatus.NOT_FOUND);
+        if (BCrypt.checkpw(loginDTO.getPasswordDTO(), usuario.getPassword())) {
+            if (usuario.isEliminado()) {
+                throw new UserDisabled();
+            } else {
+                return new ResponseEntity<>(usuarioResponseDTO, HttpStatus.ACCEPTED);
+            }
+        } else {
+            return new ResponseEntity<>("Credenciales inválidas.", HttpStatus.NOT_FOUND);
+        }
+
     }
 }
