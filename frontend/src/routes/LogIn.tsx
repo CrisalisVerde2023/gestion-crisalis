@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import "./LogIn.css";
 import { UserLoginContext } from "../contexts/UserLoginContext";
 
-//Importo el logo
 import logo from "../assets/images/logoLetras.png";
 
 const LogIn = () => {
@@ -48,17 +47,19 @@ const LogIn = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log(user);
+
+    //como no quiero que la persona regrese despues de pasar por el login, lo pongo en true para reemplazar el historial
+    navigate({ replace: true });
+
     if (validateLoginForm()) {
       fetch(url, settings)
         .then((response) => {
-          console.log(response);
           if (response.status === 202) {
             setUserLogin({
               id: response.body.id,
               email: response.body.usuario,
             });
-            navigate("/");
+            navigate("/home");
           }
           if (response.status === 401) {
             setResponseError(true);
@@ -97,19 +98,23 @@ const LogIn = () => {
   return (
     <section className="bg-atlantis-100 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-
         <img className="w-72 mb-3" src={logo} alt="logo" />
-
 
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          
             <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
               <div>
-                <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Bienvenido!</h1>
+                <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                  Bienvenido!
+                </h1>
               </div>
               <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo electrónico</label>
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Correo electrónico
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -122,7 +127,12 @@ const LogIn = () => {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contraseña</label>
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Contraseña
+                </label>
                 <input
                   type="password"
                   name="password"
@@ -137,10 +147,10 @@ const LogIn = () => {
 
               {errors.length > 0
                 ? errors.map((error) => (
-                  <div className="text-red-600 font-semibold" key={error}>
-                    <p>{error}</p>
-                  </div>
-                ))
+                    <div className="text-red-600 font-semibold" key={error}>
+                      <p>{error}</p>
+                    </div>
+                  ))
                 : undefined}
               {responseError ? (
                 <div className="text-red-600 font-semibold">
@@ -156,11 +166,15 @@ const LogIn = () => {
                       aria-describedby="remember"
                       type="checkbox"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="remember" className="text-gray-500 dark:text-gray-300">Recuérdame</label>
+                    <label
+                      htmlFor="remember"
+                      className="text-gray-500 dark:text-gray-300"
+                    >
+                      Recuérdame
+                    </label>
                   </div>
                 </div>
                 {/* <a href="https://google.com" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">¿Olvidaste tu contraseña?</a> */}
