@@ -1,9 +1,8 @@
 // @ts-nocheck
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LogIn.css";
 import { UserLoginContext } from "../contexts/UserLoginContext";
-
 import logo from "../assets/images/logoLetras.png";
 
 const LogIn = () => {
@@ -44,6 +43,10 @@ const LogIn = () => {
     },
     body: JSON.stringify(user),
   };
+
+  useEffect(() => {
+    console.log(userLogged);
+  }, [userLogged]);
 
   const handleLogin = (e) => {
     e.preventDefault();

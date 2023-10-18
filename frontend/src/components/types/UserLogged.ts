@@ -5,7 +5,7 @@ export type UserLogged = {
 
 export type UserLoginContextType = {
   userLogged: UserLogged;
-  setUserLogin: React.Dispatch<React.SetStateAction<UserLogged>>;
+  setUserLogin: any;
 };
 
 export const defaultUserLogState = { id: -1, email: "" };

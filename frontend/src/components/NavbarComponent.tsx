@@ -28,8 +28,11 @@ export default function NavbarComponent() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item as={Button} onClick={closeSession}>
+          <Dropdown.Item as={Button} onClick={closeSession}>
               Cerrar sesión
+            </Dropdown.Item>
+            <Dropdown.Item>
+              <p>{userLogged.email}</p>
             </Dropdown.Item>
             {/* <Dropdown.Item>Action 2</Dropdown.Item> */}
           </Dropdown.Menu>
