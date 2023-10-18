@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 import "./styles/NavbarComponent.css";
 import logo from "./../assets/images/logoLetras.png";
 import user from "./../assets/images/user.png";
-import { UserLoginContext } from "../contexts/UserLoginContext";
+import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { defaultUserLogState } from "./types/UserLogged";
 
 export default function NavbarComponent() {
-  const { userLogged, setUserLogin } = useContext(UserLoginContext);
+  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
   function closeSession() {
-    setUserLogin(defaultUserLogState);
+    setUserLogged(defaultUserLogState);
   }
   return (
     <Navbar
@@ -28,13 +28,12 @@ export default function NavbarComponent() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-          <Dropdown.Item as={Button} onClick={closeSession}>
-              Cerrar sesión
+            <Dropdown.Header>
+              {userLogged.email}
+            </Dropdown.Header>
+            <Dropdown.Item as={Button} onClick={closeSession}>
+                Cerrar sesión
             </Dropdown.Item>
-            <Dropdown.Item>
-              <p>{userLogged.email}</p>
-            </Dropdown.Item>
-            {/* <Dropdown.Item>Action 2</Dropdown.Item> */}
           </Dropdown.Menu>
         </Dropdown>
       </Container>

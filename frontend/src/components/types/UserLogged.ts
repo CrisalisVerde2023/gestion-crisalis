@@ -3,14 +3,14 @@ export type UserLogged = {
   email: string;
 };
 
-export type UserLoginContextType = {
+export type UserLoggedContextType = {
   userLogged: UserLogged;
-  setUserLogin: any;
+  setUserLogged: React.Dispatch<React.SetStateAction<UserLogged>>;
 };
 
 export const defaultUserLogState = { id: -1, email: "" };
 
-export const defaultContext: UserLoginContextType = {
+export const defaultContext: UserLoggedContextType = {
   userLogged: defaultUserLogState,
-  setUserLogin: () => {},
+  setUserLogged: () => {}
 };

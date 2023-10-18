@@ -2,11 +2,11 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LogIn.css";
-import { UserLoginContext } from "../contexts/UserLoginContext";
+import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import logo from "../assets/images/logoLetras.png";
 
 const LogIn = () => {
-  const { userLogged, setUserLogin } = useContext(UserLoginContext);
+  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
   const [errors, setErrors] = useState([]);
   const [user, setUser] = useState({
     usuario: "",
@@ -44,46 +44,46 @@ const LogIn = () => {
     body: JSON.stringify(user),
   };
 
-  useEffect(() => {
-    console.log(userLogged);
-  }, [userLogged]);
-
   const handleLogin = (e) => {
     e.preventDefault();
 
     //como no quiero que la persona regrese despues de pasar por el login, lo pongo en true para reemplazar el historial
     navigate({ replace: true });
 
-    if (validateLoginForm()) {
+    if (validateLoginForm())
       fetch(url, settings)
-        .then((response) => {
-          if (response.status === 202) {
-            setUserLogin({
-              id: response.body.id,
-              email: response.body.usuario,
-            });
+      .then((response) => {
+        switch (response.status) {
+          case 202: {
+            response.json()
+            .then(({id, usuario}) =>
+              setUserLogged({
+                id,
+                email: usuario,
+              }))
             navigate("/home");
-          }
-          if (response.status === 401) {
-            setResponseError(true);
+            break;
+          };
+          case 401 || 404: {
             setAuthError("Credenciales inválidas");
-          }
-          if (response.status === 403) {
             setResponseError(true);
-            setAuthError("Usuario o contraseña no válido");
-          }
-          if (response.status === 404) {
-            setResponseError(true);
-            setAuthError("Credenciales inválidas");
-          }
-          return response.json();
-        })
-        .then(function (data) {
-          if (data.token != null) {
-            sessionStorage.setItem("token", data.token);
-          }
-        });
-    }
+            break;
+          } 
+          case 403: setAuthError("Usuario o contraseña no válido");
+          default: setResponseError(true);
+        }
+        if (response.status === 401) {
+          setAuthError("Credenciales inválidas");
+        }
+        if (response.status === 403) {
+          setResponseError(true);
+          setAuthError("Usuario o contraseña no válido");
+        }
+        if (response.status === 404) {
+          setResponseError(true);
+          setAuthError("Credenciales inválidas");
+        }
+      });
   };
 
   const handleMailChange = (e) => {
