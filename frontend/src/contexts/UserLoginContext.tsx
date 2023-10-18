@@ -1,15 +1,10 @@
 import React, { createContext, ReactNode, useState } from "react";
-import { UserLogged } from "../components/types/UserLogged";
-
-type UserLoginContextType = {
-  userLogged: UserLogged;
-  setUserLogin: React.Dispatch<React.SetStateAction<UserLogged>>;
-};
-
-const defaultContext: UserLoginContextType = {
-  userLogged: { id: -1, email: "" },
-  setUserLogin: () => {},
-};
+import {
+  defaultContext,
+  UserLogged,
+  UserLoginContextType,
+} from "../components/types/UserLogged";
+import { useLocalStorage } from "usehooks-ts";
 
 export const UserLoginContext =
   createContext<UserLoginContextType>(defaultContext);
@@ -19,7 +14,7 @@ type Props = {
 };
 
 export default function UserLoginProvider({ children }: Props) {
-  const [userLogged, setUserLogin] = useState<UserLogged>({
+  const [userLogged, setUserLogin] = useLocalStorage("userLogin", {
     id: -1,
     email: "",
   });
