@@ -20,6 +20,7 @@ export default {
         },
         'denim': {
           DEFAULT: '#0E79B2',
+          25:'#E6F5FB',
           50: '#82CDF5',
           100: '#6FC6F4', 
           200: '#4AB7F1', 
@@ -33,7 +34,8 @@ export default {
           950: '#000000'
         },
         'atlantis': {  
-          DEFAULT: '#9FCB45',  
+          DEFAULT: '#9FCB45',
+          25:'#FBF8E6',  
           50: '#E9F3D4',  
           100: '#E1EFC5',  
           200: '#D0E6A5',  
