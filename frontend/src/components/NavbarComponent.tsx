@@ -1,48 +1,31 @@
-import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { Container, Dropdown, Image, Navbar } from "react-bootstrap";
 import React from "react";
 import { Link } from "react-router-dom";
 import "./styles/NavbarComponent.css";
+import logo from "../assets/images/logoLetras.png";
+import user from "../assets/images/user.png";
 
 export default function NavbarComponent() {
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Navbar.Brand className="navbarBrand">FrontEnd Crisalis</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">
-              Inicio
-            </Nav.Link>
-            <NavDropdown title="Ir a" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/personas">
-                Personas
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/empresas">
-                Empresas
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/clientes">
-                Clientes
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/usuarios">
-                Usuarios
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/productos">
-                Productos
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/servicios">
-                Servicios
-              </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/impuestos">
-                Impuestos
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-        </Navbar.Collapse>
+    <Navbar
+      expand="lg"
+      className="antialiased bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800"
+    >
+      <Container className="">
+        <Link to={"/home"}>
+          <img src={logo} className="mr-3 h-10" alt="Logo" />
+        </Link>
+
+        <Dropdown align={"end"}>
+          <Dropdown.Toggle className="flex bg-gray-800 rounded-full border-0 md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 p-0 after:content-none">
+            <Image src={user} roundedCircle className="w-10 h-10" />
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item>Cerrar sesión</Dropdown.Item>
+            {/* <Dropdown.Item>Action 2</Dropdown.Item> */}
+          </Dropdown.Menu>
+        </Dropdown>
       </Container>
     </Navbar>
   );

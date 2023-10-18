@@ -1,6 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import UserLoginProvider from "./contexts/UserLoginContext";
 import RouterComponent from "./components/RouterComponent";
