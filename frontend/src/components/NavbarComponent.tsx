@@ -1,11 +1,17 @@
-import { Container, Dropdown, Image, Navbar } from "react-bootstrap";
-import React from "react";
+import { Button, Container, Dropdown, Image, Navbar } from "react-bootstrap";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import "./styles/NavbarComponent.css";
-import logo from "../assets/images/logoLetras.png";
-import user from "../assets/images/user.png";
+import logo from "./../assets/images/logoLetras.png";
+import user from "./../assets/images/user.png";
+import { UserLoggedContext } from "../contexts/UserLoggedContext";
+import { defaultUserLogState } from "./types/UserLogged";
 
 export default function NavbarComponent() {
+  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
+  function closeSession() {
+    setUserLogged(defaultUserLogState);
+  }
   return (
     <Navbar
       expand="lg"
@@ -22,8 +28,12 @@ export default function NavbarComponent() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item>Cerrar sesión</Dropdown.Item>
-            {/* <Dropdown.Item>Action 2</Dropdown.Item> */}
+            <Dropdown.Header>
+              {userLogged.email}
+            </Dropdown.Header>
+            <Dropdown.Item as={Button} onClick={closeSession}>
+                Cerrar sesión
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </Container>
