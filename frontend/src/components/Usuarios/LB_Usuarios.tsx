@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import { PencilFill, XCircleFill, CheckCircleFill } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
@@ -9,6 +9,7 @@ import {
 import { UsuariosType } from "../types/userType";
 import LoadingComponent from "../LoadingComponent";
 import Swal from 'sweetalert2';
+import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
 export default function LB_Users() {
   const [data, setData] = useState<UsuariosType[]>([]);
@@ -16,6 +17,7 @@ export default function LB_Users() {
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
   let aux;
+  const { userLogged } = useContext(UserLoggedContext);
 
   const fetchData = async () => {
     try {
@@ -35,7 +37,7 @@ export default function LB_Users() {
   }, [location]);
 
   const onConfirm = (usuario: UsuariosType) => {
-    if (usuario) {
+    if (usuario)
       deleteUsuario(usuario.id)
       .then(() => {
         fetchData().then(resp => {
@@ -51,22 +53,24 @@ export default function LB_Users() {
       .catch(() => {
         Swal.fire('Error!', 'No se ha podido cambiar el estado.', 'error')
       });
-    }
   };
 
   const handleClickedElement = (selected: UsuariosType) => {
-    Swal.fire({
-      title: 'Confirmar cambio de estado de usuario?',
-      text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${selected.usuario}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí! Estoy seguro.',
-      cancelButtonText: 'Mejor no.',
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33'
-    }).then((result) => {
-      if (result.isConfirmed) onConfirm(selected);
-    })
+    if (selected.id === userLogged.id)
+      Swal.fire('Error!', 'No es posible cambiar el estado del usuario logueado.', 'error');
+    else
+      Swal.fire({
+        title: 'Confirmar cambio de estado de usuario?',
+        text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${selected.usuario}`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí! Estoy seguro.',
+        cancelButtonText: 'Mejor no.',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
+      }).then((result) => {
+        if (result.isConfirmed) onConfirm(selected);
+      })
   };
 
   const actionButtons = (row: UsuariosType) => (

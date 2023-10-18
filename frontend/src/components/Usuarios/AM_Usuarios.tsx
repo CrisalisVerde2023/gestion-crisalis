@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   createUsuario,
@@ -6,6 +6,7 @@ import {
   modifyUsuario,
 } from "../../controller/ABMUsuarioController";
 import { UsuariosType } from "../types/userType";
+import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 import LoadingComponent from "../LoadingComponent";
 import Swal from 'sweetalert2';
 
@@ -16,6 +17,7 @@ export default function AM_Usuario() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UsuariosType>({ id: 0, usuario: "", password: "", eliminado: false });
   const [oldUsuario, setOldUsuario] = useState("");
+  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
 
   const goBack = () => {
     navigate(-1);
@@ -67,6 +69,7 @@ export default function AM_Usuario() {
       Swal.fire({ text: 'Espere por favor...', showConfirmButton: false });
       (!idToModify ? createUsuario(formData) : modifyUsuario(formData))
         .then(() => {
+          if (userLogged.id === formData.id) setUserLogged({...userLogged, email: formData.usuario})
           Swal.fire({
             title: 'Realizado!',
             text: `Se ha ${!idToModify ? "creado" : "modificado"} el usuario.`,
