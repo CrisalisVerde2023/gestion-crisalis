@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   createUsuario,
@@ -53,11 +52,14 @@ export default function AM_Usuario() {
   };
 
   useEffect(() => {
-    if (idToModify)
+    if (idToModify) {
+      setIsLoading(true);
       fetchData().then(resp => {
         setFormData({ ...resp, password: "" });
         setOldUsuario(resp.usuario);
+        setIsLoading(false);
       });
+    }
   }, []);
 
   const handleSubmit = () => {
@@ -84,11 +86,8 @@ export default function AM_Usuario() {
   return (
     <section className={idToModify ? "bg-atlantis-25" : "bg-denim-25"}>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen mt-[-56px] lg:py-0">
-
-
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-
             <div className="space-y-4 md:space-y-6">
               <div>
                 <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{(!idToModify) ? "Alta" : "Modificación"} de usuario</h1>
@@ -112,7 +111,6 @@ export default function AM_Usuario() {
                         id="email"
                         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="usuario@dominio.com"
-
                         onChange={(e) =>
                           setFormData({ ...formData, usuario: e.target.value.trim() })
                         }
@@ -127,13 +125,11 @@ export default function AM_Usuario() {
                         id="password"
                         placeholder="••••••••"
                         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-
                         onChange={(e) =>
                           setFormData({ ...formData, password: e.target.value })
                         }
                       />
                     </div>
-
                     {(errorsForm().length)
                       ?
                       <div>
@@ -141,7 +137,6 @@ export default function AM_Usuario() {
                       </div>
                       : null
                     }
-
                     <div className="flex items-center justify-between">
                       {
                         !isFormComplete() || !!errorsForm().length
@@ -155,15 +150,12 @@ export default function AM_Usuario() {
                           </button>
                           :
                           <button
-
                             onClick={handleSubmit}
                             className="bg-denim px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-900"
                           >
                             {idToModify ? "Modificar" : "Crear"}
                           </button>
-
                       }
-
                       <button
                         className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
                         onClick={goBack}
@@ -173,7 +165,6 @@ export default function AM_Usuario() {
                     </div>
                   </>
               }
-
             </div>
           </div>
         </div>

@@ -19,7 +19,7 @@ export default function ABMUsuariosComponent() {
       </Row>
       <Row className="d-flex justify-content-center align-items-center">
         <Col xs={6} className="d-flex justify-content-evenly">
-          <Button variant="primary" onClick={goToAMUsuarios}>
+          <Button style={{backgroundColor: "#0d6efd"}} variant="primary" onClick={goToAMUsuarios}>
             Crear nuevo usuario
           </Button>
         </Col>
