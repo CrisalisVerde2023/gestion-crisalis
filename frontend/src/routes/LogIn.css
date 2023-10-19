@@ -1,0 +1,69 @@
+.logInContainer {
+    min-height: 100vh;
+    background-color: #7faf8e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logInForm {
+    width: 50vw;
+    height: 60vh;
+    color: white;
+    background-color: #053b0b;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 18px;
+}
+
+.logInForm h2{
+    display: block;
+    width: 100%;
+}
+
+.logInInputSection {
+    width: 70%;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.logInInputSection input {
+    width: 100%;
+}
+
+.logInInputSection .passwordSection{
+    text-align: start;
+}
+
+.passwordSection p {
+    margin-top: 5px;
+    color: #929292;
+}
+.forgotPassword{
+    text-decoration: none;
+    color: #929292;
+}
+
+.logInForm button {
+    color: #fff;
+    background-color: #a6a6a6;
+}
+
+.img-logo{
+    width: 100%;
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+/* --------------------------------- Errores -------------------------------- */
+.boxError p{
+    color: #b33636;
+    font-weight: 600;
+}
