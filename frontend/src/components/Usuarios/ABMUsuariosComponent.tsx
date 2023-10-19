@@ -10,6 +10,10 @@ export default function ABMUsuariosComponent() {
     navigate("/usuarios/AMUsuarios");
   }
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <Container>
       <Row>
@@ -19,9 +23,18 @@ export default function ABMUsuariosComponent() {
       </Row>
       <Row className="d-flex justify-content-center align-items-center">
         <Col xs={6} className="d-flex justify-content-evenly">
-          <Button style={{backgroundColor: "#0d6efd"}} variant="primary" onClick={goToAMUsuarios}>
+          <button
+            onClick={goToAMUsuarios}
+            className="bg-denim px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-900"
+          >
             Crear nuevo usuario
-          </Button>
+          </button>
+          <button
+            className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
+            onClick={(goBack)}
+          >
+            Volver
+          </button>
         </Col>
       </Row>
     </Container>
