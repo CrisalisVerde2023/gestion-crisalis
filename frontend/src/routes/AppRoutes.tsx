@@ -1,6 +1,6 @@
 import React from "react";
 import NavbarComponent from "../components/NavbarComponent";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "../components/Dashboard";
 import ABMPersonasComponent from "../components/Personas/ABMPersonasComponent";
 import AM_Personas from "../components/Personas/AM_Personas";
@@ -18,6 +18,7 @@ export const AppRoutes = () => {
       <NavbarComponent />
 
       <Routes>
+        <Route path="/" element={<Navigate to={"/home"} />} />
         <Route path="/home" element={<Dashboard />} />
         <Route path="/personas" element={<ABMPersonasComponent />} />
         <Route path="/personas/AMPersonas" element={<AM_Personas />} />
