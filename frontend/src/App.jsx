@@ -8,11 +8,7 @@ import ToastNotification from "./components/ToastNotification";
 function App() {
   return (
     <>
-      <Container
-        fluid
-        style={{ width: "100vw", margin: 0, padding: 0 }}
-        className="justify-content-center"
-      >
+      <Container className="p-0">
         <UserLoggedProvider>
           <ToastNotification />
           <RouterComponent />
