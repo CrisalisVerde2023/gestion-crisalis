@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   return (
-    <section className="bg-white dark:bg-gray-900">
-      <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
+    <section className="bg-athens-gray dark:bg-gray-900">
+      <div className="py-8 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
         <div className="max-w-screen-md mb-8 lg:mb-16 mx-auto">
           <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
             Diseñado para equipos empresariales
@@ -33,7 +33,7 @@ export default function Dashboard() {
               Alta, Baja y Modificación
             </h3>
 
-            <ul className="text-gray-500 dark:text-gray-400 space-y-1">
+            <ul className="text-gray-500 dark:text-gray-400 space-y-3">
               {[
                 "Personas",
                 "Empresas",
@@ -45,22 +45,22 @@ export default function Dashboard() {
               ].map((entidad) => (
                 <li
                   key={entidad}
-                  className="flex hover:bg-slate-100 rounded-md"
+                  className="flex hover:bg-slate-50 rounded-md shadow-md bg-white-pure"
                 >
                   <Link
                     to={`/${entidad.toLowerCase()}`}
-                    className="flex p-2 w-full"
+                    className="flex p-3 w-full justify-between"
                   >
+                    <span>{`ABM de ${entidad}`}</span>
                     <svg
                       className="w-4 h-4 text-electric-violet dark:text-white self-center"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="currentColor"
-                      viewBox="0 0 20 20"
+                      viewBox="0 0 14 16"
                     >
-                      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                      <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
                     </svg>
-                    <span className="ms-3">{`ABM de ${entidad}`}</span>
                   </Link>
                 </li>
               ))}
@@ -87,21 +87,27 @@ export default function Dashboard() {
               Pedidos
             </h3>
 
-            <ul className="text-gray-500 dark:text-gray-400 space-y-1">
+            <ul className="text-gray-500 dark:text-gray-400 space-y-3">
               {["Listar pedidos", "Altas de pedidos", "Anular pedidos"].map(
                 (serv) => (
-                  <li key={serv} className="flex hover:bg-slate-100 rounded-md">
-                    <Link to={`/home`} className="flex p-2 w-full">
+                  <li
+                    key={serv}
+                    className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md"
+                  >
+                    <Link
+                      to={`/home`}
+                      className="flex p-3 w-full justify-between"
+                    >
+                      <span>{serv}</span>
                       <svg
                         className="w-4 h-4 text-denim dark:text-white self-center"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
-                        viewBox="0 0 20 20"
+                        viewBox="0 0 14 16"
                       >
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                        <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
                       </svg>
-                      <span className="ms-3">{serv}</span>
                     </Link>
                   </li>
                 )
@@ -127,19 +133,19 @@ export default function Dashboard() {
             <h3 className="my-3 text-xl font-bold dark:text-white text-start">
               Servicios
             </h3>
-            <ul className="text-gray-500 dark:text-gray-400 space-y-1">
-              <li className="flex hover:bg-slate-100 rounded-md">
-                <Link to={`/home`} className="flex p-2 w-full">
+            <ul className="text-gray-500 dark:text-gray-400 space-y-3">
+              <li className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
+                <Link to={`/home`} className="flex p-3 w-full justify-between">
+                  <span>{`Asignar Servicios a Cliente`}</span>
                   <svg
                     className="w-4 h-4 text-atlantis dark:text-white self-center"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor"
-                    viewBox="0 0 20 20"
+                    viewBox="0 0 14 16"
                   >
-                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                    <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
                   </svg>
-                  <span className="ms-3">{`Asignar Servicios a Cliente`}</span>
                 </Link>
               </li>
             </ul>

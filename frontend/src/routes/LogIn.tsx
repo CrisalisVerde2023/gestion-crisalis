@@ -51,26 +51,27 @@ const LogIn = () => {
     navigate({ replace: true });
 
     if (validateLoginForm())
-      fetch(url, settings)
-      .then((response) => {
+      fetch(url, settings).then((response) => {
         switch (response.status) {
           case 202: {
-            response.json()
-            .then(({id, usuario}) =>
+            response.json().then(({ id, usuario }) =>
               setUserLogged({
                 id,
                 email: usuario,
-              }))
+              })
+            );
             navigate("/home");
             break;
-          };
+          }
           case 401 || 404: {
             setAuthError("Credenciales inválidas");
             setResponseError(true);
             break;
-          } 
-          case 403: setAuthError("Usuario o contraseña no válido");
-          default: setResponseError(true);
+          }
+          case 403:
+            setAuthError("Usuario o contraseña no válido");
+          default:
+            setResponseError(true);
         }
         if (response.status === 401) {
           setAuthError("Credenciales inválidas");
@@ -99,7 +100,7 @@ const LogIn = () => {
   };
 
   return (
-    <section className="bg-atlantis-100 dark:bg-gray-900">
+    <section>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <img className="w-72 mb-3" src={logo} alt="logo" />
 
