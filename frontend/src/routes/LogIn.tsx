@@ -51,38 +51,20 @@ const LogIn = () => {
     navigate({ replace: true });
 
     if (validateLoginForm())
-      fetch(url, settings).then((response) => {
-        switch (response.status) {
-          case 202: {
-            response.json().then(({ id, usuario }) =>
-              setUserLogged({
-                id,
-                email: usuario,
-              })
-            );
+      fetch(url, settings)
+      .then((response) => {
+        if (response.status === 202)
+          response.json()
+          .then(({id, usuario}) => {
+            setUserLogged({
+              id,
+              email: usuario,
+            });
             navigate("/home");
-            break;
-          }
-          case 401 || 404: {
-            setAuthError("Credenciales inválidas");
-            setResponseError(true);
-            break;
-          }
-          case 403:
-            setAuthError("Usuario o contraseña no válido");
-          default:
-            setResponseError(true);
-        }
-        if (response.status === 401) {
-          setAuthError("Credenciales inválidas");
-        }
-        if (response.status === 403) {
+          });
+        else {
           setResponseError(true);
-          setAuthError("Usuario o contraseña no válido");
-        }
-        if (response.status === 404) {
-          setResponseError(true);
-          setAuthError("Credenciales inválidas");
+          setAuthError((response.status === 403) ? "Usuario inactivo" : "Usuario o contraseña no válido");
         }
       });
   };
