@@ -1,5 +1,5 @@
 .logInContainer {
-    min-height: 94vh;
+    min-height: 100vh;
     background-color: #7faf8e;
     display: flex;
     justify-content: center;
@@ -8,13 +8,14 @@
 
 .logInForm {
     width: 50vw;
-    height: 50vh;
+    height: 60vh;
     color: white;
     background-color: #053b0b;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    border-radius: 18px;
 }
 
 .logInForm h2{
@@ -52,6 +53,15 @@
     background-color: #a6a6a6;
 }
 
+.img-logo{
+    width: 100%;
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
 /* --------------------------------- Errores -------------------------------- */
 .boxError p{
     color: #b33636;

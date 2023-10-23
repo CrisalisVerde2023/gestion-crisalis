@@ -1,49 +1,76 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import { PencilFill, XCircleFill, Search, CheckCircleFill } from "react-bootstrap-icons";
+import { PencilFill, XCircleFill, CheckCircleFill } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
 import {
   fetchUsuarios,
   deleteUsuario
 } from "../../controller/ABMUsuarioController";
 import { UsuariosType } from "../types/userType";
-import { ConfirmDialog } from "../ConfirmDialog";
 import LoadingComponent from "../LoadingComponent";
+import Swal from 'sweetalert2';
+import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
 export default function LB_Users() {
   const [data, setData] = useState<UsuariosType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
-  const [selectedElement, setSelectedElement] = useState<UsuariosType | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
+  let aux;
+  const { userLogged } = useContext(UserLoggedContext);
 
   const fetchData = async () => {
     try {
-      return await fetchUsuarios(setIsLoading, 0);
-    } catch (error) {
-      console.error(`An error occurred: ${error}`);
+      return await fetchUsuarios(0);
+    }
+    catch (error) {
+      Swal.fire('Error!', 'No se han podido obtener datos.', 'error')
     }
   };
 
   useEffect(() => {
-    fetchData().then((resp) => {
+    setIsLoading(true);
+    fetchData().then(resp => {
       setData(resp);
+      setIsLoading(false);
     });
   }, [location]);
 
-  // Revisar!!!
-  const onConfirm = () => {
-    if (selectedElement) {
-      deleteUsuario(selectedElement.id);
-      setShowDialog(false);
-      fetchData();
-    }
+  const onConfirm = (usuario: UsuariosType) => {
+    if (usuario)
+      deleteUsuario(usuario.id)
+      .then(() => {
+        fetchData().then(resp => {
+          setData(resp);
+          Swal.fire({
+            title: 'Realizado!',
+            text: 'Se ha cambiado el estado.',
+            icon: 'success',
+            timer: 2000
+          })
+        })
+      })
+      .catch(() => {
+        Swal.fire('Error!', 'No se ha podido cambiar el estado.', 'error')
+      });
   };
 
   const handleClickedElement = (selected: UsuariosType) => {
-    setSelectedElement(selected);
-    setShowDialog(true);
+    if (selected.id === userLogged.id)
+      Swal.fire('Error!', 'No es posible cambiar el estado del usuario logueado.', 'error');
+    else
+      Swal.fire({
+        title: 'Confirmar cambio de estado de usuario?',
+        text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${selected.usuario}`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí! Estoy seguro.',
+        cancelButtonText: 'Mejor no.',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
+      }).then((result) => {
+        if (result.isConfirmed) onConfirm(selected);
+      })
   };
 
   const actionButtons = (row: UsuariosType) => (
@@ -76,9 +103,6 @@ export default function LB_Users() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Col>
-          <Col xs="auto">
-            <Search />
-          </Col>
         </Row>
         {/* Data Table */}
         <Row>
@@ -97,33 +121,23 @@ export default function LB_Users() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(!searchTerm.length ? data : data.filter((user: UsuariosType) => user.usuario.toLowerCase().includes(searchTerm.toLowerCase())))
-                    .map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.usuario}</td>
-                      <td>{row.eliminado ? "Inactivo" : "Activo"}</td>
-                      <td>{actionButtons(row)}</td>
-                    </tr>
-                  ))}
+                  {data && (aux = (!searchTerm.length ? data : data.filter((user: UsuariosType) => user.usuario.toLowerCase().includes(searchTerm.toLowerCase())))).length
+                    ? aux.sort((a: UsuariosType, b: UsuariosType) => (a.usuario.toLowerCase() < b.usuario.toLowerCase()) ? -1 : 1)
+                      .map((row, index) => (
+                        <tr key={index}>
+                          <td>{row.usuario}</td>
+                          <td>{row.eliminado ? "Inactivo" : "Activo"}</td>
+                          <td>{actionButtons(row)}</td>
+                        </tr>
+                      ))
+                    : <tr><td colSpan={3}>No hay datos...</td></tr>
+                  }
                 </tbody>
               </Table>
             </Col>
           )}
         </Row>
       </Container>
-      {showDialog && selectedElement && (
-        <ConfirmDialog
-          show={showDialog}
-          setShow={setShowDialog}
-          title="Confirmar cambio de estado de usuario"
-          content={`Esta por ${selectedElement.eliminado ? "activar" : "desactivar"} a ${selectedElement.usuario}`}
-          onConfirm={onConfirm}
-          onCancel={() => {
-            setShowDialog(false);
-            setSelectedElement(null);
-          }}
-        />
-      )}
     </>
   );
 }

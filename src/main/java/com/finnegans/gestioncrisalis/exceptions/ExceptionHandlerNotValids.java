@@ -1,6 +1,7 @@
 package com.finnegans.gestioncrisalis.exceptions;
 
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
+import com.finnegans.gestioncrisalis.exceptions.custom.UserDisabled;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -62,6 +63,16 @@ public class ExceptionHandlerNotValids {
     @ExceptionHandler(MessagingException.class)
     @ResponseBody
     public ErrorMessages handleMessaging(MessagingException exception, HttpServletRequest request){
+        Map<String,String> errorMap = new HashMap<>();
+        errorMap.put("error_message",exception.getMessage());
+
+        return new ErrorMessages(exception.getClass().getSimpleName(), exception.getMessage(), errorMap, request.getRequestURI());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(UserDisabled.class)
+    @ResponseBody
+    public ErrorMessages handleUserDisabled(UserDisabled exception, HttpServletRequest request){
         Map<String,String> errorMap = new HashMap<>();
         errorMap.put("error_message",exception.getMessage());
 
