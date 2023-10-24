@@ -1,0 +1,58 @@
+package com.finnegans.gestioncrisalis.models;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import java.util.Date;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "CLIENTES")
+public class Cliente {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "ELIMINADO", nullable = false, columnDefinition = "boolean default false")
+    private boolean eliminado;
+
+    @Column(name = "NOMBRE", nullable = false)
+    private String nombre;
+
+    @Column(updatable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date createdAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date updatedAt;
+
+    //RELACIÓN CON PERSONA M:1
+    //Esta clase cliente puede tener una persona nomas (Descomentar cuando se tenga la clase persona)
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "PERSONA_ID", nullable = false)
+    //private Persona persona;
+
+    //RELACIÓN CON EMPRESA M:1
+    //Esta clase cliente puede tener una empresa nomas (Descomentar cuando se tenga la clase empresa)
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "EMPRESA_ID", nullable = false)
+    //private Empresa empresa;
+
+
+    @PrePersist
+    protected void onCreate(){
+        this.createdAt = new Date();
+    }
+    @PreUpdate
+    protected void onUpdate(){
+        this.updatedAt = new Date();
+    }
+
+}
