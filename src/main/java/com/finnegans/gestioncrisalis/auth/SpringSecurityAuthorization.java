@@ -3,6 +3,7 @@ package com.finnegans.gestioncrisalis.auth;
 import static com.finnegans.gestioncrisalis.auth.JwtTokenConfig.*;
 
 import com.finnegans.gestioncrisalis.auth.filters.JwtAuthenticationFilter;
+import com.finnegans.gestioncrisalis.auth.filters.JwtValidationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +25,7 @@ import java.util.Arrays;
 
 @Configuration
 public class SpringSecurityAuthorization {
-    @Value("${frontend.url")
+    @Value("${frontend.url}")
     private String frontendUrl;
 
     private AuthenticationConfiguration authenticationConfiguration;
@@ -48,6 +49,7 @@ public class SpringSecurityAuthorization {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationConfiguration.getAuthenticationManager()))
+                .addFilter(new JwtValidationFilter(authenticationConfiguration.getAuthenticationManager()))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -57,7 +59,7 @@ public class SpringSecurityAuthorization {
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(Arrays.asList(frontendUrl));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Arrays.asList(HEADER_AUTHORIZATION, HEADER_CONTENT_TYPE));
         corsConfiguration.setAllowCredentials(true);
 

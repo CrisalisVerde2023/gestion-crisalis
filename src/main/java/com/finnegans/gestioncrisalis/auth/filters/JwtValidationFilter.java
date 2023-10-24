@@ -40,20 +40,16 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
             Claims claims = (Claims) Jwts.parser()
                     .verifyWith(SECRET_KEY)
                     .build()
-                    .parseSignedClaims(token);//validamos que la firma sea la correcta
+                    .parseSignedClaims(token);
 
             String username = claims.getSubject();
             Object roles = claims.get("authorities");
 
             Collection<? extends GrantedAuthority> authorities = Arrays.asList(new ObjectMapper()
-                    //se mezcla constructores para la deserializacion del campo "authority"
                     .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityJsonCreator.class)
                     .readValue(roles.toString().getBytes(), SimpleGrantedAuthority[].class));
 
-
-            //credentials en null porque no es importante para validacion pero si para generar el token
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-            //Aca es donde valido segun el contexto y permito seguir el encadenamiento de filtros
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             chain.doFilter(request,response);
 

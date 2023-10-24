@@ -23,15 +23,12 @@ public class JpaUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //validacion contra JPA
         Usuario usuario = this.usuarioRepository.findByUsuario(username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("Usuario %s no encontrado.", username)));
 
-        //otorgamos roles
         List<GrantedAuthority> authorities = usuario.getRoles()
                 .stream().map(rol -> new SimpleGrantedAuthority(rol.getRole())).collect(Collectors.toList());
 
-        //este User se lo pasa a authenticationManager.authenticate() del filtro attemptAuthentication()
         return new User(usuario.getUsuario(),
                 usuario.getPassword(),
                 true,

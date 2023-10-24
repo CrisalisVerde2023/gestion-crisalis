@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        //authenticate se debe implementar con JPA con UserDetailService
+
         return authenticationManager.authenticate(authenticationToken);
     }
     @Override
@@ -60,7 +60,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
         claims.put("isAdmin", isAdmin);
 
-        //generando token y firmamos con la llave secreta
         String token = Jwts.builder()
                 .claims(claims)
                 .subject(username)
@@ -69,7 +68,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .expiration(new Date(System.currentTimeMillis() + 3600000)) //1h
                 .compact();
 
-        response.addHeader("Authorization", "Bearer "+token);
+        response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN.concat(token));
 
         Map<String,Object> body = new HashMap<>();
         body.put("token", token);
