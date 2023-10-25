@@ -39,8 +39,7 @@ export default function Dashboard() {
                 "Empresas",
                 "Clientes",
                 "Usuarios",
-                "Productos",
-                "Servicios",
+                "Productos y Servicios",
                 "Impuestos",
               ].map((entidad) => (
                 <li
@@ -48,7 +47,7 @@ export default function Dashboard() {
                   className="flex hover:bg-slate-50 rounded-md shadow-md bg-white-pure"
                 >
                   <Link
-                    to={`/${entidad.toLowerCase()}`}
+                    to={`/${entidad.toLowerCase().replace(/\s+/g, "")}`}
                     className="flex p-3 w-full justify-between"
                   >
                     <span>{`ABM de ${entidad}`}</span>

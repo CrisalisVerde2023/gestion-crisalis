@@ -25,13 +25,13 @@ export default function ABMUsuariosComponent() {
         <Col xs={6} className="d-flex justify-content-evenly">
           <button
             onClick={goToAMUsuarios}
-            className="bg-denim px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-900"
+            className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
           >
             Crear nuevo usuario
           </button>
           <button
             className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
-            onClick={(goBack)}
+            onClick={goBack}
           >
             Volver
           </button>

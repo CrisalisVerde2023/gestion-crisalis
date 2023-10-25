@@ -16,6 +16,7 @@ export default function NavbarComponent() {
     <Navbar
       expand="lg"
       className="antialiased bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800"
+      style={{ marginBottom: "10px" }}
     >
       <Container className="">
         <Link to={"/home"}>
@@ -28,11 +29,9 @@ export default function NavbarComponent() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Header>
-              {userLogged.email}
-            </Dropdown.Header>
+            <Dropdown.Header>{userLogged.email}</Dropdown.Header>
             <Dropdown.Item as={Button} onClick={closeSession}>
-                Cerrar sesión
+              Cerrar sesión
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

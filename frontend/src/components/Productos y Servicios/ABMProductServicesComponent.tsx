@@ -8,10 +8,13 @@ export default function ABMProductServiceComponent() {
   const location = useLocation();
   useEffect(() => {}, [location]);
   function goToAMProductos() {
-    navigate("/productos/AMProductos");
+    navigate("/productosyservicios/AMProductos");
   }
   function goToAMServicios() {
-    navigate("/servicios/AMServicios");
+    navigate("/productosyservicios/AMServicios");
+  }
+  function goBack() {
+    navigate(-1);
   }
 
   return (
@@ -21,17 +24,32 @@ export default function ABMProductServiceComponent() {
           <LB_Productos />
         </Col>
       </Row>
-      <Row className="d-flex justify-content-center align-items-center">
-        <Col xs={6} className="d-flex justify-content-evenly">
-          {location.pathname.includes("/productos") ? (
-            <Button variant="primary" onClick={goToAMProductos}>
-              Crear nuevo producto
-            </Button>
-          ) : location.pathname.includes("/servicios") ? (
-            <Button variant="primary" onClick={goToAMServicios}>
-              Crear nuevo servicio
-            </Button>
-          ) : null}
+      <Row className="d-flex justify-content-center align-items-center mb-4">
+        <Col xs={12} md="auto" className="d-flex justify-content-evenly mt-2">
+          <Button
+            variant="primary"
+            onClick={goToAMProductos}
+            className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
+          >
+            Crear nuevo producto
+          </Button>
+        </Col>
+        <Col xs={12} md="auto" className="d-flex justify-content-evenly mt-2">
+          <Button
+            variant="primary"
+            onClick={goToAMServicios}
+            className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
+          >
+            Crear nuevo servicio
+          </Button>
+        </Col>
+        <Col xs={12} md="auto" className="d-flex justify-content-evenly mt-2">
+          <button
+            className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
+            onClick={goBack}
+          >
+            Volver
+          </button>
         </Col>
       </Row>
     </Container>
