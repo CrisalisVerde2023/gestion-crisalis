@@ -1,7 +1,7 @@
 import React, { useState, MouseEvent, useEffect, useRef } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import { PencilFill, XCircleFill, Search } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ProductOrService,
   ProductServiceType,
@@ -26,6 +26,7 @@ export default function LB_ProductService() {
   const [selectedElement, setSelectedElement] =
     useState<ProductServiceType | null>(null);
   const searchBoxRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -162,109 +163,104 @@ export default function LB_ProductService() {
 
   const actionButtons = (row: ProductServiceType) => {
     return (
-      <div className="d-flex flex-row justify-content-evenly align-items-center">
-        <Button
-          className="actionButton"
+      <div className="flex justify-between items-center">
+        <button
+          className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() => handleClickedElement(row)}
         >
           <XCircleFill />
-        </Button>
-        <Link
-          className="actionButton"
-          to={`${location.pathname}${
-            row.type === ProductOrService.Producto
-              ? `/AMProductos/`
-              : row.type === ProductOrService.Servicio && `/AMServicios/`
-          }${row.id}`}
+        </button>
+        <button
+          className="p-2 hover:bg-blue-600 hover:text-white"
+          onClick={() =>
+            navigate(
+              `${location.pathname}${
+                row.type === ProductOrService.Producto
+                  ? `/AMProductos/`
+                  : row.type === ProductOrService.Servicio && `/AMServicios/`
+              }${row.id}`
+            )
+          }
         >
           <PencilFill />
-        </Link>
+        </button>
       </div>
     );
   };
+
   return (
     <>
-      <Container>
-        <Row
-          className="d-flex flex-row justify-content-center align-items-center"
-          style={{ marginBottom: "15px" }}
-        >
-          <Col xs="auto">
+      <div className="w-full flex flex-column justify-center items-center mb-4 mx-auto p-4">
+        <div className="flex justify-center items-center mb-4">
+          <div className="mr-4">
             <input
               type="text"
               placeholder="Buscar"
-              className="inputSearch border-2 border-blue-500"
+              className="inputSearch border-2 border-blue-500 px-2 py-1"
               defaultValue={""}
               ref={searchBoxRef}
               onChange={() => {
                 handleSearch();
               }}
             />
-          </Col>
-          <Col xs="auto">
+          </div>
+          <div>
             <select
               name="productOrServiceType"
               id="productOrServiceType"
-              className=" bg-denim-400 px-4 py-2 rounded-md text-white font-medium hover:bg-denim-500"
-              aria-label=".form-select-lg"
+              className="bg-blue-400 px-4 py-2 rounded text-white font-medium hover:bg-blue-500"
               defaultValue={""}
               onChange={(e) => handleSelectChange(e.target.value.toString())}
             >
-              <option value={``} className="pr-6 pl-6">
-                Sin filtrado
-              </option>
-              <option
-                value={`${ProductOrService.Producto}`}
-                className="pr-6 pl-6"
-              >
-                Producto
-              </option>
-              <option
-                value={`${ProductOrService.Servicio}`}
-                className="pr-6 pl-6"
-              >
-                Servicio
-              </option>
+              <option value={``}>Sin filtrado</option>
+              <option value={`${ProductOrService.Producto}`}>Producto</option>
+              <option value={`${ProductOrService.Servicio}`}>Servicio</option>
             </select>
-          </Col>
-        </Row>
-        <Row>
-          {isLoading ? (
-            <Col>
-              <LoadingComponent />
-            </Col>
-          ) : (
-            <Col>
-              <Table striped bordered hover>
-                <thead style={{ backgroundColor: "#FF6F00", color: "#fff" }}>
-                  <tr>
-                    <td>ID</td>
-                    <td>Nombre</td>
-                    <td>Tipo</td>
-                    <td>Precio</td>
-                    <td>Acciones</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.id}</td>
-                      <td>{row.name}</td>
-                      <td>{row.type}</td>
+          </div>
+        </div>
+        {isLoading ? (
+          <div>
+            <LoadingComponent />
+          </div>
+        ) : (
+          <div className="w-full">
+            <table className="min-w-full bg-white border border-gray-300 ">
+              <thead className="bg-denim-400 text-white ">
+                <tr>
+                  <th className="py-2 px-4 border-b">ID</th>
+                  <th className="py-2 px-4 border-b">Nombre</th>
+                  <th className="py-2 px-4 border-b">Tipo</th>
+                  <th className="py-2 px-4 border-b">Precio</th>
+                  <th className="py-2 px-4 border-b">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.length ? (
+                  data.map((row, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="py-2 px-4">{row.id}</td>
+                      <td className="py-2 px-4">{row.name}</td>
+                      <td className="py-2 px-4">{row.type}</td>
                       {row.type.toString() === ProductOrService.Producto ? (
-                        <td>{row.cost}</td>
+                        <td className="py-2 px-4">{row.cost}</td>
                       ) : (
-                        <td>{row.support}</td>
+                        <td className="py-2 px-4">{row.support}</td>
                       )}
-                      <td>{actionButtons(row)}</td>
+                      <td className="py-2 px-4">{actionButtons(row)}</td>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Col>
-          )}
-        </Row>
-      </Container>
+                  ))
+                ) : (
+                  <tr className="border-b">
+                    <td colSpan={5} className="py-2 px-4">
+                      No hay datos...
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </>
   );
 }

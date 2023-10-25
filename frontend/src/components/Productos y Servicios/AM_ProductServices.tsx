@@ -130,34 +130,6 @@ export default function AM_ProductService() {
     }
   };
 
-  const handleSelectChange = (value: string) => {
-    if (
-      value === ProductOrService.Producto &&
-      !location.pathname.includes("/AMProductos")
-    ) {
-      navigate(
-        `/productosyservicios/AMProductos/${
-          idToModify !== undefined && idToModify !== null ? formData.id : ""
-        }`,
-        {
-          replace: true,
-        }
-      );
-    } else if (
-      value === ProductOrService.Servicio &&
-      !location.pathname.includes("/AMServicios")
-    ) {
-      navigate(
-        `/productosyservicios/AMServicios/${
-          idToModify !== undefined && idToModify !== null ? formData.id : ""
-        }`,
-        {
-          replace: true,
-        }
-      );
-    }
-  };
-
   return (
     <>
       <section
@@ -168,41 +140,6 @@ export default function AM_ProductService() {
         }
       >
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen mt-[-56px] lg:py-0">
-          <div className="bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700 mb-2 pr-2 pl-2">
-            <div className="p-2">
-              <label
-                htmlFor="name"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Tipo
-              </label>
-              <select
-                name="productOrServiceType"
-                id="productOrServiceType"
-                className=" bg-denim-400 px-4 py-2 rounded-md text-white font-medium hover:bg-denim-500"
-                aria-label=".form-select-lg"
-                defaultValue={
-                  location.pathname.includes("/AMProductos")
-                    ? ProductOrService.Producto
-                    : ProductOrService.Servicio
-                }
-                onChange={(e) => handleSelectChange(e.target.value.toString())}
-              >
-                <option
-                  value={`${ProductOrService.Producto}`}
-                  className="pr-6 pl-6"
-                >
-                  Producto
-                </option>
-                <option
-                  value={`${ProductOrService.Servicio}`}
-                  className="pr-6 pl-6"
-                >
-                  Servicio
-                </option>
-              </select>
-            </div>
-          </div>
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <div className="space-y-4 md:space-y-6">
