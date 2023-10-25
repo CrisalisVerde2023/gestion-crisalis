@@ -6,6 +6,7 @@ import com.finnegans.gestioncrisalis.auth.filters.JwtAuthenticationFilter;
 import com.finnegans.gestioncrisalis.auth.filters.JwtValidationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -29,13 +30,19 @@ public class SpringSecurityAuthorization {
     private String frontendUrl;
 
     private AuthenticationConfiguration authenticationConfiguration;
-    public SpringSecurityAuthorization(AuthenticationConfiguration authenticationConfiguration) {
+    private ApplicationContext applicationContext;
+    public SpringSecurityAuthorization(AuthenticationConfiguration authenticationConfiguration, ApplicationContext applicationContext) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.applicationContext = applicationContext;
     }
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+    @Bean
+    public ApplicationContext getApplicationContext() throws Exception {
+        return applicationContext;
     }
     @Bean
     BCryptPasswordEncoder passwordEncoder() {
@@ -48,7 +55,7 @@ public class SpringSecurityAuthorization {
                 .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationConfiguration.getAuthenticationManager()))
+                .addFilter(new JwtAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), getApplicationContext()))
                 .addFilter(new JwtValidationFilter(authenticationConfiguration.getAuthenticationManager()))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -5,14 +5,17 @@ import static com.finnegans.gestioncrisalis.auth.JwtTokenConfig.*;
 
 import com.finnegans.gestioncrisalis.enums.RoleType;
 import com.finnegans.gestioncrisalis.models.Usuario;
+import com.finnegans.gestioncrisalis.repositories.UsuarioRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -27,9 +30,12 @@ import java.util.Map;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private UsuarioRepository usuarioRepository;
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, ApplicationContext ctx) {
         this.authenticationManager = authenticationManager;
+        this.usuarioRepository= ctx.getBean(UsuarioRepository.class);
     }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         Usuario usuario = null;
@@ -55,8 +61,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
         boolean isAdmin = roles.stream().anyMatch(rol -> rol.getAuthority().equals(RoleType.ROLE_ADMIN.toString()));
-
-        Claims claims = (Claims) Jwts.claims();
+        Usuario usuario = this.usuarioRepository.findByUsuario(username)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Usuario %s no encontrado.", username)));
+        
+        Map<String,Object> claims = new HashMap<>();
         claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
         claims.put("isAdmin", isAdmin);
 
@@ -71,6 +79,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN.concat(token));
 
         Map<String,Object> body = new HashMap<>();
+        body.put("id", usuario.getId());
         body.put("token", token);
         body.put("message", String.format("Hola %s, iniciaste sesion exitosamente!", username));
         body.put("username", username);

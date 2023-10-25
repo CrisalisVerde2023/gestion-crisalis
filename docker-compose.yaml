@@ -12,6 +12,9 @@ services:
       POSTGRES_DB: CrisalisDB
     volumes:
       - pgdata:/var/lib/postgresql/data
+    mem_limit: "512m"
+    mem_reservation: "128m"
+    cpus: "0.5"
 
   pg-admin:
     user: root
@@ -26,6 +29,9 @@ services:
       PGADMIN_DEFAULT_PASSWORD: 123456
     volumes:
       - ./pgadmin:/var/lib/pgadmin
+    mem_limit: "512m"
+    mem_reservation: "128m"
+    cpus: "0.5"
 
 volumes:
   pgdata:

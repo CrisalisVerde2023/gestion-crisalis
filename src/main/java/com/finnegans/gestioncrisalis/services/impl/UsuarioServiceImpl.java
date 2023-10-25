@@ -15,6 +15,7 @@ import com.finnegans.gestioncrisalis.services.UsuarioService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
@@ -37,6 +38,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    @Transactional
     public UsuarioResponseDTO save(UsuarioDTO usuarioDTO) throws MessagingException, UnsupportedEncodingException {
         emailService.sendEmailFromTemplate(usuarioDTO.getUsuarioDTO(), EmailType.CREATE);
 
@@ -58,6 +60,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         return UsuarioDTOMapper.builder().setUsuario(usuario).build();
     }
     @Override
+    @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> getAll() {
         List<Usuario> usuarios = this.usuarioRepository.findAll();
 
@@ -66,6 +69,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         ).collect(Collectors.toList());
     }
     @Override
+    @Transactional(readOnly = true)
     public UsuarioResponseDTO getById(Long id) {
         Usuario usuario = this.usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Usuario no encontrado con id: ".concat(String.valueOf(id))));
@@ -73,6 +77,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         return UsuarioDTOMapper.builder().setUsuario(usuario).build();
     }
     @Override
+    @Transactional
     public UsuarioResponseDTO update(Long id, UsuarioDTO usuarioDTO) {
         Usuario usuario = this.usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Usuario no encontrado con id: ".concat(String.valueOf(id))));
@@ -90,6 +95,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         return UsuarioDTOMapper.builder().setUsuario(usuarioSave).build();
     }
     @Override
+    @Transactional
     public void delete(Long id) {
         Usuario usuario = this.usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Usuario no encontrado con id: ".concat(String.valueOf(id))));
