@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+
 
 @Data
 @AllArgsConstructor
@@ -20,6 +20,6 @@ public class PersonaDTO {
     @JsonProperty("apellido")
     private String apellidoDTO;
 
-    @JsonProperty("fecha_nacimiento")
-    private LocalDateTime fechaNacimientoDTO;
+    @JsonProperty("dni")
+    private String dniDTO;
 }
