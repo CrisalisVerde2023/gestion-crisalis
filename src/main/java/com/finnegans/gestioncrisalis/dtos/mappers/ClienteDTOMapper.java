@@ -22,7 +22,7 @@ public class ClienteDTOMapper {
     //Creo el objeto ClienteResponseDTO con los datos del cliente que me pasaron por parametro
     public ClienteResponseDTO build(){
         if (cliente == null) throw new RuntimeException("Debe pasar la entidad Cliente");
-        return new ClienteResponseDTO(cliente.getId(),cliente.getNombre(), cliente.isEliminado());
+        return new ClienteResponseDTO(cliente.getId(), cliente.getPersona(), cliente.getEmpresa(), cliente.isEliminado());
     }
 
 }

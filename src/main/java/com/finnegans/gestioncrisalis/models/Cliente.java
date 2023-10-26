@@ -1,5 +1,7 @@
 package com.finnegans.gestioncrisalis.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +26,6 @@ public class Cliente {
     @Column(name = "ELIMINADO", nullable = false, columnDefinition = "boolean default false")
     private boolean eliminado;
 
-    @Column(name = "NOMBRE", nullable = false)
-    private String nombre;
 
     @Column(updatable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -34,16 +34,18 @@ public class Cliente {
     private Date updatedAt;
 
     //RELACIÓN CON PERSONA M:1
-    //Esta clase cliente puede tener una persona nomas (Descomentar cuando se tenga la clase persona)
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "PERSONA_ID", nullable = false)
-    //private Persona persona;
+    // clase cliente puede tener una persona nomas (Descomentar cuando se tenga la clase persona)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PERSONA_ID", nullable = false)
+    private Persona persona;
 
     //RELACIÓN CON EMPRESA M:1
     //Esta clase cliente puede tener una empresa nomas (Descomentar cuando se tenga la clase empresa)
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "EMPRESA_ID", nullable = false)
-    //private Empresa empresa;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMPRESA_ID")
+    private Empresa empresa;
 
 
     @PrePersist
