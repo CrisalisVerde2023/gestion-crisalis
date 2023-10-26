@@ -3,6 +3,9 @@ package com.finnegans.gestioncrisalis.services.impl;
 import com.finnegans.gestioncrisalis.dtos.ClienteDTO;
 import com.finnegans.gestioncrisalis.dtos.mappers.ClienteDTOMapper;
 import com.finnegans.gestioncrisalis.dtos.request.ClienteResponseDTO;
+import com.finnegans.gestioncrisalis.exceptions.custom.DataIntegrityException;
+import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
+import com.finnegans.gestioncrisalis.exceptions.custom.UserDisabled;
 import com.finnegans.gestioncrisalis.models.Cliente;
 import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.models.Persona;
@@ -10,6 +13,7 @@ import com.finnegans.gestioncrisalis.repositories.ClienteRepository;
 import com.finnegans.gestioncrisalis.repositories.EmpresaRepository;
 import com.finnegans.gestioncrisalis.repositories.PersonaRepository;
 import com.finnegans.gestioncrisalis.services.ClienteService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -32,6 +36,7 @@ public class ClienteServiceImpl implements ClienteService {
         this.empresaRepository = empresaRepository;
     }
 
+
     public boolean clienteConMismaPersonaYempresaExiste(Persona persona, Empresa empresa){
         Optional<Cliente> cliente = this.clienteRepository.findByPersonaAndEmpresa(persona, empresa);
         return cliente.isPresent();
@@ -40,14 +45,14 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public ClienteResponseDTO save(ClienteDTO clienteDTO) {
 
+        if(clienteDTO.getPersonaIdDTO() == null ) throw new DataIntegrityException("El id de la persona no puede ser nulo");
+
         Persona persona = this.personaRepository.findById(clienteDTO.getPersonaIdDTO())
-                .orElseThrow(() -> new RuntimeException("Persona no encontrada"));
+                .orElseThrow(() -> new ResourceNotFound("Persona con id: ".concat(String.valueOf(clienteDTO.getPersonaIdDTO())).concat(" no encontrada")));
 
         if(clienteDTO.getEmpresaIdDTO() == null){
 
-            if(clienteConMismaPersonaYempresaExiste(persona, null)){
-                throw new RuntimeException("Ya existe un cliente de tipo persona");
-            }
+            if(clienteConMismaPersonaYempresaExiste(persona, null)) throw new DataIntegrityException("Ya existe un cliente de tipo persona con la misma persona");
 
             System.out.println("Este cliente es de tipo persona");
             Cliente cliente = this.clienteRepository.save(
@@ -61,11 +66,10 @@ public class ClienteServiceImpl implements ClienteService {
         }
 
         Empresa empresa = this.empresaRepository.findById(clienteDTO.getEmpresaIdDTO())
-                    .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+                    .orElseThrow(() -> new ResourceNotFound("Empresa con id: ".concat(String.valueOf(clienteDTO.getEmpresaIdDTO())).concat(" no encontrada")));
 
-        if(clienteConMismaPersonaYempresaExiste(persona, empresa)){
-            throw new RuntimeException("Ya existe un cliente de tipo empresa");
-        }
+        if(clienteConMismaPersonaYempresaExiste(persona, empresa)) throw new DataIntegrityException("Ya existe un cliente de tipo empresa con la misma persona y empresa");
+
 
         System.out.println("Este cliente es de tipo empresa");
         Cliente cliente = this.clienteRepository.save(
