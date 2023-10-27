@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import "./LogIn.css";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import logo from "../assets/images/logoLetras.png";
+import { defaultPedidoState } from "../components/types/UserLogged";
 
 const LogIn = () => {
-  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
+  const { userLogged, setUserLogged, setPedido, pedido } =
+    useContext(UserLoggedContext);
   const [errors, setErrors] = useState([]);
   const [user, setUser] = useState({
     usuario: "",
@@ -51,20 +53,23 @@ const LogIn = () => {
     navigate({ replace: true });
 
     if (validateLoginForm())
-      fetch(url, settings)
-      .then((response) => {
+      fetch(url, settings).then((response) => {
         if (response.status === 202)
-          response.json()
-          .then(({id, usuario}) => {
+          response.json().then(({ id, usuario }) => {
             setUserLogged({
               id,
               email: usuario,
             });
+            setPedido(defaultPedidoState);
             navigate("/home");
           });
         else {
           setResponseError(true);
-          setAuthError((response.status === 403) ? "Usuario inactivo" : "Usuario o contraseña no válido");
+          setAuthError(
+            response.status === 403
+              ? "Usuario inactivo"
+              : "Usuario o contraseña no válido"
+          );
         }
       });
   };
