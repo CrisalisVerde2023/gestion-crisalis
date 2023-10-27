@@ -11,8 +11,6 @@ public class EmpresaDTOValidator implements ConstraintValidator<ValidEmpresaDTO,
     public boolean isValid(EmpresaDTO empresaDTO, ConstraintValidatorContext context) {
         boolean nombreEmpty = StringUtils.isEmpty(empresaDTO.getNombreDTO());
         boolean cuitEmpty = StringUtils.isEmpty(empresaDTO.getCuitDTO());
-        //boolean dateStartEmpty = StringUtils.isEmpty(empresaDTO.getStart_dateDTO().toString());
-
         return !(nombreEmpty && cuitEmpty);
     }
 }
