@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EmpresaResponseDTO {
     @JsonProperty("id")
-    private int idDTO;
+    private Long idDTO;
 
     @JsonProperty("nombre")
     private String nombreDTO;
