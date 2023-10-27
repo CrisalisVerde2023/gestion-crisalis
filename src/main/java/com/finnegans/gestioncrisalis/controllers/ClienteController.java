@@ -27,4 +27,12 @@ public class ClienteController {
     public ResponseEntity<?> getById(@PathVariable Long id){
         return new ResponseEntity<>(this.clienteService.getById(id), HttpStatus.OK);
     }
+    @GetMapping
+    public ResponseEntity<?> getAll(){
+        return new ResponseEntity<>(this.clienteService.getAll(), HttpStatus.OK);
+    }
+    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO){
+        return new ResponseEntity<>(this.clienteService.update(id, clienteDTO), HttpStatus.OK);
+    }
 }
