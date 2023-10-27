@@ -7,9 +7,11 @@ import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.repositories.EmpresaRepository;
 import com.finnegans.gestioncrisalis.services.EmpresaService;
+import com.finnegans.gestioncrisalis.validations.DateParser;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,11 +25,18 @@ public class EmpresaServiceImpl implements EmpresaService {
 
     @Override
     public EmpresaResponseDTO save(EmpresaDTO empresaDTO) {
+        LocalDateTime startDate = null;
+        try {
+            startDate = DateParser.parseStringToLocalDateTime(empresaDTO.getStart_dateDTO(), "yyyy-MM-dd'T'HH:mm:ss");
+        } catch (DateTimeParseException e) {
+            //throw new YourCustomException("Invalid date format", e);
+        }
+
         Empresa empresa = this.empresaRepository.save(
                 Empresa.builder()
                         .nombre(empresaDTO.getNombreDTO())
                         .cuit(empresaDTO.getCuitDTO())
-                        .start_date(LocalDateTime.now())
+                        .start_date(startDate)
                         .build()
         );
 
