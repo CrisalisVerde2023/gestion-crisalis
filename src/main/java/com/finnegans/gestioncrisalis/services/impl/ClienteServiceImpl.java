@@ -116,4 +116,16 @@ public class ClienteServiceImpl implements ClienteService {
 
         return ClienteDTOMapper.builder().setCliente(clienteSave).build();
     }
+
+    @Override
+    public ClienteResponseDTO delete(Long id) {
+        Cliente cliente = this.clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Cliente no encontrado con id: ".concat(String.valueOf(id))));
+
+        cliente.setEliminado(!cliente.isEliminado());
+
+        this.clienteRepository.save(cliente);
+
+        return ClienteDTOMapper.builder().setCliente(cliente).build();
+    }
 }

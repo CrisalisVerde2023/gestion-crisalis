@@ -2,8 +2,10 @@ package com.finnegans.gestioncrisalis.controllers;
 
 import com.finnegans.gestioncrisalis.dtos.EmpresaDTO;
 import com.finnegans.gestioncrisalis.services.EmpresaService;
+import com.finnegans.gestioncrisalis.validations.EmpresaOnUpdate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,10 +36,13 @@ public class EmpresaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody EmpresaDTO empresaDTO){
+    public ResponseEntity<?> update(@PathVariable Long id,
+                                    @Validated(EmpresaOnUpdate.class) @RequestBody EmpresaDTO empresaDTO) {
         this.empresaService.update(id, empresaDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){

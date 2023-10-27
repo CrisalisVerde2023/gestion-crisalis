@@ -7,7 +7,9 @@ import com.finnegans.gestioncrisalis.validations.ValidEmpresaDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,11 +21,10 @@ public class EmpresaDTO {
     private String nombreDTO;
 
     @NotBlank(message = "El campo cuit no puede ser vacio.", groups = EmpresaOnCreate.class)
-    @JsonProperty("cuit")
     @Size(min = 11, max = 11, message = "El CUIT debe tener exactamente 11 caracteres", groups = {EmpresaOnCreate.class, EmpresaOnUpdate.class})
+    @JsonProperty("cuit")
     private String cuitDTO;
 
-    @NotBlank(message = "El campo fecha no puede ser vacio.", groups = EmpresaOnCreate.class)
     @JsonProperty("start_date")
-    private LocalDateTime start_dateDTO;
+    private String start_dateDTO;
 }

@@ -18,7 +18,6 @@ public class ClienteController {
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
     }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody ClienteDTO clienteDTO) {
         return new ResponseEntity<>(this.clienteService.save(clienteDTO), HttpStatus.CREATED);
@@ -34,5 +33,9 @@ public class ClienteController {
     @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO){
         return new ResponseEntity<>(this.clienteService.update(id, clienteDTO), HttpStatus.OK);
+    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id){
+        return new ResponseEntity<>(this.clienteService.delete(id), HttpStatus.ACCEPTED);
     }
 }

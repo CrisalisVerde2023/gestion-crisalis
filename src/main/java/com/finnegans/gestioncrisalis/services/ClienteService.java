@@ -12,4 +12,5 @@ public interface ClienteService {
      ClienteResponseDTO getById(Long id);
      List<ClienteResponseDTO> getAll();
      ClienteResponseDTO update(Long id, ClienteDTO clienteDTO);
+     ClienteResponseDTO delete(Long id);
 }

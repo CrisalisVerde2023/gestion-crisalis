@@ -2,6 +2,7 @@ package com.finnegans.gestioncrisalis.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.finnegans.gestioncrisalis.dtos.EmpresaDTO;
 import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.models.Persona;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class ClienteResponseDTO {
     private Persona persona;
 
     @JsonProperty("empresa")
-    private Empresa empresa;
+    private EmpresaResponseDTO empresa;
 
     @JsonProperty("eliminado")
     private boolean eliminadoDTO;

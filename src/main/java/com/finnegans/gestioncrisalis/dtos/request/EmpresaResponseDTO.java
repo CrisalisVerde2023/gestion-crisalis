@@ -18,5 +18,5 @@ public class EmpresaResponseDTO {
     private String cuitDTO;
 
     @JsonProperty("start_date")
-    private LocalDateTime start_dateDTO;
+    private String start_dateDTO;
 }
