@@ -1,6 +1,18 @@
-import React, { useState, MouseEvent, useEffect, useRef } from "react";
+import React, {
+  useState,
+  MouseEvent,
+  useEffect,
+  useRef,
+  useContext,
+} from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import { PencilFill, XCircleFill, Search } from "react-bootstrap-icons";
+import {
+  PencilFill,
+  XCircleFill,
+  Search,
+  PlusCircle,
+  PlusCircleFill,
+} from "react-bootstrap-icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ProductOrService,
@@ -16,8 +28,10 @@ import {
 } from "../../controller/ABMProductController";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
+import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
 export default function LB_ProductService() {
+  const { pedido, setPedido } = useContext(UserLoggedContext);
   const [data, setData] = useState<ProductServiceType[]>([]);
   const [originalData, setOriginalData] = useState<ProductServiceType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,6 +71,10 @@ export default function LB_ProductService() {
   useEffect(() => {
     handleSearch();
   }, [data]);
+
+  useEffect(() => {
+    console.log(pedido.prods_servs);
+  }, [pedido]);
 
   useEffect(() => {
     if (selectAll().length === 0) {
@@ -157,6 +175,27 @@ export default function LB_ProductService() {
     });
   };
 
+  const addToPedido = (selected: ProductServiceType) => {
+    let updatedProdsServs;
+
+    // Check if an object with the same 'id' already exists in the array
+    const itemExists = pedido.prods_servs.some(
+      (item) => item.id === selected.id
+    );
+
+    if (itemExists) {
+      // If the item already exists, filter it out to remove it.
+      updatedProdsServs = pedido.prods_servs.filter(
+        (item) => item.id !== selected.id
+      );
+    } else {
+      // If the item doesn't exist, add it.
+      updatedProdsServs = [...pedido.prods_servs, selected];
+    }
+
+    setPedido({ ...pedido, prods_servs: updatedProdsServs });
+  };
+
   const handleSelectChange = (value: string) => {
     setFiltrado(value);
   };
@@ -169,6 +208,12 @@ export default function LB_ProductService() {
           onClick={() => handleClickedElement(row)}
         >
           <XCircleFill />
+        </button>
+        <button
+          className="p-2 hover:bg-blue-600 hover:text-white"
+          onClick={() => addToPedido(row)}
+        >
+          <PlusCircleFill />
         </button>
         <button
           className="p-2 hover:bg-blue-600 hover:text-white"

@@ -1,11 +1,18 @@
+import {
+  ClienteType,
+  defaultClienteType,
+  defaultTestClienteType,
+} from "./clientType";
+import { ProductServiceType } from "./productServiceType";
+
 export type UserLogged = {
   id: number;
   email: string;
 };
 
 export type PedidoType = {
-  cliente: number;
-  prods_servs: number[];
+  cliente: ClienteType;
+  prods_servs: ProductServiceType[];
 };
 
 export type UserLoggedContextType = {
@@ -16,7 +23,10 @@ export type UserLoggedContextType = {
 };
 
 export const defaultUserLogState = { id: -1, email: "" };
-export const defaultPedidoState: PedidoType = { cliente: -1, prods_servs: [] };
+export const defaultPedidoState: PedidoType = {
+  cliente: defaultTestClienteType,
+  prods_servs: [],
+}; //Cuando la funcionalida de cliente este lista cambiar por defaultClientType
 
 export const defaultContext: UserLoggedContextType = {
   userLogged: defaultUserLogState,
