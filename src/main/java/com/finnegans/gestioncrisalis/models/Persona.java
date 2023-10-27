@@ -31,9 +31,7 @@ public class Persona {
     private String dni;
 
     @OneToMany(
-            mappedBy = "persona",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            mappedBy = "persona"
     )
     @JsonIgnore
     private List<Cliente> clientes;

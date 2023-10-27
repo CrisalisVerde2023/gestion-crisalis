@@ -5,5 +5,6 @@ import com.finnegans.gestioncrisalis.dtos.request.ClienteResponseDTO;
 import com.finnegans.gestioncrisalis.models.Cliente;
 
 public interface ClienteService {
-    ClienteResponseDTO save(ClienteDTO cliente);
+     ClienteResponseDTO save(ClienteDTO cliente);
+     ClienteResponseDTO getById(Long id);
 }

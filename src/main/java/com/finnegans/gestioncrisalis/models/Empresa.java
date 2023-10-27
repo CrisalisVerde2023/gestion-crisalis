@@ -28,9 +28,7 @@ public class Empresa {
     private String cuit;
 
     @OneToMany(
-            mappedBy = "empresa",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            mappedBy = "empresa"
     )
     @JsonIgnore
     private List<Cliente> clientes;

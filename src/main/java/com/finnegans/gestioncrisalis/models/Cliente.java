@@ -1,5 +1,6 @@
 package com.finnegans.gestioncrisalis.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "CLIENTES")
+
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,15 +37,13 @@ public class Cliente {
 
     //RELACIÓN CON PERSONA M:1
     // clase cliente puede tener una persona nomas (Descomentar cuando se tenga la clase persona)
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PERSONA_ID", nullable = false)
     private Persona persona;
 
     //RELACIÓN CON EMPRESA M:1
     //Esta clase cliente puede tener una empresa nomas (Descomentar cuando se tenga la clase empresa)
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "EMPRESA_ID")
     private Empresa empresa;
 

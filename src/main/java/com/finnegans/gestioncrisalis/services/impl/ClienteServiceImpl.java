@@ -46,38 +46,35 @@ public class ClienteServiceImpl implements ClienteService {
     public ClienteResponseDTO save(ClienteDTO clienteDTO) {
 
         if(clienteDTO.getPersonaIdDTO() == null ) throw new DataIntegrityException("El id de la persona no puede ser nulo");
-
         Persona persona = this.personaRepository.findById(clienteDTO.getPersonaIdDTO())
                 .orElseThrow(() -> new ResourceNotFound("Persona con id: ".concat(String.valueOf(clienteDTO.getPersonaIdDTO())).concat(" no encontrada")));
-
         if(clienteDTO.getEmpresaIdDTO() == null){
-
             if(clienteConMismaPersonaYempresaExiste(persona, null)) throw new DataIntegrityException("Ya existe un cliente de tipo persona con la misma persona");
-
-            System.out.println("Este cliente es de tipo persona");
+            //System.out.println("Este cliente es de tipo persona");
             Cliente cliente = this.clienteRepository.save(
                     Cliente.builder()
                             .persona(persona)
                             .empresa(null)
                             .build()
             );
-
             return ClienteDTOMapper.builder().setCliente(cliente).build();
         }
-
         Empresa empresa = this.empresaRepository.findById(clienteDTO.getEmpresaIdDTO())
                     .orElseThrow(() -> new ResourceNotFound("Empresa con id: ".concat(String.valueOf(clienteDTO.getEmpresaIdDTO())).concat(" no encontrada")));
-
         if(clienteConMismaPersonaYempresaExiste(persona, empresa)) throw new DataIntegrityException("Ya existe un cliente de tipo empresa con la misma persona y empresa");
-
-
-        System.out.println("Este cliente es de tipo empresa");
+        //System.out.println("Este cliente es de tipo empresa");
         Cliente cliente = this.clienteRepository.save(
                 Cliente.builder()
                         .persona(persona)
                         .empresa(empresa)
                         .build()
         );
+        return ClienteDTOMapper.builder().setCliente(cliente).build();
+    }
+
+    public ClienteResponseDTO getById(Long id) {
+        Cliente cliente = this.clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Cliente no encontrado con id: ".concat(String.valueOf(id))));
 
         return ClienteDTOMapper.builder().setCliente(cliente).build();
     }

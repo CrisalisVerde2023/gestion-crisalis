@@ -1,5 +1,6 @@
 package com.finnegans.gestioncrisalis.dtos.mappers;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.finnegans.gestioncrisalis.dtos.request.ClienteResponseDTO;
 import com.finnegans.gestioncrisalis.models.Cliente;
 

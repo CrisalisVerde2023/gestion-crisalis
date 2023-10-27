@@ -1,7 +1,6 @@
 package com.finnegans.gestioncrisalis.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.models.Persona;
@@ -10,7 +9,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties({"persona.clientes", "empresa.clientes"})
 public class ClienteResponseDTO {
     @JsonProperty("id")
     private Long idDTO;
