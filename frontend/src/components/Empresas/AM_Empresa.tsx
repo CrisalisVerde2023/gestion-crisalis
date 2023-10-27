@@ -61,33 +61,43 @@ export default function AM_Empresa() {
   };
 
   return (
-    <Container className="containerAM">
-      <Row className="d-flex justify-content-center">
+    <div className="container mx-auto p-4">
+      <div className="flex justify-center">
         <h4 className="headerStyles">Alta y modificación de empresas</h4>
-      </Row>
-      <Row className="d-flex flex-column justify-content-center align-items-center">
-        <Col xs={6}>
-          <Form.Label>ID: {formData.id}</Form.Label>
-        </Col>
-        <Col xs={6}>
-          <Form.Label>Nombre</Form.Label>
-          <Form.Control
+      </div>
+      <div className="flex flex-col justify-center items-center">
+        <div className="w-1/2">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            ID: {formData.id}
+          </label>
+        </div>
+        <div className="w-1/2">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Nombre
+          </label>
+          <input
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-        </Col>
-        <Col xs={6}>
-          <Form.Label>CUIT</Form.Label>
-          <Form.Control
+        </div>
+        <div className="w-1/2">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            CUIT
+          </label>
+          <input
             type="text"
             value={formData.cuit}
             onChange={(e) => setFormData({ ...formData, cuit: e.target.value })}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-        </Col>
-        <Col xs={6}>
-          <Form.Label>Fecha de Inicio</Form.Label>
-          <Form.Control
+        </div>
+        <div className="w-1/2">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Fecha de Inicio
+          </label>
+          <input
             type="date"
             value={formatDateToInput(formData.startDate)}
             onChange={(e) => {
@@ -95,16 +105,17 @@ export default function AM_Empresa() {
               const newDate = `${day}-${month}-${year}`;
               setFormData({ ...formData, startDate: newDate });
             }}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-        </Col>
-      </Row>
-      <Button
+        </div>
+      </div>
+      <button
         disabled={!isFormComplete()}
-        style={{ marginTop: "10px" }}
+        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={handleSubmit}
       >
         Submit
-      </Button>
-    </Container>
+      </button>
+    </div>
   );
 }

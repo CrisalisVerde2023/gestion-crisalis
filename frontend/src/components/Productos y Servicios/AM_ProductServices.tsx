@@ -189,11 +189,7 @@ export default function AM_ProductService() {
                         htmlFor="costo"
                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                       >
-                        {location.pathname.includes("/AMProductos")
-                          ? "Costo"
-                          : location.pathname.includes("/AMServicios")
-                          ? "Mantenimiento"
-                          : "Precio Base"}
+                        Costo
                       </label>
                       <input
                         type="number"
@@ -204,20 +200,36 @@ export default function AM_ProductService() {
                         placeholder="$"
                         onChange={(e) => {
                           const value = Number(e.target.value);
-                          if (formData.type === ProductOrService.Producto) {
-                            setFormData({ ...formData, cost: value });
-                          } else {
-                            setFormData({ ...formData, support: value });
-                          }
+                          setFormData({ ...formData, cost: value });
                         }}
-                        value={
-                          formData.type === ProductOrService.Producto
-                            ? formData.cost
-                            : formData.support
-                        }
+                        value={formData.cost}
                         onFocus={(e) => e.target.select()}
                       />
                     </div>
+                    {location.pathname.includes("/AMServicios") && (
+                      <div>
+                        <label
+                          htmlFor="mantenimiento"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Mantenimiento
+                        </label>
+                        <input
+                          type="number"
+                          name="mantenimiento"
+                          id="mantenimiento"
+                          min={0}
+                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder="$"
+                          onChange={(e) => {
+                            const value = Number(e.target.value);
+                            setFormData({ ...formData, support: value });
+                          }}
+                          value={formData.support}
+                          onFocus={(e) => e.target.select()}
+                        />
+                      </div>
+                    )}
                   </>
                 )}
                 {errorsForm().length ? (

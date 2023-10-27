@@ -190,8 +190,8 @@ export default function LB_ProductService() {
 
   return (
     <>
-      <div className="w-full flex flex-column justify-center items-center mb-4 mx-auto p-4">
-        <div className="flex justify-center items-center mb-4">
+      <div className="w-full flex flex-column justify-center items-center mb-2 mx-auto p-4 pb-0">
+        <div className="flex justify-center items-center mb-3">
           <div className="mr-4">
             <input
               type="text"
@@ -218,6 +218,13 @@ export default function LB_ProductService() {
             </select>
           </div>
         </div>
+        {filtrado !== ProductOrService.Producto && (
+          <div>
+            <h6 className="m-0 mb-3 p-0">
+              Costo de mantenimiento de servicios *($)
+            </h6>
+          </div>
+        )}
         {isLoading ? (
           <div>
             <LoadingComponent />
@@ -238,15 +245,17 @@ export default function LB_ProductService() {
                 {data.length ? (
                   data.map((row, index) => (
                     <tr key={index} className="border-b">
-                      <td className="py-2 px-4">{row.id}</td>
-                      <td className="py-2 px-4">{row.name}</td>
-                      <td className="py-2 px-4">{row.type}</td>
+                      <td className="py-2">{row.id}</td>
+                      <td className="py-2">{row.name}</td>
+                      <td className="py-2">{row.type}</td>
                       {row.type.toString() === ProductOrService.Producto ? (
-                        <td className="py-2 px-4">{row.cost}</td>
+                        <td className="py-2">{row.cost}</td>
                       ) : (
-                        <td className="py-2 px-4">{row.support}</td>
+                        <td className="py-2">
+                          {row.cost} + *(<strong>{row.support}</strong>)
+                        </td>
                       )}
-                      <td className="py-2 px-4">{actionButtons(row)}</td>
+                      <td className="py-2">{actionButtons(row)}</td>
                     </tr>
                   ))
                 ) : (

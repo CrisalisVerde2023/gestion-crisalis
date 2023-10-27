@@ -18,40 +18,38 @@ export default function ABMProductServiceComponent() {
   }
 
   return (
-    <Container>
-      <Row>
-        <Col>
+    <div className="container mx-auto">
+      <div className="flex flex-col">
+        <div className="mb-4">
           <LB_Productos />
-        </Col>
-      </Row>
-      <Row className="d-flex justify-content-center align-items-center mb-4">
-        <Col xs={12} md="auto" className="d-flex justify-content-evenly mt-2">
-          <Button
-            variant="primary"
-            onClick={goToAMProductos}
-            className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
-          >
-            Crear nuevo producto
-          </Button>
-        </Col>
-        <Col xs={12} md="auto" className="d-flex justify-content-evenly mt-2">
-          <Button
-            variant="primary"
-            onClick={goToAMServicios}
-            className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
-          >
-            Crear nuevo servicio
-          </Button>
-        </Col>
-        <Col xs={12} md="auto" className="d-flex justify-content-evenly mt-2">
-          <button
-            className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
-            onClick={goBack}
-          >
-            Volver
-          </button>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+        <div className="flex justify-center items-center mb-4">
+          <div className="flex justify-evenly mt-2 mx-2">
+            <button
+              onClick={goToAMProductos}
+              className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
+            >
+              Crear nuevo producto
+            </button>
+          </div>
+          <div className="flex justify-evenly mt-2 mx-2">
+            <button
+              onClick={goToAMServicios}
+              className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
+            >
+              Crear nuevo servicio
+            </button>
+          </div>
+          <div className="flex justify-evenly mt-2 mx-2">
+            <button
+              onClick={goBack}
+              className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
+            >
+              Volver
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
