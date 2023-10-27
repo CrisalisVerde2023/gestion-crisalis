@@ -7,7 +7,7 @@ const URL_LOGIN = `${import.meta.env.VITE_URL_HOST_API}/login`;
 export const useLogin = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
-  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
+  const { setUserLogged } = useContext(UserLoggedContext);
   const [authError, setAuthError] = useState("");
   const [responseError, setResponseError] = useState(false);
   const [user, setUser] = useState({
@@ -56,10 +56,18 @@ export const useLogin = () => {
           setResponseError(true);
           setAuthError(json.message);
         } else {
-          console.log(json);
+          const claims = JSON.parse(window.atob(json.token.split(".")[1]));
+          const isAdmin = claims.isAdmin;
+          const roles = JSON.parse(claims.authorities).map(
+            (rol) => rol.authority
+          ); //roles mapeados por alguna feature
+          sessionStorage.setItem("token", `Bearer ${json.token}`);
+
           setUserLogged({
             id: json.id,
-            email: json.usuario,
+            email: claims.sub,
+            isAuth: true,
+            isAdmin: isAdmin,
           });
 
           navigate("/home");

@@ -1,10 +1,9 @@
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode } from "react";
 import {
   defaultContext,
-  UserLogged,
   UserLoggedContextType,
 } from "../components/types/UserLogged";
-import { useLocalStorage } from "usehooks-ts";
+import { useSessionStorage } from "usehooks-ts";
 
 export const UserLoggedContext =
   createContext<UserLoggedContextType>(defaultContext);
@@ -14,9 +13,11 @@ type Props = {
 };
 
 export default function UserLoggedProvider({ children }: Props) {
-  const [userLogged, setUserLogged] = useLocalStorage("userLogged", {
+  const [userLogged, setUserLogged] = useSessionStorage("userLogged", {
     id: -1,
     email: "",
+    isAuth: false,
+    isAdmin: false,
   });
   return (
     <UserLoggedContext.Provider value={{ userLogged, setUserLogged }}>
