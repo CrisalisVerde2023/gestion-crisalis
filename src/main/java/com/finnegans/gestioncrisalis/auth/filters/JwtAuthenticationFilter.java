@@ -31,9 +31,9 @@ import java.util.Map;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
     private UsuarioRepository usuarioRepository;
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, ApplicationContext ctx) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, ApplicationContext context) {
         this.authenticationManager = authenticationManager;
-        this.usuarioRepository= ctx.getBean(UsuarioRepository.class);
+        this.usuarioRepository= context.getBean(UsuarioRepository.class);
     }
 
     @Override
