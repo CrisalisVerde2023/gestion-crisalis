@@ -37,7 +37,7 @@ public class EmpresaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
-                                    @Validated(EmpresaOnUpdate.class) @RequestBody EmpresaDTO empresaDTO){
+                                    @Validated(EmpresaOnUpdate.class) @RequestBody EmpresaDTO empresaDTO) {
         this.empresaService.update(id, empresaDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
