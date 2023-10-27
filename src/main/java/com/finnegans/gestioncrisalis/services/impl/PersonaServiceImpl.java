@@ -6,10 +6,12 @@ import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.Persona;
 import com.finnegans.gestioncrisalis.repositories.PersonaRepository;
 import com.finnegans.gestioncrisalis.services.PersonaService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,25 +23,6 @@ public class PersonaServiceImpl implements PersonaService {
         this.personaRepository = personaRepository;
     }
 
-    /*
-     @Override
-        public List<Persona> getAll(){
-             List<Persona> personas = personaRepository.findAll();
-     return personas.stream().map(
-                     persona -> PersonaDTOMapper.builder().setPersona(persona).build()
-             ).collect(Collectors.toList());
-     }
-
-          @Override
-        public PersonaDTO getById(Long id){
-              Persona persona = personaRepository.findById(id)
-                      .orElseThrow(() -> new ResourceNotFound("Persona con ID: " + id + " no encontrada"));
-
-
-              return PersonaDTOMapper.builder().setPersona(persona).build();
-          }
-     */
-
     @Override
     public Persona save(PersonaDTO personaDTO) {
         Persona persona = new Persona();
@@ -50,7 +33,16 @@ public class PersonaServiceImpl implements PersonaService {
         return this.personaRepository.save(persona);
     }
 
-    /*
+    @Override
+    public List<Persona> getAll(){
+        return this.personaRepository.findAll();
+    }
+
+    @Override
+    public Persona getById(Long id) {
+        return personaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Persona con ID: " + id + " no encontrada"));
+    }
 
     @Override
     public void delete(Long id){
@@ -59,6 +51,27 @@ public class PersonaServiceImpl implements PersonaService {
         personaRepository.delete(persona);
     }
 
-     */
+    @Override
+    public Persona update(Long id, PersonaDTO personaDTO){
+        Persona persona = this.personaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Persona con ID:" + id + " no encontrada"));
+        if (StringUtils.isNotBlank(personaDTO.getNombreDTO())){
+            persona.setNombre(personaDTO.getNombreDTO());
+        }
+
+        if (StringUtils.isNotBlank(personaDTO.getApellidoDTO())){
+            persona.setApellido(personaDTO.getApellidoDTO());
+        }
+
+        if (StringUtils.isNotBlank(personaDTO.getDniDTO())){
+            persona.setDni(personaDTO.getDniDTO());
+        }
+
+        persona.setFechaModificacion(LocalDateTime.now());
+        Persona personaSave = this.personaRepository.save(persona);
+        return personaSave;
+    }
+
+
 }
 

@@ -39,16 +39,16 @@ public class Persona {
     @PrePersist
     public void prePersist() {
         fechaCreacion = LocalDate.now();
-        fechaModificacion = LocalDate.now();
+        fechaModificacion = LocalDateTime.now();
     }
 
     @Column(name = "FECHA_MODIFICACION")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private LocalDate fechaModificacion;
+    private LocalDateTime fechaModificacion;
 
     @PreUpdate
     public void preUpdate() {
-        fechaModificacion = LocalDate.now();
+        fechaModificacion = LocalDateTime.now();
     }
 
 }
