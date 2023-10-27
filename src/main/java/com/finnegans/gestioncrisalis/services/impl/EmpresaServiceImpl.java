@@ -8,6 +8,7 @@ import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.repositories.EmpresaRepository;
 import com.finnegans.gestioncrisalis.services.EmpresaService;
 import com.finnegans.gestioncrisalis.validations.DateParser;
+import com.sun.jdi.request.InvalidRequestStateException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -53,7 +54,7 @@ public class EmpresaServiceImpl implements EmpresaService {
     }
 
     @Override
-    public EmpresaResponseDTO getById(int id) {
+    public EmpresaResponseDTO getById(Long id) {
         Empresa empresa = this.empresaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Empresa no encontrada con id: " + id));
 
@@ -61,9 +62,16 @@ public class EmpresaServiceImpl implements EmpresaService {
     }
 
     @Override
-    public EmpresaResponseDTO update(int id, EmpresaDTO empresaDTO) {
+    public EmpresaResponseDTO update(Long id, EmpresaDTO empresaDTO) {
         Empresa empresa = this.empresaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Empresa no encontrada con id: " + id));
+
+        try {
+            LocalDateTime parsedDate = DateParser.parseStringToLocalDateTime(empresaDTO.getStart_dateDTO(), "yyyy-MM-dd'T'HH:mm:ss");
+            empresa.setStart_date(parsedDate);
+        } catch (DateTimeParseException e) {
+            throw new InvalidRequestStateException("Invalid date format");
+        }
 
         empresa.setNombre(empresaDTO.getNombreDTO());
         empresa.setCuit(empresaDTO.getCuitDTO());
@@ -73,8 +81,9 @@ public class EmpresaServiceImpl implements EmpresaService {
         return EmpresaDTOMapper.builder().setEmpresa(updatedEmpresa).build();
     }
 
+
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         Empresa empresa = this.empresaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Empresa no encontrada con id: " + id));
 

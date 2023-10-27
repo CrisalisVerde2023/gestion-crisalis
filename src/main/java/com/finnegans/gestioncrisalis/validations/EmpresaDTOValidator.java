@@ -18,17 +18,19 @@ public class EmpresaDTOValidator implements ConstraintValidator<ValidEmpresaDTO,
         String startDateString = empresaDTO.getStart_dateDTO();
         boolean startDateEmpty = StringUtils.isEmpty(startDateString);
 
-        LocalDateTime startDate = null;
-        if (!startDateEmpty) {
-            try {
-                startDate = DateParser.parseStringToLocalDateTime(startDateString, "yyyy-MM-dd'T'HH:mm:ss");
-            } catch (DateTimeParseException e) {
-                // Handle the exception, perhaps log an error message
-                return false;
-            }
+        if (startDateEmpty) {
+            throw new IllegalArgumentException("Start date is required.");
         }
 
-        return !(nombreEmpty || cuitEmpty || startDateEmpty || startDate == null);
+        LocalDateTime startDate = null;
+        try {
+            startDate = DateParser.parseStringToLocalDateTime(startDateString, "yyyy-MM-dd'T'HH:mm:ss");
+        } catch (DateTimeParseException e) {
+            // Handle the exception, perhaps log an error message
+            throw new IllegalArgumentException("Invalid date format for start_date.");
+        }
+
+        return !(nombreEmpty || cuitEmpty || startDate == null);
     }
 }
 
