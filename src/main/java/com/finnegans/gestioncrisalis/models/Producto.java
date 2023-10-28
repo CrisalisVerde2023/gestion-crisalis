@@ -76,16 +76,4 @@ public class Producto {
     public void preUpdate() {
         this.fechaModificacion = LocalDateTime.now();
     }
-
-    public ProductoDTO toDTO(){
-        return
-            ProductoDTO
-                .builder()
-                .id(this.id)
-                .nombre(this.nombre)
-                .tipo(this.tipo)
-                .costo(this.costo)
-                .soporte(this.soporte)
-                .build();
-    }
 }
