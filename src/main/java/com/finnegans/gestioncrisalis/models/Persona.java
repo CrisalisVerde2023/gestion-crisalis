@@ -29,7 +29,7 @@ public class Persona {
     @Column(name = "APELLIDO", nullable = false)
     private String apellido;
 
-    @Column(name = "DNI", nullable = false)
+    @Column(name = "DNI", nullable = false, unique = true)
     private String dni;
 
     @Column(name = "FECHA_CREACION", nullable = false)
