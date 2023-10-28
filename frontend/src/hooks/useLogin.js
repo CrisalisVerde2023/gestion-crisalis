@@ -14,6 +14,7 @@ export const useLogin = () => {
     usuario: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const settings = {
     method: "POST",
@@ -49,14 +50,19 @@ export const useLogin = () => {
 
     try {
       if (validateLoginForm()) {
+        setLoading(true);
         const response = await fetch(URL_LOGIN, settings);
         const json = await response.json();
 
         if (!response.ok) {
+          setLoading(false);
           setResponseError(true);
           setAuthError(json.message);
         } else {
-          const claims = JSON.parse(window.atob(json.token.split(".")[1]));
+          const token = window.atob(json.token.split(".")[1]);
+          console.log(token);
+          const claims = JSON.parse(token);
+          console.log(claims);
           const isAdmin = claims.isAdmin;
           const roles = JSON.parse(claims.authorities).map(
             (rol) => rol.authority
@@ -70,7 +76,10 @@ export const useLogin = () => {
             isAdmin: isAdmin,
           });
 
-          navigate("/home");
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/home");
+          }, 2000);
         }
       }
     } catch (error) {
@@ -98,5 +107,6 @@ export const useLogin = () => {
     handleMailChange,
     handlePasswordChange,
     authError,
+    loading,
   };
 };
