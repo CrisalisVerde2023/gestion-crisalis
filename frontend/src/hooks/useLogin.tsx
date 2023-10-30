@@ -48,7 +48,6 @@ export const useLogin = () => {
         setLoading(true);
         const response = await fetch("http://localhost:8080/login", settings);
         const json = await response.json();
-
         if (!response.ok) {
           setLoading(false);
           setResponseError(true);
@@ -60,13 +59,13 @@ export const useLogin = () => {
           const roles = JSON.parse(claims.authorities).map(
             (rol: any) => rol.authority
           ); //roles mapeados por alguna feature
-          sessionStorage.setItem("token", `Bearer ${json.token}`);
 
           setUserLogged({
             id: json.id,
             email: claims.sub,
             isAuth: true,
             isAdmin: isAdmin,
+            token: json.token,
           });
 
           setTimeout(() => {

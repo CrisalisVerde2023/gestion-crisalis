@@ -10,6 +10,7 @@ export type UserLogged = {
   email: string;
   isAuth: boolean;
   isAdmin: boolean;
+  token: string;
 };
 
 export type PedidoType = {
@@ -29,6 +30,7 @@ export const defaultUserLogState = {
   email: "",
   isAuth: false,
   isAdmin: false,
+  token: "",
 };
 export const defaultPedidoState: PedidoType = {
   cliente: defaultTestClienteType,
