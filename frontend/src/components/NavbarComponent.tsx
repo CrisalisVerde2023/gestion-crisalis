@@ -1,4 +1,3 @@
-import { Button, Container, Dropdown, Image, Navbar } from "react-bootstrap";
 import React, { useContext, useState } from "react"; // Add useState
 import { Link } from "react-router-dom";
 import "./styles/NavbarComponent.css";
