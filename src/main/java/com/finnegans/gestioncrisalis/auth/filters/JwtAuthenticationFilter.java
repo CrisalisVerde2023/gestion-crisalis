@@ -6,7 +6,6 @@ import static com.finnegans.gestioncrisalis.auth.JwtTokenConfig.*;
 import com.finnegans.gestioncrisalis.enums.RoleType;
 import com.finnegans.gestioncrisalis.models.Usuario;
 import com.finnegans.gestioncrisalis.repositories.UsuarioRepository;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;

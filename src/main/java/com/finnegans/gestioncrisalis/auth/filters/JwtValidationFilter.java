@@ -42,7 +42,7 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
                     .verifyWith(SECRET_KEY)
                     .build()
                     .parseSignedClaims(token);
-
+          
             Claims claims = jws.getPayload();
             String username = claims.getSubject();
             Object roles = claims.get("authorities");
