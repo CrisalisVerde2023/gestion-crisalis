@@ -10,6 +10,7 @@ import { defaultUserLogState } from "./types/UserLogged";
 export default function NavbarComponent() {
   const { userLogged, setUserLogged } = useContext(UserLoggedContext);
   function closeSession() {
+    sessionStorage.removeItem("token");
     setUserLogged(defaultUserLogState);
   }
   return (
@@ -28,11 +29,9 @@ export default function NavbarComponent() {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Header>
-              {userLogged.email}
-            </Dropdown.Header>
+            <Dropdown.Header>{userLogged.email}</Dropdown.Header>
             <Dropdown.Item as={Button} onClick={closeSession}>
-                Cerrar sesión
+              Cerrar sesión
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
