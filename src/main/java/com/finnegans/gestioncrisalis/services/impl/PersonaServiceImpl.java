@@ -65,7 +65,9 @@ public class PersonaServiceImpl implements PersonaService {
     public void delete(Long id){
         Persona persona = personaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Persona con ID:" + id + " no encontrada"));
-        personaRepository.delete(persona);
+
+        persona.setEliminado(!persona.isEliminado());
+        this.personaRepository.save(persona);
     }
 
     @Override

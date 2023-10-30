@@ -32,6 +32,9 @@ public class Persona {
     @Column(name = "DNI", nullable = false, unique = true)
     private String dni;
 
+    @Column(name = "ELIMINADO", nullable = false, columnDefinition = "boolean default false")
+    private boolean eliminado;
+
     @Column(name = "FECHA_CREACION", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private LocalDate fechaCreacion;
