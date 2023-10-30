@@ -1,6 +1,9 @@
 package com.finnegans.gestioncrisalis.exceptions;
 
+import com.finnegans.gestioncrisalis.exceptions.custom.InvalidDataException;
+import com.finnegans.gestioncrisalis.exceptions.custom.MissingDataException;
 import com.finnegans.gestioncrisalis.exceptions.custom.DataIntegrityException;
+
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.exceptions.custom.UserDisabled;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -81,6 +84,13 @@ public class ExceptionHandlerNotValids {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({
+        MissingDataException.class,
+        InvalidDataException.class
+    })
+    @ResponseBody
+    public ErrorMessage notFound(HttpServletRequest request, Exception exception){
+        return new ErrorMessage(exception, request.getRequestURI());
     @ExceptionHandler(DataIntegrityException.class)
     @ResponseBody
     public ErrorMessages handleDataIntegrity(DataIntegrityException exception, HttpServletRequest request){
