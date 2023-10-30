@@ -1,6 +1,7 @@
 package com.finnegans.gestioncrisalis.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 @Table(name = "personas")
 public class Persona {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
@@ -54,4 +56,9 @@ public class Persona {
         fechaModificacion = LocalDateTime.now();
     }
 
+    @OneToMany(
+            mappedBy = "persona"
+    )
+    @JsonIgnore
+    private List<Cliente> clientes;
 }
