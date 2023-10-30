@@ -21,8 +21,8 @@ export default function Dashboard() {
         </div>
 
         <div
-          className={`space-y-8 md:grid md:grid-cols-2 lg:grid-cols-${
-            isAdmin ? "3" : "2"
+          className={`space-y-8 md:grid md:grid-cols-2 ${
+            isAdmin ? "lg:grid-cols-3" : "lg:grid-cols-2"
           } md:gap-12 md:space-y-0`}
         >
           {isAdmin && (

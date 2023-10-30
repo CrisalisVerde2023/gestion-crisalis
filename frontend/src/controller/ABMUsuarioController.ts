@@ -1,11 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import { UsuariosType } from "../components/types/userType";
+import Swal from "sweetalert2";
 
-const URL_API_BASE = "http://localhost:8080/api";
+const URL_API_USUARIOS = "http://localhost:8080/api/usuarios";
 
 export const fetchUsuarios = async (id: number) => {
   try {
     return await (
-      await fetch(`${URL_API_BASE}/usuarios${id > 0 ? `/${id}` : ""}`, {
+      await fetch(`${URL_API_USUARIOS}${id > 0 ? `/${id}` : ""}`, {
         headers: {
           Authorization: sessionStorage.getItem("token"),
           "Content-Type": "application/json",
@@ -20,7 +22,7 @@ export const fetchUsuarios = async (id: number) => {
 
 export async function createUsuario(overrides: Partial<UsuariosType> = {}) {
   try {
-    await fetch(`${URL_API_BASE}/usuarios`, {
+    await fetch(`${URL_API_USUARIOS}`, {
       method: "POST",
       body: JSON.stringify({
         usuario: overrides.usuario,
@@ -41,7 +43,7 @@ export async function createUsuario(overrides: Partial<UsuariosType> = {}) {
 
 export async function modifyUsuario(updatedData: Partial<UsuariosType>) {
   try {
-    await fetch(`${URL_API_BASE}/usuarios/${updatedData.id}`, {
+    await fetch(`${URL_API_USUARIOS}/${updatedData.id}`, {
       method: "POST",
       body: JSON.stringify({
         usuario: updatedData.usuario,
@@ -62,7 +64,7 @@ export async function modifyUsuario(updatedData: Partial<UsuariosType>) {
 
 export async function deleteUsuario(id: number) {
   try {
-    await fetch(`${URL_API_BASE}/usuarios/${id}`, {
+    await fetch(`${URL_API_USUARIOS}/${id}`, {
       method: "PATCH",
       headers: {
         Authorization: sessionStorage.getItem("token"),

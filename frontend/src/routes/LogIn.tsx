@@ -103,7 +103,6 @@ const LogIn = () => {
               <button
                 type="submit"
                 className="w-full items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-denim hover:bg-denim-400 transition ease-in-out duration-150 cursor-not-allowed flex justify-center"
-                /* className="w-full text-white bg-denim hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" */
               >
                 {loading ? (
                   <svg

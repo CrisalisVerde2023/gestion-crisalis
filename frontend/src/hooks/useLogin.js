@@ -2,7 +2,7 @@ import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const URL_LOGIN = `${import.meta.env.VITE_URL_HOST_API}/login`;
+const URL_LOGIN = `${import.meta.env.VITE_URL_HOST}/login`;
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -60,9 +60,7 @@ export const useLogin = () => {
           setAuthError(json.message);
         } else {
           const token = window.atob(json.token.split(".")[1]);
-          console.log(token);
           const claims = JSON.parse(token);
-          console.log(claims);
           const isAdmin = claims.isAdmin;
           const roles = JSON.parse(claims.authorities).map(
             (rol) => rol.authority
