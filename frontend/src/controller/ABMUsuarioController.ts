@@ -6,12 +6,13 @@ const URL_API_USUARIOS = "http://localhost:8080/api/usuarios";
 
 export const fetchUsuarios = async (id: number) => {
   try {
+    const headers: HeadersInit = {
+      Authorization: sessionStorage.getItem("token") || "",
+      "Content-Type": "application/json",
+    };
     return await (
       await fetch(`${URL_API_USUARIOS}${id > 0 ? `/${id}` : ""}`, {
-        headers: {
-          Authorization: sessionStorage.getItem("token"),
-          "Content-Type": "application/json",
-        },
+        headers,
       })
     ).json();
   } catch (error) {
@@ -22,16 +23,17 @@ export const fetchUsuarios = async (id: number) => {
 
 export async function createUsuario(overrides: Partial<UsuariosType> = {}) {
   try {
+    const headers: HeadersInit = {
+      Authorization: sessionStorage.getItem("token") || "",
+      "Content-Type": "application/json",
+    };
     await fetch(`${URL_API_USUARIOS}`, {
       method: "POST",
       body: JSON.stringify({
         usuario: overrides.usuario,
         password: overrides.password,
       }),
-      headers: {
-        Authorization: sessionStorage.getItem("token"),
-        "Content-Type": "application/json",
-      },
+      headers,
     }).then((resp) => {
       if (resp.status >= 400) throw "El servidor respondió con error";
     });
@@ -43,16 +45,17 @@ export async function createUsuario(overrides: Partial<UsuariosType> = {}) {
 
 export async function modifyUsuario(updatedData: Partial<UsuariosType>) {
   try {
+    const headers: HeadersInit = {
+      Authorization: sessionStorage.getItem("token") || "",
+      "Content-Type": "application/json",
+    };
     await fetch(`${URL_API_USUARIOS}/${updatedData.id}`, {
       method: "POST",
       body: JSON.stringify({
         usuario: updatedData.usuario,
         password: updatedData.password,
       }),
-      headers: {
-        Authorization: sessionStorage.getItem("token"),
-        "Content-Type": "application/json",
-      },
+      headers,
     }).then((resp) => {
       if (resp.status >= 400) throw "El servidor respondió con error";
     });
@@ -64,12 +67,13 @@ export async function modifyUsuario(updatedData: Partial<UsuariosType>) {
 
 export async function deleteUsuario(id: number) {
   try {
+    const headers: HeadersInit = {
+      Authorization: sessionStorage.getItem("token") || "",
+      "Content-Type": "application/json",
+    };
     await fetch(`${URL_API_USUARIOS}/${id}`, {
       method: "PATCH",
-      headers: {
-        Authorization: sessionStorage.getItem("token"),
-        "Content-Type": "application/json",
-      },
+      headers,
     }).then((resp) => {
       if (resp.status >= 400) throw "El servidor respondió con error";
     });

@@ -4,7 +4,25 @@ import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 
-export const useFetch = ({ method, url, params }) => {
+export enum HTTPMethod {
+  CONNECT = 'CONNECT',
+  DELETE = 'DELETE',
+  GET = 'GET',
+  HEAD = 'HEAD',
+  OPTIONS = 'OPTIONS',
+  PATCH = 'PATCH',
+  POST = 'POST',
+  PUT = 'PUT',
+  TRACE = 'TRACE'
+}
+
+export type useFetchTypes = {
+  method: HTTPMethod,
+  url: string,
+  params: string,
+}
+
+export const useFetch = ({ method, url, params }: useFetchTypes) => {
   const { setUserLogged } = useContext(UserLoggedContext);
   const [estado, setEstado] = useState({
     json: null,

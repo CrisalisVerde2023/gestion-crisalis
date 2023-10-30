@@ -2,19 +2,17 @@ import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const URL_LOGIN = `${import.meta.env.VITE_URL_HOST}/login`;
-
 export const useLogin = () => {
   const navigate = useNavigate();
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<string[]>([]);
   const { setUserLogged } = useContext(UserLoggedContext);
-  const [authError, setAuthError] = useState("");
-  const [responseError, setResponseError] = useState(false);
+  const [authError, setAuthError] = useState<string>("");
+  const [responseError, setResponseError] = useState<boolean>(false);
   const [user, setUser] = useState({
     usuario: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const settings = {
     method: "POST",
@@ -42,16 +40,13 @@ export const useLogin = () => {
     return errors.length === 0;
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: any) => {
     e.preventDefault();
-
-    //como no quiero que la persona regrese despues de pasar por el login, lo pongo en true para reemplazar el historial
-    navigate({ replace: true });
-
+    navigate(`/login`, { replace: true });
     try {
       if (validateLoginForm()) {
         setLoading(true);
-        const response = await fetch(URL_LOGIN, settings);
+        const response = await fetch("http://localhost:8080/login", settings);
         const json = await response.json();
 
         if (!response.ok) {
@@ -63,7 +58,7 @@ export const useLogin = () => {
           const claims = JSON.parse(token);
           const isAdmin = claims.isAdmin;
           const roles = JSON.parse(claims.authorities).map(
-            (rol) => rol.authority
+            (rol: any) => rol.authority
           ); //roles mapeados por alguna feature
           sessionStorage.setItem("token", `Bearer ${json.token}`);
 
@@ -76,7 +71,7 @@ export const useLogin = () => {
 
           setTimeout(() => {
             setLoading(false);
-            navigate("/home");
+            navigate("/home", { replace: true });
           }, 2000);
         }
       }
@@ -85,13 +80,13 @@ export const useLogin = () => {
     }
   };
 
-  const handleMailChange = (e) => {
+  const handleMailChange = (e: any) => {
     setResponseError(false);
     setErrors([]);
     setUser({ ...user, usuario: e.target.value });
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: any) => {
     setResponseError(false);
     setErrors([]);
     setUser({ ...user, password: e.target.value });
