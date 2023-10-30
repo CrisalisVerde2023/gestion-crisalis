@@ -6,7 +6,7 @@ import { UserLoggedContext } from "../contexts/UserLoggedContext";
 
 export const PrivateRoute = ({ children }) => {
   const { userLogged } = useContext(UserLoggedContext);
-  const { id, email } = userLogged;
+  const { isAuth } = userLogged;
 
-  return id !== -1 && email !== "" ? children : <Navigate to="/login" />;
+  return isAuth ? children : <Navigate to="/login" />;
 };
