@@ -1,85 +1,19 @@
 // @ts-nocheck
-import { useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import "./LogIn.css";
-import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import logo from "../assets/images/logoLetras.png";
+import { useLogin } from "../hooks/useLogin";
 
 const LogIn = () => {
-  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
-  const [errors, setErrors] = useState([]);
-  const [user, setUser] = useState({
-    usuario: "",
-    password: "",
-  });
-
-  const [authError, setAuthError] = useState("");
-  const [responseError, setResponseError] = useState(false);
-  const navigate = useNavigate();
-
-  const validateLoginForm = () => {
-    const errors = [];
-
-    if (user.usuario.trim() === "") {
-      errors.push("El correo electrónico es obligatorio");
-    } else if (!/\S+@\S+\.\S+/.test(user.usuario)) {
-      errors.push("El correo electrónico es inválido");
-    }
-
-    if (user.password.trim() === "") {
-      errors.push("No olvides ingresar tu contraseña");
-    } else if (user.password.length < 4 || user.password.length > 15) {
-      errors.push("La contraseña debe contener entre 4 y 15 caracteres");
-    }
-    setErrors(errors);
-    return errors.length === 0;
-  };
-
-  const url = "http://localhost:8080/login";
-  const settings = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  };
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    //como no quiero que la persona regrese despues de pasar por el login, lo pongo en true para reemplazar el historial
-    navigate({ replace: true });
-
-    if (validateLoginForm())
-      fetch(url, settings)
-      .then((response) => {
-        if (response.status === 202)
-          response.json()
-          .then(({id, usuario}) => {
-            setUserLogged({
-              id,
-              email: usuario,
-            });
-            navigate("/home");
-          });
-        else {
-          setResponseError(true);
-          setAuthError((response.status === 403) ? "Usuario inactivo" : "Usuario o contraseña no válido");
-        }
-      });
-  };
-
-  const handleMailChange = (e) => {
-    setResponseError(false);
-    setErrors([]);
-    setUser({ ...user, usuario: e.target.value });
-  };
-
-  const handlePasswordChange = (e) => {
-    setResponseError(false);
-    setErrors([]);
-    setUser({ ...user, password: e.target.value });
-  };
+  const {
+    handleLogin,
+    user,
+    errors,
+    responseError,
+    handleMailChange,
+    handlePasswordChange,
+    authError,
+    loading,
+  } = useLogin();
 
   return (
     <section>
@@ -168,9 +102,32 @@ const LogIn = () => {
               </div>
               <button
                 type="submit"
-                className="w-full text-white bg-denim hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="w-full items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-denim hover:bg-denim-400 transition ease-in-out duration-150 cursor-not-allowed flex justify-center"
               >
-                Iniciar Sesión
+                {loading ? (
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-6 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                ) : (
+                  <span className="">Iniciar Sesión</span>
+                )}
               </button>
               {/* <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 ¿Aún no tienes una cuenta? <a href="https://google.com" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Regístrate</a>

@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 
 export const PublicRoute = ({ children }) => {
   const { userLogged } = useContext(UserLoggedContext);
-  const { id, email } = userLogged;
+  const { isAuth } = userLogged;
 
-  return id !== -1 && email !== "" ? <Navigate to="/home" /> : children;
+  return isAuth ? <Navigate to="/home" /> : children;
 };
