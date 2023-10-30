@@ -1,39 +1,60 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import LB_Productos from "./LB_ProductService";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import TablaProdsServPedido from "./TablaProdsServPedido";
 
 export default function ABMProductServiceComponent() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const seleccion = searchParams.get("seleccion");
+
   useEffect(() => {}, [location]);
   function goToAMProductos() {
-    navigate("/productos/AMProductos");
+    navigate("/productosyservicios/AMProductos");
   }
   function goToAMServicios() {
-    navigate("/servicios/AMServicios");
+    navigate("/productosyservicios/AMServicios");
+  }
+  function goBack() {
+    navigate(-1);
   }
 
   return (
-    <Container>
-      <Row>
-        <Col>
+    <div className="container mx-auto">
+      <div className="flex flex-col">
+        <div className="mb-2">
           <LB_Productos />
-        </Col>
-      </Row>
-      <Row className="d-flex justify-content-center align-items-center">
-        <Col xs={6} className="d-flex justify-content-evenly">
-          {location.pathname.includes("/productos") ? (
-            <Button variant="primary" onClick={goToAMProductos}>
+        </div>
+        {seleccion && <TablaProdsServPedido seleccion={seleccion} />}
+        <div className="flex justify-center items-center mb-4">
+          <div className="flex justify-evenly mt-2 mx-2">
+            <button
+              onClick={goToAMProductos}
+              className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
+            >
               Crear nuevo producto
-            </Button>
-          ) : location.pathname.includes("/servicios") ? (
-            <Button variant="primary" onClick={goToAMServicios}>
+            </button>
+          </div>
+          <div className="flex justify-evenly mt-2 mx-2">
+            <button
+              onClick={goToAMServicios}
+              className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
+            >
               Crear nuevo servicio
-            </Button>
-          ) : null}
-        </Col>
-      </Row>
-    </Container>
+            </button>
+          </div>
+          <div className="flex justify-evenly mt-2 mx-2">
+            <button
+              onClick={goBack}
+              className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
+            >
+              Volver
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
