@@ -2,6 +2,8 @@ package com.finnegans.gestioncrisalis.services.impl;
 
 import com.finnegans.gestioncrisalis.dtos.mappers.PersonaDTOMapper;
 import com.finnegans.gestioncrisalis.dtos.PersonaDTO;
+import com.finnegans.gestioncrisalis.exceptions.custom.DuplicateDniException;
+import com.finnegans.gestioncrisalis.exceptions.custom.InvalidDniException;
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.Persona;
 import com.finnegans.gestioncrisalis.repositories.PersonaRepository;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,10 +28,24 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Override
     public Persona save(PersonaDTO personaDTO) {
+        Optional<Persona> existingPersona = personaRepository.findByDni(personaDTO.getDniDTO());
+
+        if (existingPersona.isPresent()){
+            throw new DuplicateDniException("Ya existe una persona con el mismo DNI");
+        }
+
+        String dni = personaDTO.getDniDTO();
+
+        if (dni.length() != 8) {
+            throw new InvalidDniException("El DNI debe tener 8 caracteres");
+        }
+
         Persona persona = new Persona();
         persona.setNombre(personaDTO.getNombreDTO());
         persona.setApellido(personaDTO.getApellidoDTO());
         persona.setDni(personaDTO.getDniDTO());
+
+
 
         return this.personaRepository.save(persona);
     }
@@ -48,7 +65,9 @@ public class PersonaServiceImpl implements PersonaService {
     public void delete(Long id){
         Persona persona = personaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Persona con ID:" + id + " no encontrada"));
-        personaRepository.delete(persona);
+
+        persona.setEliminado(!persona.isEliminado());
+        this.personaRepository.save(persona);
     }
 
     @Override

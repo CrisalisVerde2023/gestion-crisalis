@@ -5,6 +5,7 @@ import static com.finnegans.gestioncrisalis.auth.JwtTokenConfig.*;
 
 import com.finnegans.gestioncrisalis.auth.SimpleGrantedAuthorityJsonCreator;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,11 +38,12 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
         String token = header.replace(PREFIX_TOKEN, "");
 
         try {
-            Claims claims = (Claims) Jwts.parser()
+            Jws<Claims> jws = Jwts.parser()
                     .verifyWith(SECRET_KEY)
                     .build()
                     .parseSignedClaims(token);
-
+          
+            Claims claims = jws.getPayload();
             String username = claims.getSubject();
             Object roles = claims.get("authorities");
 
@@ -59,7 +61,7 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
             body.put("message", "El token JWT no es valido!");
 
             response.getWriter().write(new ObjectMapper().writeValueAsString(body));
-            response.setStatus(403);
+            response.setStatus(401);
             response.setContentType("application/json");
         }
     }

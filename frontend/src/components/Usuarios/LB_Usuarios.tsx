@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import { PencilFill, XCircleFill, CheckCircleFill } from "react-bootstrap-icons";
+import {
+  PencilFill,
+  XCircleFill,
+  CheckCircleFill,
+} from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
 import {
   fetchUsuarios,
-  deleteUsuario
+  deleteUsuario,
 } from "../../controller/ABMUsuarioController";
 import { UsuariosType } from "../types/userType";
 import LoadingComponent from "../LoadingComponent";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
 export default function LB_Users() {
@@ -22,15 +26,14 @@ export default function LB_Users() {
   const fetchData = async () => {
     try {
       return await fetchUsuarios(0);
-    }
-    catch (error) {
-      Swal.fire('Error!', 'No se han podido obtener datos.', 'error')
+    } catch (error) {
+      Swal.fire("Error!", "No se han podido obtener datos.", "error");
     }
   };
 
   useEffect(() => {
     setIsLoading(true);
-    fetchData().then(resp => {
+    fetchData().then((resp) => {
       setData(resp);
       setIsLoading(false);
     });
@@ -39,38 +42,44 @@ export default function LB_Users() {
   const onConfirm = (usuario: UsuariosType) => {
     if (usuario)
       deleteUsuario(usuario.id)
-      .then(() => {
-        fetchData().then(resp => {
-          setData(resp);
-          Swal.fire({
-            title: 'Realizado!',
-            text: 'Se ha cambiado el estado.',
-            icon: 'success',
-            timer: 2000
-          })
+        .then(() => {
+          fetchData().then((resp) => {
+            setData(resp);
+            Swal.fire({
+              title: "Realizado!",
+              text: "Se ha cambiado el estado.",
+              icon: "success",
+              timer: 2000,
+            });
+          });
         })
-      })
-      .catch(() => {
-        Swal.fire('Error!', 'No se ha podido cambiar el estado.', 'error')
-      });
+        .catch(() => {
+          Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
+        });
   };
 
   const handleClickedElement = (selected: UsuariosType) => {
     if (selected.id === userLogged.id)
-      Swal.fire('Error!', 'No es posible cambiar el estado del usuario logueado.', 'error');
+      Swal.fire(
+        "Error!",
+        "No es posible cambiar el estado del usuario logueado.",
+        "error"
+      );
     else
       Swal.fire({
-        title: 'Confirmar cambio de estado de usuario?',
-        text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${selected.usuario}`,
-        icon: 'warning',
+        title: "Confirmar cambio de estado de usuario?",
+        text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${
+          selected.usuario
+        }`,
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Sí! Estoy seguro.',
-        cancelButtonText: 'Mejor no.',
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33'
+        confirmButtonText: "Sí! Estoy seguro.",
+        cancelButtonText: "Mejor no.",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
       }).then((result) => {
         if (result.isConfirmed) onConfirm(selected);
-      })
+      });
   };
 
   const actionButtons = (row: UsuariosType) => (
@@ -121,8 +130,20 @@ export default function LB_Users() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data && (aux = (!searchTerm.length ? data : data.filter((user: UsuariosType) => user.usuario.toLowerCase().includes(searchTerm.toLowerCase())))).length
-                    ? aux.sort((a: UsuariosType, b: UsuariosType) => (a.usuario.toLowerCase() < b.usuario.toLowerCase()) ? -1 : 1)
+                  {data &&
+                  (aux = !searchTerm.length
+                    ? data
+                    : data.filter((user: UsuariosType) =>
+                        user.usuario
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )).length ? (
+                    aux
+                      .sort((a: UsuariosType, b: UsuariosType) =>
+                        a.usuario.toLowerCase() < b.usuario.toLowerCase()
+                          ? -1
+                          : 1
+                      )
                       .map((row, index) => (
                         <tr key={index}>
                           <td>{row.usuario}</td>
@@ -130,8 +151,11 @@ export default function LB_Users() {
                           <td>{actionButtons(row)}</td>
                         </tr>
                       ))
-                    : <tr><td colSpan={3}>No hay datos...</td></tr>
-                  }
+                  ) : (
+                    <tr>
+                      <td colSpan={3}>No hay datos...</td>
+                    </tr>
+                  )}
                 </tbody>
               </Table>
             </Col>
