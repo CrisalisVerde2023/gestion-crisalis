@@ -29,7 +29,7 @@ public class Impuesto {
     private Float  porcentaje;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "PRODUCTOS_IMPUESTOS",
             joinColumns = @JoinColumn( name = "IMPUESTO_ID"),
