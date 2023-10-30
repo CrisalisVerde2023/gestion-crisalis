@@ -8,6 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface PersonaRepository extends JpaRepository<Persona, Long> {
+
     Optional<Persona> findByDni(String dni);
+}
 
 }
+
