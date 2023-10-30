@@ -8,7 +8,7 @@ import java.util.List;
 public interface EmpresaService {
     EmpresaResponseDTO save(EmpresaDTO empresaDTO);
     List<EmpresaResponseDTO> getAll();
-    EmpresaResponseDTO getById(int id);
-    EmpresaResponseDTO update(int id, EmpresaDTO empresaDTO);
-    void delete(int id);
+    EmpresaResponseDTO getById(Long id);
+    EmpresaResponseDTO update(Long id, EmpresaDTO empresaDTO);
+    void delete(Long id);
 }

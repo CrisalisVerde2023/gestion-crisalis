@@ -9,6 +9,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
@@ -20,10 +21,10 @@ public class EmpresaDTO {
     private String nombreDTO;
 
     @NotBlank(message = "El campo cuit no puede ser vacio.", groups = EmpresaOnCreate.class)
-    @Pattern(regexp = "\\d{2}-\\d{8}-\\d{1}", message = "El formato de CUIT debe ser XX-XXXXXXXX-X", groups = {EmpresaOnCreate.class, EmpresaOnUpdate.class})
+    @Size(min = 11, max = 11, message = "El CUIT debe tener exactamente 11 caracteres", groups = {EmpresaOnCreate.class, EmpresaOnUpdate.class})
     @JsonProperty("cuit")
     private String cuitDTO;
 
     @JsonProperty("start_date")
-    private LocalDateTime start_dateDTO;
+    private String start_dateDTO;
 }
