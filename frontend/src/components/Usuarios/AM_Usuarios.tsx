@@ -95,8 +95,9 @@ export default function AM_Usuario() {
 
   const isFormComplete = () =>
     !idToModify
-      ? formData.usuario && formData.password
-      : oldUsuario !== formData.usuario || formData.password;
+      ? formData.usuario.length > 0 && formData.password.length > 0
+      : oldUsuario !== formData.usuario ||
+        (formData.password && formData.password.length > 0);
 
   const errorsForm = () => {
     const errors = [];
@@ -119,7 +120,11 @@ export default function AM_Usuario() {
   const modifyResponse = useModifyUsuario(formData, shouldModify);
 
   const handleSubmit = () => {
-    if (isFormComplete() && !errorsForm().length) {
+    const errors = errorsForm();
+    const complete = isFormComplete();
+
+    if (errors.length === 0 && complete) {
+      console.log("ok");
       Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
       if (!idToModify) {
         setShouldCreate(true);
@@ -137,13 +142,9 @@ export default function AM_Usuario() {
 
   useEffect(() => {
     Swal.close();
-    if (createResponse) {
+    if (createResponse && shouldCreate) {
       setShouldCreate(false);
-      if (
-        !createResponse.loading &&
-        !createResponse.hasError &&
-        createResponse.json
-      ) {
+      if (!createResponse.loading && !createResponse.hasError) {
         Swal.fire("Perfecto!", "Usuario creado correctamente", "success");
         goBack();
       } else if (!createResponse.loading && createResponse.hasError) {
@@ -152,13 +153,10 @@ export default function AM_Usuario() {
         }
       }
     }
-    if (modifyResponse) {
+    if (modifyResponse && shouldModify) {
       setShouldModify(false);
-      if (
-        !modifyResponse.loading &&
-        !modifyResponse.hasError &&
-        modifyResponse.json
-      ) {
+      console.log(modifyResponse);
+      if (!modifyResponse.loading && !modifyResponse.hasError) {
         Swal.fire("Perfecto!", "Usuario modificado correctamente", "success");
         goBack();
       } else if (!modifyResponse.loading && modifyResponse.hasError) {
