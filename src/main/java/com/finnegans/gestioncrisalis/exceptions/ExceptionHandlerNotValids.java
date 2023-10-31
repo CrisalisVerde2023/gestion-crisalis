@@ -92,6 +92,7 @@ public class ExceptionHandlerNotValids {
     public ErrorMessage notFound(HttpServletRequest request, Exception exception) {
         return new ErrorMessage(exception, request.getRequestURI());
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DataIntegrityException.class)
     @ResponseBody
     public ErrorMessages handleDataIntegrity(DataIntegrityException exception, HttpServletRequest request){
