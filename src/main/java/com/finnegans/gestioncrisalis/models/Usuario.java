@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import java.util.List;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,6 +29,12 @@ public class Usuario {
 
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+
+    @OneToMany(
+            fetch = FetchType.EAGER,
+            mappedBy = "usuario"
+    )
+    private List<Orden> ordenes;
 
     @Column(name = "ELIMINADO", nullable = false, columnDefinition = "boolean default false")
     private boolean eliminado;
