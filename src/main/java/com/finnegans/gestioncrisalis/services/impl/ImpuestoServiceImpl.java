@@ -22,8 +22,8 @@ public class ImpuestoServiceImpl implements ImpuestoService {
     @Override
     public Impuesto save(ImpuestoDTO impuestoDTO) {
         Impuesto impuesto = new Impuesto();
-        impuesto.setNombre(impuestoDTO.getNombre());
-        impuesto.setPorcentaje(impuestoDTO.getPorcentaje());
+        impuesto.setNombre(impuestoDTO.getNombreDTO());
+        impuesto.setPorcentaje(impuestoDTO.getPorcentajeDTO());
 
         return this.impuestoRepository.save(impuesto);
     }
@@ -43,12 +43,12 @@ public class ImpuestoServiceImpl implements ImpuestoService {
     public Impuesto update(Long id, ImpuestoDTO impuestoDTO) {
         Impuesto impuesto = this.impuestoRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFound("Impuesto con ID:" + id + " no encotrado"));
-        if (StringUtils.isNotBlank(impuestoDTO.getNombre())){
-            impuesto.setNombre(impuestoDTO.getNombre());
+        if (StringUtils.isNotBlank(impuestoDTO.getNombreDTO())){
+            impuesto.setNombre(impuestoDTO.getNombreDTO());
         }
 
-        if (impuestoDTO.getPorcentaje() != null){
-            impuesto.setPorcentaje(impuestoDTO.getPorcentaje());
+        if (impuestoDTO.getPorcentajeDTO() != null){
+            impuesto.setPorcentaje(impuestoDTO.getPorcentajeDTO());
         }
 
         Impuesto impuestoSave = this.impuestoRepository.save(impuesto);

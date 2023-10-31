@@ -5,18 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class ImpuestoDTO {
 
     @NotBlank(message = "El campo nombre no debe estar vacío.")
     @JsonProperty("nombre")
-    private String nombre;
+    private String nombreDTO;
 
-    @NotBlank(message = "El campo porcentaje no debe estar vacío.")
+    @DecimalMin(value = "0.0", inclusive = false)
+    @Digits(integer=3, fraction=2)
     @JsonProperty("porcentaje")
-    private Float porcentaje;
+    private Float porcentajeDTO;
 }

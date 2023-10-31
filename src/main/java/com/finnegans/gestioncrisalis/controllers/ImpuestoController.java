@@ -22,7 +22,7 @@ public class ImpuestoController {
     }
 
     //LISTAR TODOS
-    @GetMapping(value = "/list")
+    @GetMapping
     public ResponseEntity<?> getAll(){
         return new ResponseEntity<>(this.impuestoService.getAll(), HttpStatus.OK);
     }
