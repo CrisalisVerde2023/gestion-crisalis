@@ -43,7 +43,7 @@ export default function AM_Usuario() {
   useEffect(() => {
     if (response) {
       if (!response.loading && !response.hasError && response.json) {
-        // logic for handling successful response
+        console.log("here");
       } else if (!response.loading && response.hasError) {
         // logic for handling errors
       }
@@ -121,7 +121,6 @@ export default function AM_Usuario() {
   const handleSubmit = () => {
     if (isFormComplete() && !errorsForm().length) {
       Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
-
       if (!idToModify) {
         setShouldCreate(true);
       } else {
@@ -137,11 +136,36 @@ export default function AM_Usuario() {
   };
 
   useEffect(() => {
-    if (createResponse || modifyResponse) {
-      console.log(createResponse);
-      console.log(modifyResponse);
+    Swal.close();
+    if (createResponse) {
       setShouldCreate(false);
+      if (
+        !createResponse.loading &&
+        !createResponse.hasError &&
+        createResponse.json
+      ) {
+        Swal.fire("Perfecto!", "Usuario creado correctamente", "success");
+        goBack();
+      } else if (!createResponse.loading && createResponse.hasError) {
+        if (createResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al crear usuario", "warning");
+        }
+      }
+    }
+    if (modifyResponse) {
       setShouldModify(false);
+      if (
+        !modifyResponse.loading &&
+        !modifyResponse.hasError &&
+        modifyResponse.json
+      ) {
+        Swal.fire("Perfecto!", "Usuario modificado correctamente", "success");
+        goBack();
+      } else if (!modifyResponse.loading && modifyResponse.hasError) {
+        if (modifyResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al modificar usuario", "warning");
+        }
+      }
     }
   }, [createResponse, modifyResponse]);
   return (

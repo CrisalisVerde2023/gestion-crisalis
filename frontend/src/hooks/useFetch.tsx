@@ -69,10 +69,13 @@ export const useFetch = (
 
     const response = await fetch(url, fetchOptions);
     const text = await response.text(); // Await the text Promise
-    console.log("Received:", text); // Log the received text
-    const jsonResponse = JSON.parse(text); // Then parse
+    let jsonResponse;
+    if (text.length > 0) {
+      console.log("Received:", text); // Log the received text
+      jsonResponse = JSON.parse(text); // Then parse
+    }
 
-    if (!response.ok) {
+    if (!response.ok || response.status >= 400) {
       if (response.status === 401) {
         Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
         setUserLogged(defaultUserLogState);
@@ -86,7 +89,7 @@ export const useFetch = (
       }
     }
     setEstado({
-      json: response.ok ? jsonResponse : null,
+      json: response.ok && response.status < 400 ? jsonResponse : null,
       loading: false,
       hasError: response.ok ? false : true,
       statusCode: response.status,
