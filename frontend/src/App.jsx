@@ -13,7 +13,6 @@ function App() {
         style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
       >
         <UserLoggedProvider>
-          <ToastNotification />
           <RouterComponent />
         </UserLoggedProvider>
       </div>

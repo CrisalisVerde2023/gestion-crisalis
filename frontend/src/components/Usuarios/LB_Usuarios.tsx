@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import {
   PencilFill,
   XCircleFill,
   CheckCircleFill,
 } from "react-bootstrap-icons";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
-  fetchUsuarios,
-  deleteUsuario,
+  useFetchUsuarios,
+  useDeleteUsuario,
 } from "../../controller/ABMUsuarioController";
 import { UsuariosType } from "../types/userType";
 import LoadingComponent from "../LoadingComponent";
@@ -16,50 +15,50 @@ import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
 export default function LB_Users() {
-  const [data, setData] = useState<UsuariosType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const [data, setData] = useState<UsuariosType[] | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
-  const navigate = useNavigate();
-  let aux;
   const { userLogged } = useContext(UserLoggedContext);
+  let aux;
 
-  const fetchData = async () => {
-    try {
-      return await fetchUsuarios(0);
-    } catch (error) {
-      const regex = /\/usuarios($|\/(?![\w-]))/;
-      if (regex.test(window.location.pathname)) {
-        Swal.fire("Error!", "No se han podido obtener datos.", "error");
-      }
-    }
-  };
+  const resp = useFetchUsuarios();
 
   useEffect(() => {
-    setIsLoading(true);
-    fetchData().then((resp) => {
-      setData(resp);
-      setIsLoading(false);
-    });
-  }, [location]);
+    if (resp) {
+      console.log("Response:", resp); // Debug line
+      if (resp.hasError) {
+        Swal.fire("Error!", "No se han podido obtener datos.", "error");
+        setData(null);
+      } else {
+        setData(resp.json);
+      }
+    } else {
+      console.log("Response is null or undefined"); // Debug line
+    }
+  }, [resp, location]);
 
-  const onConfirm = (usuario: UsuariosType) => {
-    if (usuario)
-      deleteUsuario(usuario.id)
-        .then(() => {
-          fetchData().then((resp) => {
-            setData(resp);
-            Swal.fire({
-              title: "Realizado!",
-              text: "Se ha cambiado el estado.",
-              icon: "success",
-              timer: 2000,
-            });
+  const onConfirm = async (usuario: UsuariosType) => {
+    if (usuario) {
+      const deleteResponse = await useDeleteUsuario(usuario.id);
+      if (!deleteResponse.hasError) {
+        const fetchResponse = await useFetchUsuarios();
+        if (fetchResponse && !fetchResponse.hasError) {
+          setData(fetchResponse.json);
+          Swal.fire({
+            title: "Realizado!",
+            text: "Se ha cambiado el estado.",
+            icon: "success",
+            timer: 2000,
           });
-        })
-        .catch(() => {
-          Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
-        });
+        } else {
+          console.log("Fetch response is null or undefined or has an error");
+        }
+      } else {
+        Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
+      }
+    }
   };
 
   const handleClickedElement = (selected: UsuariosType) => {

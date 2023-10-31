@@ -18,7 +18,6 @@ public class UsuarioDTO {
     @Email(message = "El campo usuario debe ser un email de formato valido.", groups = {UsuarioOnCreate.class, UsuarioOnUpdate.class})
     @JsonProperty("usuario")
     private String usuarioDTO;
-
     @NotBlank(message = "El campo password no puede ser vacio.", groups = UsuarioOnCreate.class)
     @JsonProperty("password")
     private String passwordDTO;

@@ -1,11 +1,12 @@
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { defaultPedidoState } from "../components/types/UserLogged";
 
 export const useLogin = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<string[]>([]);
-  const { setUserLogged } = useContext(UserLoggedContext);
+  const { setUserLogged, setPedido } = useContext(UserLoggedContext);
   const [authError, setAuthError] = useState<string>("");
   const [responseError, setResponseError] = useState<boolean>(false);
   const [user, setUser] = useState({
@@ -65,8 +66,9 @@ export const useLogin = () => {
             email: claims.sub,
             isAuth: true,
             isAdmin: isAdmin,
-            token: json.token,
+            token: `Bearer ` + json.token,
           });
+          setPedido(defaultPedidoState);
 
           setTimeout(() => {
             setLoading(false);

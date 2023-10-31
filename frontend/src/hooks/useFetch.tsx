@@ -3,6 +3,7 @@ import { defaultUserLogState } from "../components/types/UserLogged";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import { METHODS } from "http";
 
 export enum HTTPMethod {
   CONNECT = "CONNECT",
@@ -16,69 +17,80 @@ export enum HTTPMethod {
   TRACE = "TRACE",
 }
 
-export type useFetchTypes = {
+export type useFetchPropType = {
   method: HTTPMethod;
   url: string;
-  params: string;
+  params: Object;
 };
 
-export const useFetch = ({ method, url, params }: useFetchTypes) => {
+export type useFetchReturnType = {
+  json: any;
+  loading: boolean;
+  hasError: boolean;
+  statusCode: number;
+};
+
+const defaultUseFetchValues = {
+  json: null,
+  loading: true,
+  hasError: false,
+  statusCode: 0,
+};
+
+export const useFetch = (
+  { method, url, params }: useFetchPropType,
+  shouldExecute: boolean = true
+) => {
   const { userLogged, setUserLogged } = useContext(UserLoggedContext);
-  const [estado, setEstado] = useState({
-    json: null,
-    loading: true,
-    hasError: false,
-  });
+  const [estado, setEstado] = useState<useFetchReturnType>(
+    defaultUseFetchValues
+  );
   const navigate = useNavigate();
   const token = userLogged.token;
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (shouldExecute) {
+      fetchData();
+    }
+  }, [shouldExecute]);
 
   const fetchData = async () => {
-    setEstado({
-      json: null,
-      loading: true,
-      hasError: false,
-    });
+    const fetchOptions: any = {
+      method: method,
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+    };
 
-    try {
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
-      });
+    if (method !== HTTPMethod.GET) {
+      fetchOptions.body = JSON.stringify(params);
+    }
 
-      const jsonResponse = await response.json();
+    const response = await fetch(url, fetchOptions);
+    const text = await response.text(); // Await the text Promise
+    console.log("Received:", text); // Log the received text
+    const jsonResponse = JSON.parse(text); // Then parse
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
-          setUserLogged(defaultUserLogState);
-          navigate("/login");
-        }
-
-        if (response.status === 400 || response.status > 401) {
-          throw new Error("El servidor respondió con error");
-        }
+    if (!response.ok) {
+      if (response.status === 401) {
+        Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
+        setUserLogged(defaultUserLogState);
+        navigate("/login");
       }
 
-      setEstado({
-        json: jsonResponse,
-        loading: false,
-        hasError: false,
-      });
-    } catch (error) {
-      setEstado({
-        json: null,
-        loading: false,
-        hasError: true,
-      });
+      if (response.status === 400 || response.status > 401) {
+        throw new Error(
+          `El servidor respondió con error Status: ${response.status} : ${response.statusText}`
+        );
+      }
     }
+    setEstado({
+      json: response.ok ? jsonResponse : null,
+      loading: false,
+      hasError: response.ok ? false : true,
+      statusCode: response.status,
+    });
   };
 
   return estado;
