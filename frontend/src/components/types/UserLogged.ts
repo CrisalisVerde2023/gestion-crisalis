@@ -18,11 +18,6 @@ export type PedidoType = {
   prods_servs: ProductServiceType[];
 };
 
-export type PedidoType = {
-  cliente: ClienteType;
-  prods_servs: ProductServiceType[];
-};
-
 export type UserLoggedContextType = {
   userLogged: UserLogged;
   setUserLogged: React.Dispatch<React.SetStateAction<UserLogged>>;
