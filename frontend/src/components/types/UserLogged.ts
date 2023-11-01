@@ -8,6 +8,8 @@ import { ProductServiceType } from "./productServiceType";
 export type UserLogged = {
   id: number;
   email: string;
+  isAuth: boolean;
+  isAdmin: boolean;
 };
 
 export type PedidoType = {

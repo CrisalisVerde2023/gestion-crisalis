@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import NavbarComponent from "../components/NavbarComponent";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "../components/Dashboard";
@@ -11,8 +11,13 @@ import AM_Usuarios from "../components/Usuarios/AM_Usuarios";
 import ABMProductServicesComponent from "../components/Productos y Servicios/ABMProductServicesComponent";
 import AM_ProductService from "../components/Productos y Servicios/AM_ProductServices";
 import NotFoundComponent from "../components/NotFoundComponent";
+import { UserLoggedContext } from "../contexts/UserLoggedContext";
+import { AuthRoute } from "./AuthRoute";
 
 export const AppRoutes = () => {
+  const { userLogged } = useContext(UserLoggedContext);
+  const { isAdmin } = userLogged;
+
   return (
     <>
       <NavbarComponent />
@@ -34,12 +39,17 @@ export const AppRoutes = () => {
           element={<AM_Empresa />}
         />
 
-        <Route path="/usuarios" element={<ABMUsuariosComponent />} />
-        <Route path="/usuarios/AMUsuarios" element={<AM_Usuarios />} />
-        <Route
-          path="/usuarios/AMUsuarios/:idUsuario"
-          element={<AM_Usuarios />}
-        />
+        <Route element={<AuthRoute />}>
+          <Route path="/usuarios" element={<ABMUsuariosComponent />} />
+          <Route path="/usuarios/AMUsuarios" element={<AM_Usuarios />} />
+          <Route
+            path="/usuarios/AMUsuarios/:idUsuario"
+            element={<AM_Usuarios />}
+          />
+        </Route>
+
+        <Route path="/productos" element={<ABMProductServicesComponent />} />
+        <Route path="/productos/AMProductos" element={<AM_ProductService />} />
         <Route
           path="/productosyservicios"
           element={<ABMProductServicesComponent />}
@@ -61,6 +71,7 @@ export const AppRoutes = () => {
           element={<AM_ProductService />}
         />
         <Route path="/impuestos" element={/*<ABMImpuestosComponent />*/ null} />
+        <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
       </Routes>
     </>

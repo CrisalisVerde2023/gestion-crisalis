@@ -159,12 +159,40 @@ export default function LB_Users() {
                       No hay datos...
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                </thead>
+                <tbody>
+                  {data &&
+                  (aux = !searchTerm.length
+                    ? data
+                    : data.filter((user: UsuariosType) =>
+                        user.usuario
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )).length ? (
+                    aux
+                      .sort((a: UsuariosType, b: UsuariosType) =>
+                        a.usuario.toLowerCase() < b.usuario.toLowerCase()
+                          ? -1
+                          : 1
+                      )
+                      .map((row, index) => (
+                        <tr key={index}>
+                          <td>{row.usuario}</td>
+                          <td>{row.eliminado ? "Inactivo" : "Activo"}</td>
+                          <td>{actionButtons(row)}</td>
+                        </tr>
+                      ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3}>No hay datos...</td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </Col>
+          )}
+        </Row>
+      </Container>
     </>
   );
 }

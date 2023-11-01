@@ -21,6 +21,7 @@ export default function AM_Usuario() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UsuariosType>(defaultUsuariosType);
+
   const [oldUsuario, setOldUsuario] = useState("");
   const { userLogged, setUserLogged } = useContext(UserLoggedContext);
 

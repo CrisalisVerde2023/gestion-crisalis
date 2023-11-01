@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode } from "react";
 import {
   defaultContext,
   defaultPedidoState,
@@ -21,6 +21,7 @@ export default function UserLoggedProvider({ children }: Props) {
     defaultUserLogState
   );
   const [pedido, setPedido] = useSessionStorage("pedido", defaultPedidoState);
+
   return (
     <UserLoggedContext.Provider
       value={{ userLogged, setUserLogged, pedido, setPedido }}
