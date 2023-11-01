@@ -132,7 +132,7 @@ export default function LB_Empresas() {
                       <td className="border border-gray-300">{row.nombre}</td>
                       <td className="border border-gray-300">{row.cuit}</td>
                       <td className="border border-gray-300">
-                        {row.startDate}
+                        {row.start_date}
                       </td>
                       <td className="border border-gray-300">
                         {actionButtons(row)}

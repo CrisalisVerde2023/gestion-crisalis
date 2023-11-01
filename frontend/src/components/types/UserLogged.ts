@@ -1,8 +1,4 @@
-import {
-  ClienteType,
-  defaultClienteType,
-  defaultTestClienteType,
-} from "./clientType";
+import { ClienteType, defaultClienteType } from "./clientType";
 import { ProductServiceType } from "./productServiceType";
 
 export type UserLogged = {
@@ -11,11 +7,6 @@ export type UserLogged = {
   isAuth: boolean;
   isAdmin: boolean;
   token: string;
-};
-
-export type PedidoType = {
-  cliente: ClienteType;
-  prods_servs: ProductServiceType[];
 };
 
 export type PedidoType = {
