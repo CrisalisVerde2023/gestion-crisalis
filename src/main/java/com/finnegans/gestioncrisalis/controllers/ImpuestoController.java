@@ -43,8 +43,8 @@ public class ImpuestoController {
     }
 
     //ACTUALIZAR
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<?> update(@PathVariable @Positive Long id, @RequestBody ImpuestoDTO impuestoDTO){
+    @PostMapping(value = "/{id}")
+    public ResponseEntity<?> update(@PathVariable @Positive Long id, @RequestBody @Valid ImpuestoDTO impuestoDTO){
         this.impuestoService.update(id, impuestoDTO);
 
         return  new ResponseEntity<>(HttpStatus.OK);
