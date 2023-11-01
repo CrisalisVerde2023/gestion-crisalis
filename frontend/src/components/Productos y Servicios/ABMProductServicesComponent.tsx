@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import LB_Productos from "./LB_ProductService";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import TablaProdsServPedido from "./TablaProdsServPedido";
+import SelectedProdsServs from "../SelectedProdsServs";
 
 export default function ABMProductServiceComponent() {
   const navigate = useNavigate();
@@ -27,7 +27,13 @@ export default function ABMProductServiceComponent() {
         <div className="mb-2">
           <LB_Productos />
         </div>
-        {seleccion && <TablaProdsServPedido seleccion={seleccion} />}
+        {seleccion === "multiple"
+          && (
+            <div className="flex flex-row justify-content-center bg-denim-400 text-white">
+              <p className="mr-1">Productos / Servicios:</p>
+            </div>
+            )
+          && <SelectedProdsServs/>}
         <div className="flex justify-center items-center mb-4">
           <div className="flex justify-evenly mt-2 mx-2">
             <button
