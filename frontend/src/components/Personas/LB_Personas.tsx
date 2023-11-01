@@ -26,7 +26,6 @@ export default function LB_Personas() {
     try {
       const fetchedData = await fetchPersonas(setIsLoading);
       setData(fetchedData);
-      console.log(fetchedData);
     } catch (error) {
       console.error(`An error occurred: ${error}`);
     }
