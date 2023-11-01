@@ -58,6 +58,18 @@ export const AppRoutes = () => {
           element={<AM_ProductService />}
         />
         <Route
+          path="/productosyservicios"
+          element={<ABMProductServicesComponent />}
+        />
+        <Route
+          path="/productosyservicios/AMProductos"
+          element={<AM_ProductService />}
+        />
+        <Route
+          path="/productosyservicios/AMProductos/:idProdServ"
+          element={<AM_ProductService />}
+        />
+        <Route
           path="/productosyservicios/AMServicios"
           element={<AM_ProductService />}
         />

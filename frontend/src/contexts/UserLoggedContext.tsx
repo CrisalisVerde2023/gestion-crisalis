@@ -21,6 +21,7 @@ export default function UserLoggedProvider({ children }: Props) {
     defaultUserLogState
   );
   const [pedido, setPedido] = useSessionStorage("pedido", defaultPedidoState);
+
   return (
     <UserLoggedContext.Provider
       value={{ userLogged, setUserLogged, pedido, setPedido }}

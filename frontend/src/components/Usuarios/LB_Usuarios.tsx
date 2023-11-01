@@ -4,7 +4,7 @@ import {
   XCircleFill,
   CheckCircleFill,
 } from "react-bootstrap-icons";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   useFetchUsuarios,
   useDeleteUsuario,
@@ -20,6 +20,8 @@ export default function LB_Users() {
   const [data, setData] = useState<UsuariosType[] | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
+  let aux;
   const { userLogged } = useContext(UserLoggedContext);
   const [shouldDelete, setShouldDelete] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(true);
@@ -161,15 +163,19 @@ export default function LB_Users() {
                       a.usuario.toLowerCase() < b.usuario.toLowerCase() ? -1 : 1
                     )
                     .map((row, index) => (
-                      <tr key={index}>
-                        <td>{row.usuario}</td>
-                        <td>{row.eliminado ? "Inactivo" : "Activo"}</td>
-                        <td>{actionButtons(row)}</td>
+                      <tr key={index} className="border-b">
+                        <td className="py-2 px-4">{row.usuario}</td>
+                        <td className="py-2 px-4">
+                          {row.eliminado ? "Inactivo" : "Activo"}
+                        </td>
+                        <td className="py-2 px-4">{actionButtons(row)}</td>
                       </tr>
                     ))
                 ) : (
-                  <tr>
-                    <td colSpan={3}>No hay datos...</td>
+                  <tr className="border-b">
+                    <td colSpan={3} className="py-2 px-4">
+                      No hay datos...
+                    </td>
                   </tr>
                 )}
               </tbody>
