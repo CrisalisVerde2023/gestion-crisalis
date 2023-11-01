@@ -37,7 +37,7 @@ public class Empresa {
     private String cuit;
 
     @Column(name = "START_DATE", nullable = false)
-    private LocalDateTime start_date;
+    private Date start_date;
 
     @Column(updatable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")

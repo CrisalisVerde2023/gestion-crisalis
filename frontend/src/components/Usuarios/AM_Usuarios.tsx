@@ -1,37 +1,108 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  createUsuario,
-  fetchUsuarios,
-  modifyUsuario,
+  useCreateUsuario,
+  useFetchUsuarios,
+  useModifyUsuario,
 } from "../../controller/ABMUsuarioController";
-import { UsuariosType } from "../types/userType";
+import { UsuariosType, defaultUsuariosType } from "../types/userType";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
+import { useFetchReturnType } from "../../hooks/useFetch";
 
 export default function AM_Usuario() {
   const { idUsuario } = useParams<{ idUsuario: string }>();
-  const idToModify = idUsuario ? parseInt(idUsuario) : undefined;
+  const idToModify =
+    idUsuario !== undefined
+      ? idUsuario === "0"
+        ? 0
+        : parseInt(idUsuario)
+      : undefined;
+
+  const [shouldCreate, setShouldCreate] = useState(false);
+  const [shouldModify, setShouldModify] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<UsuariosType>({
-    id: 0,
-    usuario: "",
-    password: "",
-    eliminado: false,
-  });
+  const [formData, setFormData] = useState<UsuariosType>(defaultUsuariosType);
   const [oldUsuario, setOldUsuario] = useState("");
   const { userLogged, setUserLogged } = useContext(UserLoggedContext);
+  const [response, setResponse] = useState<useFetchReturnType | null>(null);
+  let fetchedData: useFetchReturnType | null = null;
+
+  if (idToModify !== undefined) {
+    fetchedData = useFetchUsuarios(idToModify, true);
+  }
+
+  useEffect(() => {
+    if (fetchedData && !fetchedData.hasError && fetchedData.json) {
+      setFormData({ ...fetchedData.json, password: "" });
+    }
+  }, [fetchedData]);
+
+  useEffect(() => {
+    if (response) {
+      if (!response.loading && !response.hasError && response.json) {
+        console.log("here");
+      } else if (!response.loading && response.hasError) {
+        // logic for handling errors
+      }
+    }
+  }, [response]);
+
+  /*
+  useEffect(() => {
+    if (createResponse && !createResponse.loading && !createResponse.hasError) {
+      // Handle successful user creation logic here
+      Swal.fire({
+        title: "Realizado!",
+        text: "Se ha creado el usuario.",
+        icon: "success",
+        timer: 2000,
+      }).then(() => navigate(-1));
+    } else if (
+      createResponse &&
+      !createResponse.loading &&
+      createResponse.hasError
+    ) {
+      // Handle user creation error here
+      Swal.fire("Error!", "No se ha podido crear el usuario.", "error");
+    }
+  }, [createResponse]);
+
+  useEffect(() => {
+    if (modifyResponse && !modifyResponse.loading && !modifyResponse.hasError) {
+      // Handle successful user modification logic here
+      Swal.fire({
+        title: "Realizado!",
+        text: "Se ha modificado el usuario.",
+        icon: "success",
+        timer: 2000,
+      }).then(() => navigate(-1));
+    } else if (
+      modifyResponse &&
+      !modifyResponse.loading &&
+      modifyResponse.hasError
+    ) {
+      // Handle user modification error here
+      Swal.fire("Error!", "No se ha podido modificar el usuario.", "error");
+    }
+  }, [modifyResponse]);*/
 
   const goBack = () => {
     navigate(-1);
   };
 
-  const isFormComplete = () =>
-    !idToModify
-      ? formData.usuario && formData.password
-      : oldUsuario !== formData.usuario || formData.password;
+  function isFormComplete(): boolean {
+    if (idToModify === undefined || idToModify === null) {
+      return formData.usuario.length > 0 && formData.password.length > 0;
+    } else {
+      return (
+        oldUsuario !== formData.usuario &&
+        Boolean(formData.password && formData.password.length > 0)
+      );
+    }
+  }
 
   const errorsForm = () => {
     const errors = [];
@@ -50,58 +121,56 @@ export default function AM_Usuario() {
     return errors;
   };
 
-  const fetchData = async () => {
-    try {
-      return await fetchUsuarios(idToModify || 0);
-    } catch (error) {
-      Swal.fire("Error!", "No se han podido obtener los datos.", "error").then(
-        () => goBack()
-      );
-    }
-  };
-
-  useEffect(() => {
-    if (idToModify) {
-      setIsLoading(true);
-      fetchData().then((resp) => {
-        setFormData({ ...resp, password: "" });
-        setOldUsuario(resp.usuario);
-        setIsLoading(false);
-      });
-    }
-  }, []);
+  const createResponse = useCreateUsuario(formData, shouldCreate);
+  const modifyResponse = useModifyUsuario(formData, shouldModify);
 
   const handleSubmit = () => {
-    if (isFormComplete() && !errorsForm().length) {
+    const errors = errorsForm();
+    const complete = isFormComplete();
+
+    if (errors.length === 0 && complete) {
+      console.log("ok");
       Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
-      (!idToModify ? createUsuario(formData) : modifyUsuario(formData))
-        .then(() => {
-          if (userLogged.id === formData.id)
-            setUserLogged({ ...userLogged, email: formData.usuario });
-          Swal.fire({
-            title: "Realizado!",
-            text: `Se ha ${!idToModify ? "creado" : "modificado"} el usuario.`,
-            icon: "success",
-            timer: 2000,
-          }).then(() => goBack());
-        })
-        .catch(() => {
-          Swal.fire(
-            "Error!",
-            `No se ha podido ${
-              !idToModify ? "crear" : "modificar"
-            } el usuario.`,
-            "error"
-          );
-        });
-    } else
+      if (!idToModify) {
+        setShouldCreate(true);
+      } else {
+        setShouldModify(true);
+      }
+    } else {
       Swal.fire(
         "Atención!",
         "Debe completar los campos requeridos correctamente.",
         "warning"
       );
+    }
   };
 
+  useEffect(() => {
+    Swal.close();
+    if (createResponse && shouldCreate) {
+      setShouldCreate(false);
+      if (!createResponse.loading && !createResponse.hasError) {
+        Swal.fire("Perfecto!", "Usuario creado correctamente", "success");
+        goBack();
+      } else if (!createResponse.loading && createResponse.hasError) {
+        if (createResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al crear usuario", "warning");
+        }
+      }
+    }
+    if (modifyResponse && shouldModify) {
+      setShouldModify(false);
+      console.log(modifyResponse);
+      if (!modifyResponse.loading && !modifyResponse.hasError) {
+        Swal.fire("Perfecto!", "Usuario modificado correctamente", "success");
+        goBack();
+      } else if (!modifyResponse.loading && modifyResponse.hasError) {
+        if (modifyResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al modificar usuario", "warning");
+        }
+      }
+    }
+  }, [createResponse, modifyResponse]);
   return (
     <section className={idToModify ? "bg-atlantis-25" : "bg-denim-25"}>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen mt-[-56px] lg:py-0">
@@ -172,22 +241,20 @@ export default function AM_Usuario() {
                     </div>
                   ) : null}
                   <div className="flex items-center justify-between">
-                    {!isFormComplete() || !!errorsForm().length ? (
-                      <button
-                        disabled
-                        onClick={handleSubmit}
-                        className="bg-gray-300 cursor-not-allowed px-4 py-2 rounded-md text-white font-medium tracking-wide"
-                      >
-                        {idToModify ? "Modificar" : "Crear"}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handleSubmit}
-                        className="bg-denim px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-900"
-                      >
-                        {idToModify ? "Modificar" : "Crear"}
-                      </button>
-                    )}
+                    <button
+                      {...(!isFormComplete() || !!errorsForm().length
+                        ? { disabled: true }
+                        : {})}
+                      onClick={handleSubmit}
+                      className={`${
+                        !isFormComplete() || !!errorsForm().length
+                          ? "bg-gray-300 cursor-not-allowed"
+                          : "bg-denim hover:bg-denim-500"
+                      } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
+                    >
+                      {idToModify ? "Modificar" : "Crear"}
+                    </button>
+
                     <button
                       className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
                       onClick={goBack}

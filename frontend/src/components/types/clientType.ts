@@ -12,13 +12,13 @@ export const defaultClienteType = {
   id: -1,
   persona: {
     id: -1,
-    firstName: "",
-    lastName: "",
+    nombre: "",
+    apellido: "",
     dni: "",
   },
   empresa: {
     id: -1,
-    name: "",
+    nombre: "",
     cuit: "",
     startDate: "",
   },

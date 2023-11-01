@@ -17,7 +17,7 @@
     "id": 2,
     "name": "Desarrollo Web",
     "type": "Servicio",
-    "cost": 0,
+    "cost": 1500,
     "support": 100
   },
   {
@@ -31,7 +31,7 @@
     "id": 4,
     "name": "Mantenimiento de Redes",
     "type": "Servicio",
-    "cost": 0,
+    "cost": 1800,
     "support": 150
   },
   {
@@ -45,7 +45,7 @@
     "id": 6,
     "name": "Almacenamiento en la Nube",
     "type": "Servicio",
-    "cost": 0,
+    "cost": 1200,
     "support": 80
   },
   {
@@ -59,7 +59,7 @@
     "id": 8,
     "name": "Consultoría de Seguridad",
     "type": "Servicio",
-    "cost": 0,
+    "cost": 1600,
     "support": 200
   },
   {

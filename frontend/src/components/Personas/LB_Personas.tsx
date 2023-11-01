@@ -65,12 +65,12 @@ export default function LB_Personas() {
 
   const actionButtons = (row: PersonasType) => (
     <div className="d-flex flex-row justify-content-evenly align-items-center">
-      <Button
+      <button
         className="actionButton"
         onClick={() => handleClickedElement(row)}
       >
         <XCircleFill />
-      </Button>
+      </button>
       <Link className="actionButton" to={`/personas/AMPersonas/${row.id}`}>
         <PencilFill />
       </Link>
@@ -79,16 +79,13 @@ export default function LB_Personas() {
 
   return (
     <>
-      <Container>
-        <Row
-          className="d-flex flex-row justify-content-center align-items-center"
-          style={{ marginBottom: "15px" }}
-        >
-          <Col xs="auto">
+      <div className="container mx-auto p-4">
+        <div className="flex justify-center items-center mb-4">
+          <div className="flex-none">
             <input
               type="text"
               placeholder="Buscar"
-              className="inputSearch"
+              className="border rounded p-2"
               value={searchTerm}
               onChange={(e) => {
                 if (e.target.value.length === 0) {
@@ -99,64 +96,49 @@ export default function LB_Personas() {
                 }
               }}
             />
-          </Col>
-          <Col xs="auto">
-            <Button
+          </div>
+          <div className="flex-none ml-2">
+            <button
               onClick={handleSearch}
-              variant="primary"
-              className="searchButton"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
             >
               <Search />
-            </Button>
-          </Col>
-        </Row>
+            </button>
+          </div>
+        </div>
+
         {/* Data Table */}
-        <Row>
+        <div>
           {isLoading ? (
-            <Col>
+            <div>
               <LoadingComponent />
-            </Col>
+            </div>
           ) : (
-            <Col>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Acciones</th>
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border">ID</th>
+                  <th className="py-2 px-4 border">Nombre</th>
+                  <th className="py-2 px-4 border">Apellido</th>
+                  <th className="py-2 px-4 border">DNI</th>
+                  <th className="py-2 px-4 border">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((row, index) => (
+                  <tr key={index}>
+                    <td className="py-2 px-4 border">{row.id}</td>
+                    <td className="py-2 px-4 border">{row.firstName}</td>
+                    <td className="py-2 px-4 border">{row.lastName}</td>
+                    <td className="py-2 px-4 border">{row.dni}</td>
+                    <td className="py-2 px-4 border">{actionButtons(row)}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {data.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.id}</td>
-                      <td>{row.firstName}</td>
-                      <td>{row.lastName}</td>
-                      <td>{row.dni}</td>
-                      <td>{actionButtons(row)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Col>
+                ))}
+              </tbody>
+            </table>
           )}
-        </Row>
-      </Container>
-      {showDialog && selectedElement && (
-        <ConfirmDialog
-          show={showDialog}
-          setShow={setShowDialog}
-          title="Confirmar borrar persona"
-          content={`Esta por borrar ${selectedElement.firstName} ${selectedElement.lastName} con ID: ${selectedElement.id}`}
-          onConfirm={onConfirm}
-          onCancel={() => {
-            setShowDialog(false);
-            setSelectedElement(null);
-          }}
-        />
-      )}
+        </div>
+      </div>
     </>
   );
 }

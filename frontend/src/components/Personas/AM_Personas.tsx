@@ -60,50 +60,53 @@ export default function AM_Persona() {
   };
 
   return (
-    <Container className="containerAM">
-      <Row className="d-flex justify-content-center">
+    <div className="container mx-auto p-4 containerAM">
+      <div className="flex justify-center">
         <h4 className="headerStyles">Alta y modificación de personas</h4>
-      </Row>
-      <Row className="d-flex flex-column justify-content-center align-items-center">
-        <Col xs={6}>
-          <Form.Label>ID: {formData.id}</Form.Label>
-        </Col>
-        <Col xs={6}>
-          <Form.Label>Name</Form.Label>
-          <Form.Control
+      </div>
+      <div className="flex flex-col justify-center items-center">
+        <div className="w-1/2">
+          <label className="block text-gray-700">ID: {formData.id}</label>
+        </div>
+        <div className="w-1/2">
+          <label className="block text-gray-700">Name</label>
+          <input
             type="text"
             value={formData.firstName}
             onChange={(e) =>
               setFormData({ ...formData, firstName: e.target.value })
             }
+            className="border rounded p-2 w-full"
           />
-        </Col>
-        <Col xs={6}>
-          <Form.Label>Last Name</Form.Label>
-          <Form.Control
+        </div>
+        <div className="w-1/2">
+          <label className="block text-gray-700">Last Name</label>
+          <input
             type="text"
             value={formData.lastName}
             onChange={(e) =>
               setFormData({ ...formData, lastName: e.target.value })
             }
+            className="border rounded p-2 w-full"
           />
-        </Col>
-        <Col xs={6}>
-          <Form.Label>DNI</Form.Label>
-          <Form.Control
+        </div>
+        <div className="w-1/2">
+          <label className="block text-gray-700">DNI</label>
+          <input
             type="text"
             value={formData.dni}
             onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
+            className="border rounded p-2 w-full"
           />
-        </Col>
-      </Row>
-      <Button
+        </div>
+      </div>
+      <button
         disabled={!isFormComplete()}
-        style={{ marginTop: "10px" }}
+        className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 hover:bg-blue-600"
         onClick={handleSubmit}
       >
         Submit
-      </Button>
-    </Container>
+      </button>
+    </div>
   );
 }
