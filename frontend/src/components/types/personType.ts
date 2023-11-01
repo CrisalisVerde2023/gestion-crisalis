@@ -1,6 +1,6 @@
 export type PersonasType = {
   id: number;
-  firstName: string;
-  lastName: string;
+  nombre: string;
+  apellido: string;
   dni: string;
 };

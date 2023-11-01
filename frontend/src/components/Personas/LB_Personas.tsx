@@ -26,6 +26,7 @@ export default function LB_Personas() {
     try {
       const fetchedData = await fetchPersonas(setIsLoading);
       setData(fetchedData);
+      console.log(fetchedData);
     } catch (error) {
       console.error(`An error occurred: ${error}`);
     }
@@ -43,8 +44,8 @@ export default function LB_Personas() {
     const filteredData = selectAllPersonas().filter(
       (persona: PersonasType) =>
         persona.id.toString().includes(searchTerm) ||
-        persona.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        persona.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        persona.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        persona.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
         persona.dni.includes(searchTerm)
     );
     setData(filteredData);
@@ -132,8 +133,8 @@ export default function LB_Personas() {
                   {data.map((row, index) => (
                     <tr key={index}>
                       <td>{row.id}</td>
-                      <td>{row.firstName}</td>
-                      <td>{row.lastName}</td>
+                      <td>{row.nombre}</td>
+                      <td>{row.apellido}</td>
                       <td>{row.dni}</td>
                       <td>{actionButtons(row)}</td>
                     </tr>
@@ -149,7 +150,7 @@ export default function LB_Personas() {
           show={showDialog}
           setShow={setShowDialog}
           title="Confirmar borrar persona"
-          content={`Esta por borrar ${selectedElement.firstName} ${selectedElement.lastName} con ID: ${selectedElement.id}`}
+          content={`Esta por borrar ${selectedElement.nombre} ${selectedElement.apellido} con ID: ${selectedElement.id}`}
           onConfirm={onConfirm}
           onCancel={() => {
             setShowDialog(false);
