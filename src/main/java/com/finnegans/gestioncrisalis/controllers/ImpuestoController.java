@@ -35,16 +35,16 @@ public class ImpuestoController {
     }
 
     //ELIMINAR
-    @DeleteMapping(value = "/{id}")
+    @PatchMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable @Positive Long id){
         this.impuestoService.delete(id);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     //ACTUALIZAR
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<?> update(@PathVariable @Positive Long id, @RequestBody ImpuestoDTO impuestoDTO){
+    @PostMapping(value = "/{id}")
+    public ResponseEntity<?> update(@PathVariable @Positive Long id, @RequestBody @Valid ImpuestoDTO impuestoDTO){
         this.impuestoService.update(id, impuestoDTO);
 
         return  new ResponseEntity<>(HttpStatus.OK);
