@@ -8,7 +8,7 @@ export default function Dashboard() {
 
   return (
     <section className="bg-athens-gray dark:bg-gray-900">
-      <div className="py-8 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
+      <div className="pb-8 mx-auto max-w-screen-xl sm:pb-16 lg:pb-6">
         <div className="max-w-screen-md mb-8 lg:mb-16 mx-auto">
           <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
             Diseñado para equipos empresariales

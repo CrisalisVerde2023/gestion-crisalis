@@ -8,12 +8,15 @@ import ToastNotification from "./components/ToastNotification";
 function App() {
   return (
     <>
-      <Container className="p-0">
+      <div
+        className="p-2"
+        style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
+      >
         <UserLoggedProvider>
           <ToastNotification />
           <RouterComponent />
         </UserLoggedProvider>
-      </Container>
+      </div>
     </>
   );
 }

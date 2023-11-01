@@ -65,12 +65,12 @@ export default function LB_Empresas() {
 
   const actionButtons = (row: EnterpriseType) => (
     <div className="d-flex flex-row justify-content-evenly align-items-center">
-      <Button
+      <button
         className="actionButton"
         onClick={() => handleClickedElement(row)}
       >
         <XCircleFill />
-      </Button>
+      </button>
       <Link className="actionButton" to={`/empresas/AMEmpresas/${row.id}`}>
         <PencilFill />
       </Link>
@@ -79,12 +79,9 @@ export default function LB_Empresas() {
 
   return (
     <>
-      <Container>
-        <Row
-          className="d-flex flex-row justify-content-center align-items-center"
-          style={{ marginBottom: "15px" }}
-        >
-          <Col xs="auto">
+      <div className="container mx-auto p-4">
+        <div className="flex justify-center items-center mb-4">
+          <div className="flex-auto">
             <input
               type="text"
               placeholder="Buscar"
@@ -99,64 +96,54 @@ export default function LB_Empresas() {
                 }
               }}
             />
-          </Col>
-          <Col xs="auto">
-            <Button
+          </div>
+          <div className="flex-auto">
+            <button
               onClick={handleSearch}
-              variant="primary"
-              className="searchButton"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
               <Search />
-            </Button>
-          </Col>
-        </Row>
+            </button>
+          </div>
+        </div>
         {/* Data Table */}
-        <Row>
+        <div>
           {isLoading ? (
-            <Col>
+            <div>
               <LoadingComponent />
-            </Col>
+            </div>
           ) : (
-            <Col>
-              <Table striped bordered hover>
+            <div>
+              <table className="min-w-full bg-white border border-gray-300">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>CUIT</th>
-                    <th>Fecha de Inicio</th>
-                    <th>Acciones</th>
+                    <th className="border border-gray-300">ID</th>
+                    <th className="border border-gray-300">Nombre</th>
+                    <th className="border border-gray-300">CUIT</th>
+                    <th className="border border-gray-300">Fecha de Inicio</th>
+                    <th className="border border-gray-300">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.map((row, index) => (
                     <tr key={index}>
-                      <td>{row.id}</td>
-                      <td>{row.name}</td>
-                      <td>{row.cuit}</td>
-                      <td>{row.startDate}</td>
-                      <td>{actionButtons(row)}</td>
+                      <td className="border border-gray-300">{row.id}</td>
+                      <td className="border border-gray-300">{row.name}</td>
+                      <td className="border border-gray-300">{row.cuit}</td>
+                      <td className="border border-gray-300">
+                        {row.startDate}
+                      </td>
+                      <td className="border border-gray-300">
+                        {actionButtons(row)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
-              </Table>
-            </Col>
+              </table>
+            </div>
           )}
-        </Row>
-      </Container>
-      {showDialog && selectedElement && (
-        <ConfirmDialog
-          show={showDialog}
-          setShow={setShowDialog}
-          title="Confirmar borrar persona"
-          content={`Esta por borrar ${selectedElement.name} con CUIT: ${selectedElement.cuit}`}
-          onConfirm={onConfirm}
-          onCancel={() => {
-            setShowDialog(false);
-            setSelectedElement(null);
-          }}
-        />
-      )}
+        </div>
+      </div>
     </>
   );
 }

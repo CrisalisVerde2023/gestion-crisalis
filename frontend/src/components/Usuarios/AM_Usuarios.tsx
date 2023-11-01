@@ -5,22 +5,23 @@ import {
   fetchUsuarios,
   modifyUsuario,
 } from "../../controller/ABMUsuarioController";
-import { UsuariosType } from "../types/userType";
+import { UsuariosType, defaultUsuariosType } from "../types/userType";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 
 export default function AM_Usuario() {
   const { idUsuario } = useParams<{ idUsuario: string }>();
-  const idToModify = idUsuario ? parseInt(idUsuario) : undefined;
+  const idToModify =
+    idUsuario !== undefined
+      ? idUsuario === "0"
+        ? 0
+        : parseInt(idUsuario)
+      : undefined;
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<UsuariosType>({
-    id: 0,
-    usuario: "",
-    password: "",
-    eliminado: false,
-  });
+  const [formData, setFormData] = useState<UsuariosType>(defaultUsuariosType);
+
   const [oldUsuario, setOldUsuario] = useState("");
   const { userLogged, setUserLogged } = useContext(UserLoggedContext);
 
@@ -172,22 +173,20 @@ export default function AM_Usuario() {
                     </div>
                   ) : null}
                   <div className="flex items-center justify-between">
-                    {!isFormComplete() || !!errorsForm().length ? (
-                      <button
-                        disabled
-                        onClick={handleSubmit}
-                        className="bg-gray-300 cursor-not-allowed px-4 py-2 rounded-md text-white font-medium tracking-wide"
-                      >
-                        {idToModify ? "Modificar" : "Crear"}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handleSubmit}
-                        className="bg-denim px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-900"
-                      >
-                        {idToModify ? "Modificar" : "Crear"}
-                      </button>
-                    )}
+                    <button
+                      {...(!isFormComplete() || !!errorsForm().length
+                        ? { disabled: true }
+                        : {})}
+                      onClick={handleSubmit}
+                      className={`${
+                        !isFormComplete() || !!errorsForm().length
+                          ? "bg-gray-300 cursor-not-allowed"
+                          : "bg-denim hover:bg-denim-500"
+                      } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
+                    >
+                      {idToModify ? "Modificar" : "Crear"}
+                    </button>
+
                     <button
                       className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
                       onClick={goBack}
