@@ -27,6 +27,7 @@ export default function LB_Empresas() {
     try {
       const fetchedData = await fetchEnterprises(setIsLoading);
       setData(fetchedData);
+      console.log(fetchedData)
     } catch (error) {
       console.error(`An error occurred: ${error}`);
     }
@@ -132,9 +133,9 @@ export default function LB_Empresas() {
                   {data.map((row, index) => (
                     <tr key={index}>
                       <td>{row.id}</td>
-                      <td>{row.name}</td>
+                      <td>{row.nombre}</td>
                       <td>{row.cuit}</td>
-                      <td>{row.startDate}</td>
+                      <td>{row.start_date}</td>
                       <td>{actionButtons(row)}</td>
                     </tr>
                   ))}
@@ -149,7 +150,7 @@ export default function LB_Empresas() {
           show={showDialog}
           setShow={setShowDialog}
           title="Confirmar borrar persona"
-          content={`Esta por borrar ${selectedElement.name} con CUIT: ${selectedElement.cuit}`}
+          content={`Esta por borrar ${selectedElement.nombre} con CUIT: ${selectedElement.cuit}`}
           onConfirm={onConfirm}
           onCancel={() => {
             setShowDialog(false);

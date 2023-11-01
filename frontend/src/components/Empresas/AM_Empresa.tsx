@@ -25,15 +25,15 @@ export default function AM_Empresa() {
     idToModify !== undefined
       ? findEnterpriseById(idToModify) || {
           id: 0,
-          name: "",
+          nombre: "",
           cuit: "",
-          startDate: "",
+          start_date: "",
         }
-      : { id: 0, name: "", cuit: "", startDate: "" }
+      : { id: 0, nombre: "", cuit: "", start_date: "" }
   );
 
   const isFormComplete = () => {
-    return formData.name && formData.cuit && formData.startDate;
+    return formData.nombre && formData.cuit && formData.start_date;
   };
 
   useEffect(() => {
@@ -73,8 +73,8 @@ export default function AM_Empresa() {
           <Form.Label>Nombre</Form.Label>
           <Form.Control
             type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            value={formData.nombre}
+            onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
           />
         </Col>
         <Col xs={6}>
@@ -89,11 +89,11 @@ export default function AM_Empresa() {
           <Form.Label>Fecha de Inicio</Form.Label>
           <Form.Control
             type="date"
-            value={formatDateToInput(formData.startDate)}
+            value={formatDateToInput(formData.start_date)}
             onChange={(e) => {
               const [year, month, day] = e.target.value.split("-");
               const newDate = `${day}-${month}-${year}`;
-              setFormData({ ...formData, startDate: newDate });
+              setFormData({ ...formData, start_date: newDate });
             }}
           />
         </Col>
