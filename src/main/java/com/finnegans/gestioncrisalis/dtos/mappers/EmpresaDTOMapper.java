@@ -20,8 +20,7 @@ public class EmpresaDTOMapper {
 
     public EmpresaResponseDTO build() {
         if (empresa == null) throw new RuntimeException("Debe pasar la entidad Empresa");
-        String formattedDate = DateParser.formatLocalDateTimeToString(empresa.getStart_date(), "yyyy-MM-dd'T'HH:mm:ss");
-
+        String formattedDate = DateParser.formatDateToString(empresa.getStart_date(), "yyyy-MM-dd");
         return new EmpresaResponseDTO(empresa.getId(), empresa.getNombre(), empresa.getCuit(), formattedDate);
     }
 
