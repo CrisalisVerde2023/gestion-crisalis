@@ -2,10 +2,8 @@
 import "./LogIn.css";
 import logo from "../assets/images/logoLetras.png";
 import { useLogin } from "../hooks/useLogin";
-import { defaultPedidoState } from "../components/types/UserLogged";
 
 const LogIn = () => {
-  const LogIn = () => {
   const {
     handleLogin,
     user,
@@ -16,84 +14,6 @@ const LogIn = () => {
     authError,
     loading,
   } = useLogin();
-  const { userLogged, setUserLogged, setPedido, pedido } =
-    useContext(UserLoggedContext);
-  const [errors, setErrors] = useState([]);
-  const [user, setUser] = useState({
-    usuario: "",
-    password: "",
-  });
-
-  const [authError, setAuthError] = useState("");
-  const [responseError, setResponseError] = useState(false);
-  const navigate = useNavigate();
-
-  const validateLoginForm = () => {
-    const errors = [];
-
-    if (user.usuario.trim() === "") {
-      errors.push("El correo electrónico es obligatorio");
-    } else if (!/\S+@\S+\.\S+/.test(user.usuario)) {
-      errors.push("El correo electrónico es inválido");
-    }
-
-    if (user.password.trim() === "") {
-      errors.push("No olvides ingresar tu contraseña");
-    } else if (user.password.length < 4 || user.password.length > 15) {
-      errors.push("La contraseña debe contener entre 4 y 15 caracteres");
-    }
-    setErrors(errors);
-    return errors.length === 0;
-  };
-
-  const url = "http://localhost:8080/login";
-  const settings = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  };
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    //como no quiero que la persona regrese despues de pasar por el login, lo pongo en true para reemplazar el historial
-    navigate({ replace: true });
-
-    if (validateLoginForm())
-      fetch(url, settings).then((response) => {
-        if (response.status === 202)
-          response.json().then(({ id, usuario }) => {
-            setUserLogged({
-              id,
-              email: usuario,
-            });
-            setPedido(defaultPedidoState);
-            navigate("/home");
-          });
-        else {
-          setResponseError(true);
-          setAuthError(
-            response.status === 403
-              ? "Usuario inactivo"
-              : "Usuario o contraseña no válido"
-          );
-        }
-      });
-  };
-
-  const handleMailChange = (e) => {
-    setResponseError(false);
-    setErrors([]);
-    setUser({ ...user, usuario: e.target.value });
-  };
-
-  const handlePasswordChange = (e) => {
-    setResponseError(false);
-    setErrors([]);
-    setUser({ ...user, password: e.target.value });
-  };
 
   return (
     <section>

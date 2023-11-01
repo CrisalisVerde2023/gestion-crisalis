@@ -1,8 +1,4 @@
-import {
-  ClienteType,
-  defaultClienteType,
-  defaultTestClienteType,
-} from "./clientType";
+import { ClienteType, defaultClienteType } from "./clientType";
 import { ProductServiceType } from "./productServiceType";
 
 export type UserLogged = {

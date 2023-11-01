@@ -3,7 +3,6 @@ import {
   defaultContext,
   defaultPedidoState,
   defaultUserLogState,
-  UserLogged,
   UserLoggedContextType,
 } from "../components/types/UserLogged";
 import { useSessionStorage } from "usehooks-ts";
