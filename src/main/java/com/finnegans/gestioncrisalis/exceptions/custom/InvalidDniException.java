@@ -1,7 +1,10 @@
 package com.finnegans.gestioncrisalis.exceptions.custom;
 
-public class InvalidDniException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+public class InvalidDniException extends ResponseStatusException {
     public InvalidDniException(String message) {
-        super(message);
+        super(HttpStatus.BAD_REQUEST, message);
     }
 }
