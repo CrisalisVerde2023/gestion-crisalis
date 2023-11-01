@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import {
   PencilFill,
   XCircleFill,
@@ -21,43 +21,57 @@ export default function LB_Users() {
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
   const { userLogged } = useContext(UserLoggedContext);
+  const [shouldDelete, setShouldDelete] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
   let aux;
 
-  const resp = useFetchUsuarios();
+  let fetchResponse = useFetchUsuarios(undefined, shouldFetch);
+  let deleteResponse = useDeleteUsuario(idToDelete, shouldDelete);
 
   useEffect(() => {
-    if (resp) {
-      console.log("Response:", resp); // Debug line
-      if (resp.hasError) {
+    if (fetchResponse && shouldFetch) {
+      if (
+        !fetchResponse.loading &&
+        !fetchResponse.hasError &&
+        fetchResponse.json
+      ) {
+        setData(fetchResponse.json);
+        setShouldFetch(false);
+      } else if (!fetchResponse.loading && fetchResponse.hasError) {
         Swal.fire("Error!", "No se han podido obtener datos.", "error");
         setData(null);
-      } else {
-        setData(resp.json);
       }
-    } else {
-      console.log("Response is null or undefined"); // Debug line
     }
-  }, [resp, location]);
+  }, [fetchResponse]);
+
+  useEffect(() => {
+    if (deleteResponse && shouldDelete) {
+      setShouldDelete(false);
+      if (!deleteResponse.loading && !deleteResponse.hasError) {
+        Swal.fire(
+          "Perfecto!",
+          "Cambio el estado del usuario correctamente",
+          "success"
+        );
+        setShouldFetch(true);
+      } else if (!deleteResponse.loading && deleteResponse.hasError) {
+        if (deleteResponse.statusCode >= 400) {
+          Swal.fire(
+            "Atención!",
+            "Error al cambiar el estado del usuario",
+            "warning"
+          );
+        }
+      }
+    }
+  }, [deleteResponse]);
 
   const onConfirm = async (usuario: UsuariosType) => {
     if (usuario) {
-      const deleteResponse = await useDeleteUsuario(usuario.id);
-      if (!deleteResponse.hasError) {
-        const fetchResponse = await useFetchUsuarios();
-        if (fetchResponse && !fetchResponse.hasError) {
-          setData(fetchResponse.json);
-          Swal.fire({
-            title: "Realizado!",
-            text: "Se ha cambiado el estado.",
-            icon: "success",
-            timer: 2000,
-          });
-        } else {
-          console.log("Fetch response is null or undefined or has an error");
-        }
-      } else {
-        Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
-      }
+      console.log(`Id to delete is : ${usuario.id}`);
+      setIdToDelete(usuario.id);
+      setShouldDelete(true);
     }
   };
 
@@ -81,7 +95,10 @@ export default function LB_Users() {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
       }).then((result) => {
-        if (result.isConfirmed) onConfirm(selected);
+        if (result.isConfirmed) {
+          onConfirm(selected);
+        } else if (result.isDenied || result.isDismissed) {
+        }
       });
   };
 

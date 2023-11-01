@@ -31,7 +31,7 @@ export default function AM_Usuario() {
   let fetchedData: useFetchReturnType | null = null;
 
   if (idToModify !== undefined) {
-    fetchedData = useFetchUsuarios(idToModify);
+    fetchedData = useFetchUsuarios(idToModify, true);
   }
 
   useEffect(() => {
@@ -93,11 +93,16 @@ export default function AM_Usuario() {
     navigate(-1);
   };
 
-  const isFormComplete = () =>
-    !idToModify
-      ? formData.usuario.length > 0 && formData.password.length > 0
-      : oldUsuario !== formData.usuario ||
-        (formData.password && formData.password.length > 0);
+  function isFormComplete(): boolean {
+    if (idToModify === undefined || idToModify === null) {
+      return formData.usuario.length > 0 && formData.password.length > 0;
+    } else {
+      return (
+        oldUsuario !== formData.usuario &&
+        Boolean(formData.password && formData.password.length > 0)
+      );
+    }
+  }
 
   const errorsForm = () => {
     const errors = [];
