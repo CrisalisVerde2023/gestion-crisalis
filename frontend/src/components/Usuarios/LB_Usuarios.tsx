@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Container, Row, Col, Table, Button } from "react-bootstrap";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import {
   PencilFill,
   XCircleFill,
@@ -7,8 +6,8 @@ import {
 } from "react-bootstrap-icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  fetchUsuarios,
-  deleteUsuario,
+  useFetchUsuarios,
+  useDeleteUsuario,
 } from "../../controller/ABMUsuarioController";
 import { UsuariosType } from "../types/userType";
 import LoadingComponent from "../LoadingComponent";
@@ -16,50 +15,66 @@ import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
 export default function LB_Users() {
-  const [data, setData] = useState<UsuariosType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const [data, setData] = useState<UsuariosType[] | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   let aux;
   const { userLogged } = useContext(UserLoggedContext);
+  const [shouldDelete, setShouldDelete] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
+  let aux;
 
-  const fetchData = async () => {
-    try {
-      return await fetchUsuarios(0);
-    } catch (error) {
-      const regex = /\/usuarios($|\/(?![\w-]))/;
-      if (regex.test(window.location.pathname)) {
-        Swal.fire("Error!", "No se han podido obtener datos.", "error");
-      }
-    }
-  };
+  let fetchResponse = useFetchUsuarios(undefined, shouldFetch);
+  let deleteResponse = useDeleteUsuario(idToDelete, shouldDelete);
 
   useEffect(() => {
-    setIsLoading(true);
-    fetchData().then((resp) => {
-      setData(resp);
-      setIsLoading(false);
-    });
-  }, [location]);
+    if (fetchResponse && shouldFetch) {
+      if (
+        !fetchResponse.loading &&
+        !fetchResponse.hasError &&
+        fetchResponse.json
+      ) {
+        setData(fetchResponse.json);
+        setShouldFetch(false);
+      } else if (!fetchResponse.loading && fetchResponse.hasError) {
+        Swal.fire("Error!", "No se han podido obtener datos.", "error");
+        setData(null);
+      }
+    }
+  }, [fetchResponse]);
 
-  const onConfirm = (usuario: UsuariosType) => {
-    if (usuario)
-      deleteUsuario(usuario.id)
-        .then(() => {
-          fetchData().then((resp) => {
-            setData(resp);
-            Swal.fire({
-              title: "Realizado!",
-              text: "Se ha cambiado el estado.",
-              icon: "success",
-              timer: 2000,
-            });
-          });
-        })
-        .catch(() => {
-          Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
-        });
+  useEffect(() => {
+    if (deleteResponse && shouldDelete) {
+      setShouldDelete(false);
+      if (!deleteResponse.loading && !deleteResponse.hasError) {
+        Swal.fire(
+          "Perfecto!",
+          "Cambio el estado del usuario correctamente",
+          "success"
+        );
+        setShouldFetch(true);
+      } else if (!deleteResponse.loading && deleteResponse.hasError) {
+        if (deleteResponse.statusCode >= 400) {
+          Swal.fire(
+            "Atención!",
+            "Error al cambiar el estado del usuario",
+            "warning"
+          );
+        }
+      }
+    }
+  }, [deleteResponse]);
+
+  const onConfirm = async (usuario: UsuariosType) => {
+    if (usuario) {
+      console.log(`Id to delete is : ${usuario.id}`);
+      setIdToDelete(usuario.id);
+      setShouldDelete(true);
+    }
   };
 
   const handleClickedElement = (selected: UsuariosType) => {
@@ -82,7 +97,10 @@ export default function LB_Users() {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
       }).then((result) => {
-        if (result.isConfirmed) onConfirm(selected);
+        if (result.isConfirmed) {
+          onConfirm(selected);
+        } else if (result.isDenied || result.isDismissed) {
+        }
       });
   };
 
@@ -159,40 +177,12 @@ export default function LB_Users() {
                       No hay datos...
                     </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {data &&
-                  (aux = !searchTerm.length
-                    ? data
-                    : data.filter((user: UsuariosType) =>
-                        user.usuario
-                          .toLowerCase()
-                          .includes(searchTerm.toLowerCase())
-                      )).length ? (
-                    aux
-                      .sort((a: UsuariosType, b: UsuariosType) =>
-                        a.usuario.toLowerCase() < b.usuario.toLowerCase()
-                          ? -1
-                          : 1
-                      )
-                      .map((row, index) => (
-                        <tr key={index}>
-                          <td>{row.usuario}</td>
-                          <td>{row.eliminado ? "Inactivo" : "Activo"}</td>
-                          <td>{actionButtons(row)}</td>
-                        </tr>
-                      ))
-                  ) : (
-                    <tr>
-                      <td colSpan={3}>No hay datos...</td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
-            </Col>
-          )}
-        </Row>
-      </Container>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </>
   );
 }

@@ -10,6 +10,12 @@ export type UserLogged = {
   email: string;
   isAuth: boolean;
   isAdmin: boolean;
+  token: string;
+};
+
+export type PedidoType = {
+  cliente: ClienteType;
+  prods_servs: ProductServiceType[];
 };
 
 export type PedidoType = {
@@ -24,9 +30,15 @@ export type UserLoggedContextType = {
   setPedido: React.Dispatch<React.SetStateAction<PedidoType>>;
 };
 
-export const defaultUserLogState = { id: -1, email: "" };
+export const defaultUserLogState = {
+  id: -1,
+  email: "",
+  isAuth: false,
+  isAdmin: false,
+  token: "",
+};
 export const defaultPedidoState: PedidoType = {
-  cliente: defaultTestClienteType,
+  cliente: defaultClienteType,
   prods_servs: [],
 }; //Cuando la funcionalida de cliente este lista cambiar por defaultClientType
 

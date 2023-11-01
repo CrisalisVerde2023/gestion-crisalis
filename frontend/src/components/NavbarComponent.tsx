@@ -37,7 +37,7 @@ export default function NavbarComponent() {
           >
             <img src={user} alt="User" className="rounded-full w-10 h-10" />
           </button>
-          
+
           {showDropdown && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg py-2 shadow-xl">
               <div className="text-sm font-semibold px-4 py-2">
