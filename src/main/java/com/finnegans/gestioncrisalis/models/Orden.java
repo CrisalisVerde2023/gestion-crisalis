@@ -23,11 +23,16 @@ import java.util.List;
         @GenericGenerator(strategy = "native", name = "native")
         @Column(name = "ID", nullable = false)
         private Long id;
-        @Column(name="idCliente", nullable = false)
-        private Long idCliente;
-
-        @Column(name="idUsuario", nullable = false)
-        private Long idUsuario;
+        @ManyToOne(fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            optional = false)
+        @JoinColumn(name="CLIENTE_ID")
+        private Cliente cliente;
+        @ManyToOne(fetch = FetchType.EAGER,
+                cascade = CascadeType.ALL,
+                optional = false)
+        @JoinColumn(name="USUARIO_ID")
+        private Usuario usuario;
 
         @Column(name = "ANULADO", nullable = false, columnDefinition = "boolean default false")
         private boolean anulado;
@@ -36,7 +41,7 @@ import java.util.List;
         private LocalDateTime fechaCreacion;
 
         @OneToMany(mappedBy = "orden")
-        private List<ordenDetalle> ordenDetalles;
+        private List<OrdenDetalle> OrdenDetalles;
 
     }
 

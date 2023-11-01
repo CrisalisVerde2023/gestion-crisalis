@@ -1,8 +1,18 @@
 package com.finnegans.gestioncrisalis.repositories;
 
-import com.finnegans.gestioncrisalis.models.ordenDetalle;
+import com.finnegans.gestioncrisalis.models.OrdenDetalle;
+import com.finnegans.gestioncrisalis.models.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface OrdenDetalleRepository extends JpaRepository<ordenDetalle,Long> {
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+@Repository
+public interface OrdenDetalleRepository extends JpaRepository<OrdenDetalle,Long> {
+    Optional<OrdenDetalle> findById(Long id);
 
+    List<OrdenDetalle> findAllById(List<Long> listaId);
+
+    List<OrdenDetalle> findByOrden(Long id);
 }

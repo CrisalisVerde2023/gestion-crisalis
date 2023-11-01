@@ -9,15 +9,15 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
-public class ordenDetalleDTO {
+public class OrdenDetalleDTO {
 
     @NotBlank(message = "El campo cliente no puede ser vacio.")
     @JsonProperty("cantidad")
-    private int quantity;
+    private Integer quantity;
     @JsonProperty("tiempoGarantia")
-    private int tiempoGarantia;
+    private Integer tiempoGarantia;
 
-    @JsonProperty("idServicioProducto");
+    @JsonProperty("idServicioProducto")
     private Long idProductService;
 
 }

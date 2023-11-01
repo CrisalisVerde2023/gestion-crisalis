@@ -1,19 +1,16 @@
 package com.finnegans.gestioncrisalis.controllers;
 
-import com.finnegans.gestioncrisalis.dtos.UsuarioDTO;
-import com.finnegans.gestioncrisalis.dtos.ordenDTO;
+import com.finnegans.gestioncrisalis.dtos.OrdenDTO;
 import com.finnegans.gestioncrisalis.models.Orden;
 import com.finnegans.gestioncrisalis.services.OrdenService;
-import com.finnegans.gestioncrisalis.validations.UsuarioOnUpdate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.PositiveOrZero;
 
 @RestController
-@RequestMapping("/api/Orden")
+@RequestMapping("/api/orden")
 public class OrdenController {
 
     private OrdenService ordenService;
@@ -24,7 +21,7 @@ public class OrdenController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create( @RequestBody ordenDTO ordenDTO){
+    public ResponseEntity<?> create( @RequestBody OrdenDTO ordenDTO){
         Orden orden=this.ordenService.save(ordenDTO);
         return new ResponseEntity<>(orden, HttpStatus.CREATED);
     }
@@ -38,13 +35,13 @@ public class OrdenController {
     public ResponseEntity<?> getById(@PathVariable @PositiveOrZero Long id){
         return new ResponseEntity<>(this.ordenService.getById(id), HttpStatus.OK);
     }
-
+/*
     @PatchMapping("/{id}")
     public ResponseEntity<?> anular(@PathVariable @PositiveOrZero Long id){
         this.ordenService.anular(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-
+*/
 
 }
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ordenDTO {
+public class OrdenDTO {
     @NotBlank(message = "El campo cliente no puede ser vacio.")
     @JsonProperty("idCliente")
     private Long idCliente;
@@ -17,6 +17,6 @@ public class ordenDTO {
     @JsonProperty("idUsuario")
     private Long idUsuario;
 
-    @JsonProperty("detalleOrden");
-    private List<ordenDetalleDTO> ordenDetalles;
+    @JsonProperty("detalleOrden")
+    private List<OrdenDetalleDTO> ordenDetalles;
 }

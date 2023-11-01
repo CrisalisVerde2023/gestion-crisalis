@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "ORDEN_DETALLES")
-public class ordenDetalle {
+public class OrdenDetalle {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(strategy = "native", name = "native")
@@ -27,10 +26,8 @@ public class ordenDetalle {
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
             optional = false
-
-
     )
-    @JoinColumn(name="ID")
+    @JoinColumn(name="ORDEN_ID")
     private Orden orden;
 
     @ManyToOne(
@@ -38,17 +35,17 @@ public class ordenDetalle {
             cascade = CascadeType.ALL,
             optional = false
     )
-    @JoinColumn(name="ID")
-    private Producto_Servicio productoServicio;
+    @JoinColumn(name="PRODUCTO_ID")
+    private Producto productoServicio;
 
     @Column(name = "QUANTITY", nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(name = "NAME", nullable = false)
     private String name;
 
     @Column(name = "COST", nullable = false)
-    private Double cost;
+    private Float cost;
 
     @Column(name = "TAX", nullable = false)
     private Double tax;
@@ -57,11 +54,13 @@ public class ordenDetalle {
     private Double discount;
 
     @Column(name = "SERVICE_SUPPORT", nullable = false)
-    private Double service_support;
+    private Float service_support;
 
     @Column(name = "WARRANTY_YEARS", nullable = false)
-    private int warranty_years;
+    private Integer warranty_years;
 
     @Column(name = "WARRANTY_COST", nullable = false)
     private Double warranty_cost;
+    @Column(name = "ANULADO", nullable = false)
+    private boolean anulado;
 }
