@@ -8,11 +8,10 @@ let enterprises: EnterpriseType[] = [];
 
 const URL_API_EMPRESAS = "http://localhost:8080/api/empresas";
 
-const { userLogged } = useContext(UserLoggedContext);
-
 export const fetchEnterprises = async (
   setIsLoadingCallback: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
+  const { userLogged } = useContext(UserLoggedContext);
   try {
     const response = await fetch(`${URL_API_EMPRESAS}`, {
       headers: {
@@ -36,6 +35,7 @@ export const selectAll = (): EnterpriseType[] => {
 export async function createEnterprise(
   overrides: Partial<EnterpriseType> = {}
 ) {
+  const { userLogged } = useContext(UserLoggedContext);
   try {
     await fetch(`${URL_API_EMPRESAS}`, {
       method: "POST",
