@@ -35,7 +35,7 @@ public class ImpuestoController {
     }
 
     //ELIMINAR
-    @DeleteMapping(value = "/{id}")
+    @PatchMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable @Positive Long id){
         this.impuestoService.delete(id);
 

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ImpuestoServiceImpl implements ImpuestoService {
@@ -21,6 +22,12 @@ public class ImpuestoServiceImpl implements ImpuestoService {
 
     @Override
     public Impuesto save(ImpuestoDTO impuestoDTO) {
+        Optional<Impuesto> impuestoExist = impuestoRepository.findByNombre(impuestoDTO.getNombreDTO());
+
+        if(impuestoExist.isPresent()){
+            throw new RuntimeException();
+        }
+
         Impuesto impuesto = new Impuesto();
         impuesto.setNombre(impuestoDTO.getNombreDTO());
         impuesto.setPorcentaje(impuestoDTO.getPorcentajeDTO());
