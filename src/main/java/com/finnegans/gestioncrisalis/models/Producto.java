@@ -1,15 +1,9 @@
 package com.finnegans.gestioncrisalis.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -58,6 +52,13 @@ public class Producto {
     @OneToMany(mappedBy = "productoServicio")
     private List<OrdenDetalle> ordenDetalle;
 */
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "PRODUCTOS_IMPUESTOS",
+            joinColumns = @JoinColumn(name = "PRODUCTO_ID"),
+            inverseJoinColumns = @JoinColumn(name = "IMPUESTO_ID"))
+    private List<Impuesto> impuestos;
 
     public Producto(ProductoDTO productDTO){
         this.nombre = productDTO.getNombre();
