@@ -25,15 +25,15 @@ export default function AM_Empresa() {
     idToModify !== undefined
       ? findEnterpriseById(idToModify) || {
           id: 0,
-          name: "",
+          nombre: "",
           cuit: "",
-          startDate: "",
+          start_date: "",
         }
-      : { id: 0, name: "", cuit: "", startDate: "" }
+      : { id: 0, nombre: "", cuit: "", start_date: "" }
   );
 
   const isFormComplete = () => {
-    return formData.name && formData.cuit && formData.startDate;
+    return formData.nombre && formData.cuit && formData.start_date;
   };
 
   useEffect(() => {
@@ -77,8 +77,10 @@ export default function AM_Empresa() {
           </label>
           <input
             type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            value={formData.nombre}
+            onChange={(e) =>
+              setFormData({ ...formData, nombre: e.target.value })
+            }
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
@@ -99,11 +101,11 @@ export default function AM_Empresa() {
           </label>
           <input
             type="date"
-            value={formatDateToInput(formData.startDate)}
+            value={formatDateToInput(formData.start_date)}
             onChange={(e) => {
               const [year, month, day] = e.target.value.split("-");
               const newDate = `${day}-${month}-${year}`;
-              setFormData({ ...formData, startDate: newDate });
+              setFormData({ ...formData, start_date: newDate });
             }}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />

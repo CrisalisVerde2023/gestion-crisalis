@@ -27,6 +27,7 @@ export default function LB_Empresas() {
     try {
       const fetchedData = await fetchEnterprises(setIsLoading);
       setData(fetchedData);
+      console.log(fetchedData);
     } catch (error) {
       console.error(`An error occurred: ${error}`);
     }
@@ -44,7 +45,7 @@ export default function LB_Empresas() {
     const filteredData = selectAllEnterprise().filter(
       (empresa: EnterpriseType) =>
         empresa.id.toString().includes(searchTerm) ||
-        empresa.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        empresa.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         empresa.cuit.replace(/-/g, "").includes(searchTerm.replace(/-/g, ""))
     );
     setData(filteredData);
@@ -128,7 +129,7 @@ export default function LB_Empresas() {
                   {data.map((row, index) => (
                     <tr key={index}>
                       <td className="border border-gray-300">{row.id}</td>
-                      <td className="border border-gray-300">{row.name}</td>
+                      <td className="border border-gray-300">{row.nombre}</td>
                       <td className="border border-gray-300">{row.cuit}</td>
                       <td className="border border-gray-300">
                         {row.startDate}
