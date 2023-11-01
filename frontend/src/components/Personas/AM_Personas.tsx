@@ -9,6 +9,7 @@ import {
   modifyPersona,
 } from "./../../controller/ABMPersonController";
 import { PersonasType } from "./../types/personType";
+import Swal from "sweetalert2";
 
 export default function AM_Persona() {
   const { idPersona } = useParams<{ idPersona: string }>();
@@ -20,19 +21,16 @@ export default function AM_Persona() {
     navigate(-1);
   };
 
-  const [formData, setFormData] = useState<PersonasType>(
-    idToModify !== undefined
-      ? findPersonaById(idToModify) || {
+  const [formData, setFormData] = useState<PersonasType>({
           id: 0,
-          firstName: "",
-          lastName: "",
+          nombre: "",
+          apellido: "",
           dni: "",
-        }
-      : { id: 0, firstName: "", lastName: "", dni: "" }
-  );
+
+        });
 
   const isFormComplete = () => {
-    return formData.firstName && formData.lastName && formData.dni;
+    return formData.nombre && formData.apellido && formData.dni;
   };
 
   useEffect(() => {
@@ -69,22 +67,22 @@ export default function AM_Persona() {
           <Form.Label>ID: {formData.id}</Form.Label>
         </Col>
         <Col xs={6}>
-          <Form.Label>Name</Form.Label>
+          <Form.Label>Nombre</Form.Label>
           <Form.Control
             type="text"
-            value={formData.firstName}
+            value={formData.nombre}
             onChange={(e) =>
-              setFormData({ ...formData, firstName: e.target.value })
+              setFormData({ ...formData, nombre: e.target.value })
             }
           />
         </Col>
         <Col xs={6}>
-          <Form.Label>Last Name</Form.Label>
+          <Form.Label>Apellido</Form.Label>
           <Form.Control
             type="text"
-            value={formData.lastName}
+            value={formData.apellido}
             onChange={(e) =>
-              setFormData({ ...formData, lastName: e.target.value })
+              setFormData({ ...formData, apellido: e.target.value })
             }
           />
         </Col>
@@ -102,7 +100,7 @@ export default function AM_Persona() {
         style={{ marginTop: "10px" }}
         onClick={handleSubmit}
       >
-        Submit
+        Crear persona
       </Button>
     </Container>
   );
