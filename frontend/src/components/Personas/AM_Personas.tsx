@@ -31,17 +31,17 @@ const goBack = () => {
 const isFormComplete = () => {
   const errors = [];
 
-  if (!formData.nombre.length)
+  if (!formData.nombre)
     errors.push("El nombre es obligatorio");
   if (formData.nombre.length < 4 || formData.nombre.length > 15)
     errors.push("El nombre debe contener entre 4 y 15 caracteres");
 
-  if (!formData.apellido.length)
+  if (!formData.apellido)
     errors.push("El apellido es obligatorio");
   if (formData.apellido.length < 4 || formData.apellido.length > 15)
     errors.push("El apellido debe contener entre 4 y 15 caracteres");
 
-  if (!formData.dni.length)
+  if (!formData.dni)
     errors.push("El DNI es obligatorio");
   if (formData.dni.length !== 8 || !/^\d{8}$/.test(formData.dni))
     errors.push("El DNI deben ser 8 dígitos numéricos");
@@ -79,7 +79,7 @@ const isFormComplete = () => {
   
 
   const handleSubmit = () => {
-    if (!isFormComplete()) {
+    if (isFormComplete()) {
       Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
       (!idToModify ? createPersona(formData) : modifyPersona(formData))
         .then(() => {
@@ -145,13 +145,17 @@ const isFormComplete = () => {
           />
         </Col>
       </Row>
-      <Button
+      <div>
+      <Button 
+        
         disabled={!isFormComplete()}
         style={{ marginTop: "10px" }}
         onClick={handleSubmit}
+        className="w-2/4 px-4 py-2 font-semibold leading-6 text-sm shadow text-white bg-denim hover:bg-denim-400 transition ease-in-out duration-150"
       >
-        Modificar persona
+        Crear persona
       </Button>
+      </div>
     </Container>
   );
 }
