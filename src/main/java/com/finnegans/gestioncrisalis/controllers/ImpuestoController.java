@@ -39,7 +39,7 @@ public class ImpuestoController {
     public ResponseEntity<?> delete(@PathVariable @Positive Long id){
         this.impuestoService.delete(id);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     //ACTUALIZAR

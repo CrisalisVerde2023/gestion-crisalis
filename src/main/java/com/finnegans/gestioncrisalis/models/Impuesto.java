@@ -28,6 +28,8 @@ public class Impuesto {
     @Column(name = "PORCENTAJE", nullable = false)
     private Float  porcentaje;
 
+    @Column(name = "ELIMINADO", nullable = false, columnDefinition = "boolean default false")
+    private boolean eliminado;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

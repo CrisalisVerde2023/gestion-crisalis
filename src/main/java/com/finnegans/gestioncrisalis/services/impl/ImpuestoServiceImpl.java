@@ -59,6 +59,8 @@ public class ImpuestoServiceImpl implements ImpuestoService {
     public void delete(Long id) {
         Impuesto impuesto = impuestoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Impuesto con ID:" + id + " no encontrado"));
-        impuestoRepository.delete(impuesto);
+
+        impuesto.setEliminado(!impuesto.isEliminado());
+        this.impuestoRepository.save(impuesto);
     }
 }
