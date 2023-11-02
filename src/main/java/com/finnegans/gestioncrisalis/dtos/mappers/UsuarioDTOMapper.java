@@ -11,7 +11,7 @@ public class UsuarioDTOMapper {
         return new UsuarioDTOMapper();
     }
     public UsuarioDTOMapper setUsuario(Usuario usuario){
-        this.usuario = usuario;
+        this.usuario = usuario; 
         return this;
     }
     public UsuarioResponseDTO build(){

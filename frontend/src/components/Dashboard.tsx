@@ -1,10 +1,30 @@
-import React, { useContext } from "react";
+import React, { DragEvent, useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 
 export default function Dashboard() {
   const { userLogged } = useContext(UserLoggedContext);
   const { isAdmin } = userLogged;
+
+  // State variable
+  let draggedItem: EventTarget | null = null;
+
+  // Drag start event
+  function handleOnDragEvent(e: React.DragEvent<HTMLLIElement>) {
+    draggedItem = e.currentTarget;
+  }
+
+  // Drag end event
+  function handleOnDragEndEvent(e: React.DragEvent<HTMLLIElement>) {
+    draggedItem = null;
+  }
+
+  // Drop event
+  function handleOnDropEvent(e: React.DragEvent<HTMLDivElement>) {
+    if (draggedItem) {
+      e.currentTarget.appendChild(draggedItem as Node);
+    }
+  }
 
   return (
     <section className="bg-athens-gray dark:bg-gray-900">
@@ -19,7 +39,43 @@ export default function Dashboard() {
             impulsar el crecimiento económico.
           </p>
         </div>
-
+        {isAdmin && (
+          <div className="flex flex-column justify-content-center align-items-center my-3">
+            <div className="flex flex-row justify-content-center align-items-center">
+              <div className="flex justify-center items-center w-10 h-10 rounded-md bg-yellow-200 lg:h-12 lg:w-12 dark:bg-primary-900 mr-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  className="w-5 h-5 text-amber-400 lg:w-6 lg:h-6 dark:text-primary-300"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  {" "}
+                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />{" "}
+                </svg>
+              </div>
+              <h5 className="text-xl font-bold dark:text-white text-start">
+                Acceso Rapido
+              </h5>
+            </div>
+            <div
+              className="grid grid-cols-3 gap-y-2 spaceVerticalChilds spaceHorizontalChilds rounded-md border-dashed border-yellow-400 border-2 mt-2"
+              style={{ minHeight: "10vh", width: "85%" }}
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                if (draggedItem) {
+                  const clonedNode = (draggedItem as HTMLElement).cloneNode(
+                    true
+                  ) as HTMLElement;
+                  e.currentTarget.appendChild(clonedNode);
+                }
+              }}
+            ></div>
+          </div>
+        )}
         <div
           className={`space-y-8 md:grid md:grid-cols-2 ${
             isAdmin ? "lg:grid-cols-3" : "lg:grid-cols-2"
@@ -55,6 +111,13 @@ export default function Dashboard() {
                     <li
                       key={entidad}
                       className="flex hover:bg-slate-50 rounded-md shadow-md bg-white-pure"
+                      onDrag={(e) => {
+                        handleOnDragEvent(e);
+                      }}
+                      onDragEnd={(e) => {
+                        handleOnDragEndEvent(e);
+                      }}
+                      draggable={true}
                     >
                       <Link
                         to={`/${entidad.toLowerCase().replace(/\s+/g, "")}`}
@@ -122,7 +185,6 @@ export default function Dashboard() {
                   )}
                 </ul>
               </div>
-
               <div>
                 <div className="flex justify-center items-center w-10 h-10 rounded-md bg-atlantis-50 lg:h-12 lg:w-12 dark:bg-primary-900">
                   <svg

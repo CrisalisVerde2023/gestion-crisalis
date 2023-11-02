@@ -15,6 +15,16 @@
   width: 40px;
 }
 
+.spaceVerticalChilds > * {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+}
+
+.spaceHorizontalChilds > * {
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+}
+
 .inputSearch {
   border-radius: 15px;
   color: black;
