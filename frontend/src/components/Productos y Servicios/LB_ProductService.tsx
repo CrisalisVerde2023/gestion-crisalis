@@ -30,7 +30,11 @@ import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
-export default function LB_ProductService() {
+interface LB_ProductServiceProps {
+  seleccion: string;
+}
+
+export default function LB_ProductService(props: LB_ProductServiceProps) {
   const { pedido, setPedido } = useContext(UserLoggedContext);
   const [data, setData] = useState<ProductServiceType[]>([]);
   const [originalData, setOriginalData] = useState<ProductServiceType[]>([]);
@@ -86,10 +90,13 @@ export default function LB_ProductService() {
 
   const exampleObject: ProductServiceType = {
     id: 0,
-    name: "",
-    type: ProductOrService.Producto || ProductOrService.Servicio,
-    cost: 0,
-    support: 0,
+    nombre: "",
+    tipo: ProductOrService.Producto || ProductOrService.Servicio,
+    costo: 0,
+    impuesto: 0,
+    soporte: null,
+    cantidad: 1,
+    garantia: null
   };
 
   const validColumnKeys: (keyof ProductServiceType)[] = Object.keys(
@@ -119,14 +126,14 @@ export default function LB_ProductService() {
       } else {
         filteredData = originalData.filter((item) => {
           const idMatch = item.id === Number(searchTerm);
-          const nameMatch = item.name
+          const nameMatch = item.nombre
             .toLowerCase()
             .includes(searchTerm.toLowerCase());
           const productMatch =
-            item.type === "Producto" && String(item.cost).includes(searchTerm);
+            item.tipo === "PRODUCTO" && String(item.costo).includes(searchTerm);
           const serviceMatch =
-            item.type === "Servicio" &&
-            String(item.support).includes(searchTerm);
+            item.tipo === "SERVICIO" &&
+            String(item.soporte).includes(searchTerm);
 
           return idMatch || nameMatch || productMatch || serviceMatch;
         });
@@ -161,7 +168,7 @@ export default function LB_ProductService() {
   const handleClickedElement = (selected: ProductServiceType) => {
     Swal.fire({
       title: "Confirmar eliminación del producto o servicio?",
-      text: `Está a punto de eliminar ${selected.name}. ¿Está seguro?`,
+      text: `Está a punto de eliminar ${selected.nombre}. ¿Está seguro?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí! Estoy seguro.",
@@ -209,20 +216,21 @@ export default function LB_ProductService() {
         >
           <XCircleFill />
         </button>
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => addToPedido(row)}
-        >
-          <PlusCircleFill />
-        </button>
+        {
+          (props.seleccion === "multiple")
+          &&
+            <button className="p-2 hover:bg-blue-600 hover:text-white" onClick={() => addToPedido(row)}>
+              <PlusCircleFill />
+            </button>
+        }
         <button
           className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() =>
             navigate(
               `${location.pathname}${
-                row.type === ProductOrService.Producto
+                row.tipo === ProductOrService.Producto
                   ? `/AMProductos/`
-                  : row.type === ProductOrService.Servicio && `/AMServicios/`
+                  : row.tipo === ProductOrService.Servicio && `/AMServicios/`
               }${row.id}`
             )
           }
@@ -291,13 +299,13 @@ export default function LB_ProductService() {
                   data.map((row, index) => (
                     <tr key={index} className="border-b">
                       <td className="py-2">{row.id}</td>
-                      <td className="py-2">{row.name}</td>
-                      <td className="py-2">{row.type}</td>
-                      {row.type.toString() === ProductOrService.Producto ? (
-                        <td className="py-2">{row.cost}</td>
+                      <td className="py-2">{row.nombre}</td>
+                      <td className="py-2">{row.tipo}</td>
+                      {row.tipo?.toString() === ProductOrService.Producto ? (
+                        <td className="py-2">{row.costo}</td>
                       ) : (
                         <td className="py-2">
-                          {row.cost} + *(<strong>{row.support}</strong>)
+                          {row.costo} + *(<strong>{row.soporte}</strong>)
                         </td>
                       )}
                       <td className="py-2">{actionButtons(row)}</td>
