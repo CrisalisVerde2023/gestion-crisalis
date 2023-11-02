@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.finnegans.gestioncrisalis.dtos.ProductoDTO;
@@ -48,10 +49,11 @@ public class Producto {
     @Column(name = "FECHA_MODIFICACION")
     private LocalDateTime fechaModificacion;
 
-/*    
+
     @OneToMany(mappedBy = "productoServicio")
+    @JsonIgnore
     private List<OrdenDetalle> ordenDetalle;
-*/
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -46,7 +47,12 @@ public class Cliente {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "EMPRESA_ID")
     private Empresa empresa;
-
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "usuario"
+    )
+    @JsonIgnore
+    private List<Orden> ordenes;
 
     @PrePersist
     protected void onCreate(){

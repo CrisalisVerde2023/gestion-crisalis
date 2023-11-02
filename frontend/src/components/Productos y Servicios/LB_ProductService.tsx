@@ -209,7 +209,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
 
   const actionButtons = (row: ProductServiceType) => {
     return (
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <button
           className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() => handleClickedElement(row)}
@@ -243,13 +243,13 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
 
   return (
     <>
-      <div className="w-full flex flex-column justify-center items-center mb-2 mx-auto p-4 pb-0">
-        <div className="flex justify-center items-center mb-3">
+      <div className="flex items-center justify-center w-full p-4 pb-0 mx-auto mb-2 flex-column">
+        <div className="flex items-center justify-center mb-3">
           <div className="mr-4">
             <input
               type="text"
               placeholder="Buscar"
-              className="inputSearch border-2 border-blue-500 px-2 py-1"
+              className="px-2 py-1 border-2 border-blue-500 inputSearch"
               defaultValue={""}
               ref={searchBoxRef}
               onChange={() => {
@@ -261,7 +261,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
             <select
               name="productOrServiceType"
               id="productOrServiceType"
-              className="bg-blue-400 px-4 py-2 rounded text-white font-medium hover:bg-blue-500"
+              className="px-4 py-2 font-medium text-white bg-blue-400 rounded hover:bg-blue-500"
               defaultValue={""}
               onChange={(e) => handleSelectChange(e.target.value.toString())}
             >
@@ -273,7 +273,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
         </div>
         {filtrado !== ProductOrService.Producto && (
           <div>
-            <h6 className="m-0 mb-3 p-0">
+            <h6 className="p-0 m-0 mb-3">
               Costo de mantenimiento de servicios *($)
             </h6>
           </div>
@@ -285,19 +285,19 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
         ) : (
           <div className="w-full">
             <table className="min-w-full bg-white border border-gray-300 ">
-              <thead className="bg-denim-400 text-white ">
+              <thead className="text-white bg-denim-400 ">
                 <tr>
-                  <th className="py-2 px-4 border-b">ID</th>
-                  <th className="py-2 px-4 border-b">Nombre</th>
-                  <th className="py-2 px-4 border-b">Tipo</th>
-                  <th className="py-2 px-4 border-b">Precio</th>
-                  <th className="py-2 px-4 border-b">Acciones</th>
+                  <th className="px-4 py-2 border-b">ID</th>
+                  <th className="px-4 py-2 border-b">Nombre</th>
+                  <th className="px-4 py-2 border-b">Tipo</th>
+                  <th className="px-4 py-2 border-b">Precio</th>
+                  <th className="px-4 py-2 border-b">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {data.length ? (
                   data.map((row, index) => (
-                    <tr key={index} className="border-b">
+                    <tr key={index} className="border-b ">
                       <td className="py-2">{row.id}</td>
                       <td className="py-2">{row.nombre}</td>
                       <td className="py-2">{row.tipo}</td>
@@ -313,7 +313,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
                   ))
                 ) : (
                   <tr className="border-b">
-                    <td colSpan={5} className="py-2 px-4">
+                    <td colSpan={5} className="px-4 py-2">
                       No hay datos...
                     </td>
                   </tr>

@@ -97,7 +97,7 @@ export default function Dashboard() {
 
                 <ul className="text-gray-500 dark:text-gray-400 space-y-3">
                   <li key="Listado y anulación de pedidos" className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
-                    <Link to={`/home`} className="flex p-3 w-full justify-between">
+                    <Link to={`/pedidos`} className="flex p-3 w-full justify-between">
                       <span>Listado y anulación de Pedidos</span>
                       <svg className="w-4 h-4 text-denim dark:text-white self-center" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 16">
                         <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
