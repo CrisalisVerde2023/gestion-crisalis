@@ -25,12 +25,12 @@ export default function ABMProductServiceComponent() {
     <div className="container mx-auto">
       <div className="flex flex-col">
         <div className="mb-2">
-          <LB_Productos />
+          <LB_Productos seleccion={seleccion || ""}/>
         </div>
         {seleccion === "multiple"
           && (
             <div className="flex flex-row justify-content-center bg-denim-400 text-white">
-              <p className="mr-1">Productos / Servicios:</p>
+              <p className="mr-1">Productos / Servicios seleccionados:</p>
             </div>
             )
           && <SelectedProdsServs/>}

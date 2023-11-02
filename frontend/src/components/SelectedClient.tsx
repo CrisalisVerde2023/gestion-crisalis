@@ -4,18 +4,21 @@ import { UserLoggedContext } from "../contexts/UserLoggedContext";
 export default function SelectedClient() {
   const {pedido} = useContext(UserLoggedContext);
 
-	return (
+	return (!pedido.cliente || pedido.cliente.id < 0)
+    	? <p  className="py-2 bg-denim-400 text-white"><strong>No hay Cliente seleccionado...</strong></p>
+		:	
 			<table className="min-w-full bg-white border-solid border-2 border-denim-400">
-				<tbody>
+				<thead className="bg-denim-400 text-white ">
 					<tr>
-						<td className="py-2"><strong>Persona:</strong></td>
-						{ pedido.cliente.empresa && <td className="py-2"><strong>Empresa:</strong></td>}
+						<th className="py-2">Persona</th>
+						{ pedido.cliente.empresa && <th className="py-2">Empresa</th>}
 					</tr>
+				</thead>
+				<tbody>
 					<tr>
 						<td className="py-2">{`${pedido.cliente.persona.nombre} ${pedido.cliente.persona.apellido}`}</td>
 						{ pedido.cliente.empresa && <td className="py-2">{pedido.cliente.empresa.nombre}</td>}
 					</tr>
 				</tbody>
-			</table>
-	);
+			</table>	
 }

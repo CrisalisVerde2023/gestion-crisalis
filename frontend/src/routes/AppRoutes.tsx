@@ -13,6 +13,7 @@ import AM_ProductService from "../components/Productos y Servicios/AM_ProductSer
 import NotFoundComponent from "../components/NotFoundComponent";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { AuthRoute } from "./AuthRoute";
+import AltaPedidoComponent from "../components/Pedidos/AltaPedidoComponent";
 
 export const AppRoutes = () => {
   const { userLogged } = useContext(UserLoggedContext);
@@ -78,6 +79,7 @@ export const AppRoutes = () => {
           element={<AM_ProductService />}
         />
         <Route path="/impuestos" element={/*<ABMImpuestosComponent />*/ null} />
+        <Route path="/altaPedido" element={<AltaPedidoComponent />}/>
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
       </Routes>
