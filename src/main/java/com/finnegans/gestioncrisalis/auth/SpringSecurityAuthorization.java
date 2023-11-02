@@ -54,7 +54,7 @@ public class SpringSecurityAuthorization {
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/api/usuarios").hasRole("ADMIN")
                 .antMatchers("/api/impuestos").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/api/**").permitAll() //hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), getApplicationContext()))
