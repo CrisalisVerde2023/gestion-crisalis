@@ -24,7 +24,11 @@ import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 import { PersonasType } from "../types/personType";
 import { EnterpriseType } from "../types/enterpriseType";
 
-export default function LB_Clientes() {
+interface LB_ClientesProps {
+    seleccion: string;
+}
+
+export default function LB_Clientes(props: LB_ClientesProps) {
     const [data, setData] = useState<ClientesType[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -38,6 +42,8 @@ export default function LB_Clientes() {
     const [clienteDTO, setClienteDTO] = useState({ persona_id: null, empresa_id: null });
 
     const { userLogged } = useContext(UserLoggedContext);
+
+    const { pedido, setPedido } = useContext(UserLoggedContext);
 
     const fetchData = async () => {
         try {
@@ -96,6 +102,11 @@ export default function LB_Clientes() {
                 .catch(() => {
                     Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
                 });
+    };
+
+    const addToPedido = (cliente: ClientesType) => {
+
+        setPedido({ ...pedido, cliente });
     };
 
 
@@ -299,9 +310,13 @@ export default function LB_Clientes() {
                                                 <td>{row.eliminado ? <p className="text-red-600 font-bold">Inactivo</p> : <p className="text-green-600 font-bold">Activo</p>}</td>
                                                 <td className="flex justify-around">
                                                     {actionButtons(row)}
-                                                    <button type="button" className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-0.5  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                                                        Crear Pedido
-                                                    </button>
+                                                    {
+                                                        props.seleccion === "simple" &&
+                                                        <button onClick={() => { addToPedido(row) }} type="button" className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-0.5  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                                            Seleccionar Cliente
+                                                        </button>
+                                                    }
+
                                                 </td>
                                             </tr>
                                         ))

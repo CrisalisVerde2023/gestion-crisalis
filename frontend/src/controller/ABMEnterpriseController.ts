@@ -11,11 +11,10 @@ const URL_API_EMPRESAS = "http://localhost:8080/api/empresas";
 export const fetchEnterprises = async (
   setIsLoadingCallback: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const { userLogged } = useContext(UserLoggedContext);
   try {
     const response = await fetch(`${URL_API_EMPRESAS}`, {
       headers: {
-        Authorization: userLogged.token,
+        Authorization: sessionStorage.getItem("token"),
         "Content-Type": "application/json",
       },
     });
