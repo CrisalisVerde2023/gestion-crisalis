@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import { PencilFill, XCircleFill, Search } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   fetchPersonas,
   selectAll as selectAllPersonas,
@@ -19,7 +19,7 @@ export default function LB_Personas() {
   const [data, setData] = useState<PersonasType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
 
@@ -95,12 +95,10 @@ export default function LB_Personas() {
         <XCircleFill />
       </button>
       <button
-      className="p-2 hover:bg-blue-600 hover:text-white"
-      onClick={() => handleClickedElement(row)}
-      >
-      <Link className="" to={`/personas/AMPersonas/${row.id}`}>
-        <PencilFill />
-      </Link>
+          className="p-2 hover:bg-blue-600 hover:text-white"
+          onClick={() => navigate(`/personas/AMPersonas/${row.id}`)}
+        >
+          <PencilFill />
       </button>
     </div>
   );
