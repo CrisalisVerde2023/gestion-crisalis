@@ -1,7 +1,19 @@
-import React, { useState, MouseEvent, useEffect } from "react";
+import React, {
+  useState,
+  MouseEvent,
+  useEffect,
+  useRef,
+  useContext,
+} from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import { PencilFill, XCircleFill, Search } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import {
+  PencilFill,
+  XCircleFill,
+  Search,
+  PlusCircle,
+  PlusCircleFill,
+} from "react-bootstrap-icons";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ProductOrService,
   ProductServiceType,
@@ -14,177 +26,303 @@ import {
   selectAllProducts,
   selectAllServices,
 } from "../../controller/ABMProductController";
-import { ConfirmDialog } from "../ConfirmDialog";
 import LoadingComponent from "../LoadingComponent";
+import Swal from "sweetalert2";
+import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
-export default function LB_ProductService() {
+interface LB_ProductServiceProps {
+  seleccion: string;
+}
+
+export default function LB_ProductService(props: LB_ProductServiceProps) {
+  const { pedido, setPedido } = useContext(UserLoggedContext);
   const [data, setData] = useState<ProductServiceType[]>([]);
+  const [originalData, setOriginalData] = useState<ProductServiceType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
-  const [showDialog, setShowDialog] = useState(false);
+  const [filtrado, setFiltrado] = useState<string>("");
   const [selectedElement, setSelectedElement] =
     useState<ProductServiceType | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const searchBoxRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       const fetchedData = await fetchProductServices(setIsLoading);
       console.log(fetchedData);
-      updateDataBasedOnLocation(location as any);
+      updateDataBasedOnFilter();
     } catch (error) {
       console.error(`An error occurred: ${error}`);
     }
   };
 
-  const updateDataBasedOnLocation = (location: Location) => {
-    if (location.pathname.includes("/productos")) {
-      setData(selectAllProducts()); // Assuming 0 is for products
-    } else if (location.pathname.includes("/servicios")) {
-      setData(selectAllServices()); // Assuming 1 is for services
+  const updateDataBasedOnFilter = () => {
+    if (filtrado === ProductOrService.Producto) {
+      const dataFetched = selectAllProducts();
+      setOriginalData(dataFetched);
+      setData(dataFetched);
+    } else if (filtrado === ProductOrService.Servicio) {
+      const dataFetched = selectAllServices();
+      setOriginalData(dataFetched);
+      setData(selectAllServices());
+    } else {
+      const dataFetched = selectAll();
+      setOriginalData(dataFetched);
+      setData(dataFetched);
     }
   };
 
   useEffect(() => {
+    handleSearch();
+  }, [data]);
+
+  useEffect(() => {
+    console.log(pedido.prods_servs);
+  }, [pedido]);
+
+  useEffect(() => {
     if (selectAll().length === 0) {
-      console.log("data fetch");
       fetchData();
     } else {
-      updateDataBasedOnLocation(location as any);
+      updateDataBasedOnFilter();
     }
-  }, [location]);
+  }, [filtrado]);
 
-  const basePath = location.pathname.includes("/productos")
-    ? "/productos/AMProductos"
-    : "/servicios/AMServicios";
+  const exampleObject: ProductServiceType = {
+    id: 0,
+    nombre: "",
+    tipo: ProductOrService.Producto || ProductOrService.Servicio,
+    costo: 0,
+    impuesto: 0,
+    soporte: null,
+    cantidad: 1,
+    garantia: null
+  };
+
+  const validColumnKeys: (keyof ProductServiceType)[] = Object.keys(
+    exampleObject
+  ) as (keyof ProductServiceType)[];
+
   const handleSearch = () => {
-    if (searchTerm === "") {
-    } else {
-      const filteredData = data.filter(
-        (item) =>
-          item.id === Number(searchTerm) ||
-          item.name.includes(searchTerm) ||
-          (item.type === ProductOrService.Producto &&
-            item.cost === Number(searchTerm)) ||
-          (item.type === ProductOrService.Servicio &&
-            item.support === Number(searchTerm))
-      );
+    if (!searchBoxRef.current) {
+      return;
+    }
+    const searchTerm = searchBoxRef.current.value.toLowerCase();
+    if (searchTerm.length > 0) {
+      let filteredData: ProductServiceType[] = [];
+      const hasColon = searchTerm.includes(":");
+      if (hasColon) {
+        const [columnKey, columnValue] = searchTerm
+          .split(":")
+          .map((str) => str.trim());
+
+        if (validColumnKeys.includes(columnKey as keyof ProductServiceType)) {
+          filteredData = originalData.filter((item) =>
+            String(item[columnKey as keyof ProductServiceType])
+              .toLowerCase()
+              .includes(columnValue.toLowerCase())
+          );
+        }
+      } else {
+        filteredData = originalData.filter((item) => {
+          const idMatch = item.id === Number(searchTerm);
+          const nameMatch = item.nombre
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase());
+          const productMatch =
+            item.tipo === "PRODUCTO" && String(item.costo).includes(searchTerm);
+          const serviceMatch =
+            item.tipo === "SERVICIO" &&
+            String(item.soporte).includes(searchTerm);
+
+          return idMatch || nameMatch || productMatch || serviceMatch;
+        });
+      }
       setData(filteredData);
+    } else {
+      setData(originalData);
     }
   };
 
-  const onConfirm = () => {
-    if (selectedElement) {
-      deleteProductService(selectedElement.id);
-      setShowDialog(false);
-      updateDataBasedOnLocation(location as any);
-    }
+  const onConfirm = (productService: ProductServiceType) => {
+    if (productService)
+      deleteProductService(productService.id)
+        .then(() => {
+          Swal.fire({
+            title: "Realizado!",
+            text: "El producto/servicio ha sido eliminado.",
+            icon: "success",
+            timer: 2000,
+          });
+          updateDataBasedOnFilter();
+        })
+        .catch(() => {
+          Swal.fire(
+            "Error!",
+            "No se ha podido eliminar el producto/servicio.",
+            "error"
+          );
+        });
   };
 
   const handleClickedElement = (selected: ProductServiceType) => {
-    setSelectedElement(selected);
-    setShowDialog(true);
+    Swal.fire({
+      title: "Confirmar eliminación del producto o servicio?",
+      text: `Está a punto de eliminar ${selected.nombre}. ¿Está seguro?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí! Estoy seguro.",
+      cancelButtonText: "Mejor no.",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onConfirm(selected);
+      }
+    });
+  };
+
+  const addToPedido = (selected: ProductServiceType) => {
+    let updatedProdsServs;
+
+    // Check if an object with the same 'id' already exists in the array
+    const itemExists = pedido.prods_servs.some(
+      (item) => item.id === selected.id
+    );
+
+    if (itemExists) {
+      // If the item already exists, filter it out to remove it.
+      updatedProdsServs = pedido.prods_servs.filter(
+        (item) => item.id !== selected.id
+      );
+    } else {
+      // If the item doesn't exist, add it.
+      updatedProdsServs = [...pedido.prods_servs, selected];
+    }
+
+    setPedido({ ...pedido, prods_servs: updatedProdsServs });
+  };
+
+  const handleSelectChange = (value: string) => {
+    setFiltrado(value);
   };
 
   const actionButtons = (row: ProductServiceType) => {
     return (
-      <div className="d-flex flex-row justify-content-evenly align-items-center">
-        <Button
-          className="actionButton"
+      <div className="flex justify-between items-center">
+        <button
+          className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() => handleClickedElement(row)}
         >
           <XCircleFill />
-        </Button>
-        <Link className="actionButton" to={`${basePath}/${row.id}`}>
+        </button>
+        {
+          (props.seleccion === "multiple")
+          &&
+            <button className="p-2 hover:bg-blue-600 hover:text-white" onClick={() => addToPedido(row)}>
+              <PlusCircleFill />
+            </button>
+        }
+        <button
+          className="p-2 hover:bg-blue-600 hover:text-white"
+          onClick={() =>
+            navigate(
+              `${location.pathname}${
+                row.tipo === ProductOrService.Producto
+                  ? `/AMProductos/`
+                  : row.tipo === ProductOrService.Servicio && `/AMServicios/`
+              }${row.id}`
+            )
+          }
+        >
           <PencilFill />
-        </Link>
+        </button>
       </div>
     );
   };
+
   return (
     <>
-      <Container>
-        <Row
-          className="d-flex flex-row justify-content-center align-items-center"
-          style={{ marginBottom: "15px" }}
-        >
-          <Col xs="auto">
+      <div className="w-full flex flex-column justify-center items-center mb-2 mx-auto p-4 pb-0">
+        <div className="flex justify-center items-center mb-3">
+          <div className="mr-4">
             <input
               type="text"
               placeholder="Buscar"
-              className="inputSearch"
-              value={searchTerm}
-              onChange={(e) => {
-                if (e.target.value.length === 0) {
-                  updateDataBasedOnLocation(location as any); // Update from local state, not from API
-                  setSearchTerm("");
-                } else {
-                  setSearchTerm(e.target.value);
-                }
+              className="inputSearch border-2 border-blue-500 px-2 py-1"
+              defaultValue={""}
+              ref={searchBoxRef}
+              onChange={() => {
+                handleSearch();
               }}
             />
-          </Col>
-          <Col xs="auto">
-            <Button
-              variant="primary"
-              className="searchButton"
-              onClick={handleSearch}
+          </div>
+          <div>
+            <select
+              name="productOrServiceType"
+              id="productOrServiceType"
+              className="bg-blue-400 px-4 py-2 rounded text-white font-medium hover:bg-blue-500"
+              defaultValue={""}
+              onChange={(e) => handleSelectChange(e.target.value.toString())}
             >
-              <Search />
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          {isLoading ? (
-            <Col>
-              <LoadingComponent />
-            </Col>
-          ) : (
-            <Col>
-              <Table striped bordered hover>
-                <thead style={{ backgroundColor: "#FF6F00", color: "#fff" }}>
-                  <tr>
-                    <td>ID</td>
-                    <td>Nombre</td>
-                    <td>Tipo</td>
-                    <td>Precio</td>
-                    <td>Acciones</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.id}</td>
-                      <td>{row.name}</td>
-                      <td>{row.type}</td>
-                      {row.type.toString() === ProductOrService.Producto ? (
-                        <td>{row.cost}</td>
+              <option value={``}>Sin filtrado</option>
+              <option value={`${ProductOrService.Producto}`}>Producto</option>
+              <option value={`${ProductOrService.Servicio}`}>Servicio</option>
+            </select>
+          </div>
+        </div>
+        {filtrado !== ProductOrService.Producto && (
+          <div>
+            <h6 className="m-0 mb-3 p-0">
+              Costo de mantenimiento de servicios *($)
+            </h6>
+          </div>
+        )}
+        {isLoading ? (
+          <div>
+            <LoadingComponent />
+          </div>
+        ) : (
+          <div className="w-full">
+            <table className="min-w-full bg-white border border-gray-300 ">
+              <thead className="bg-denim-400 text-white ">
+                <tr>
+                  <th className="py-2 px-4 border-b">ID</th>
+                  <th className="py-2 px-4 border-b">Nombre</th>
+                  <th className="py-2 px-4 border-b">Tipo</th>
+                  <th className="py-2 px-4 border-b">Precio</th>
+                  <th className="py-2 px-4 border-b">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.length ? (
+                  data.map((row, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="py-2">{row.id}</td>
+                      <td className="py-2">{row.nombre}</td>
+                      <td className="py-2">{row.tipo}</td>
+                      {row.tipo?.toString() === ProductOrService.Producto ? (
+                        <td className="py-2">{row.costo}</td>
                       ) : (
-                        <td>{row.support}</td>
+                        <td className="py-2">
+                          {row.costo} + *(<strong>{row.soporte}</strong>)
+                        </td>
                       )}
-                      <td>{actionButtons(row)}</td>
+                      <td className="py-2">{actionButtons(row)}</td>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Col>
-          )}
-        </Row>
-      </Container>
-      {showDialog && selectedElement && (
-        <ConfirmDialog
-          show={showDialog}
-          setShow={setShowDialog}
-          title={`Confirmar borrar ${
-            ProductOrService[selectedElement.type] as string
-          }?`}
-          content={`Esta por borrar ${selectedElement.name} con ID: ${selectedElement.id}`}
-          onConfirm={onConfirm}
-          onCancel={() => {
-            setShowDialog(false);
-            setSelectedElement(null);
-          }}
-        />
-      )}
+                  ))
+                ) : (
+                  <tr className="border-b">
+                    <td colSpan={5} className="py-2 px-4">
+                      No hay datos...
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </>
   );
 }

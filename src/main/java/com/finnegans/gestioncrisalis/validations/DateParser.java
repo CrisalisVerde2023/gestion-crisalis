@@ -1,17 +1,28 @@
 package com.finnegans.gestioncrisalis.validations;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DateParser {
-    public static LocalDateTime parseStringToLocalDateTime(String date, String pattern) throws DateTimeParseException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        return LocalDateTime.parse(date, formatter);
+
+    public static Date parseStringToDate(String date, String pattern) throws ParseException {
+        System.out.println("Parsing date string: " + date + ", using pattern: " + pattern); // Debug log
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        Date parsedDate = formatter.parse(date);
+        System.out.println("Parsed date object: " + parsedDate); // Debug log
+        return parsedDate;
     }
 
-    public static String formatLocalDateTimeToString(LocalDateTime dateTime, String pattern) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        return dateTime.format(formatter);
+    public static String formatDateToString(Date date, String pattern) {
+        System.out.println("Formatting date object: " + date + ", using pattern: " + pattern); // Debug log
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        String formattedDate = formatter.format(date);
+        System.out.println("Formatted date string: " + formattedDate); // Debug log
+        return formattedDate;
     }
 }

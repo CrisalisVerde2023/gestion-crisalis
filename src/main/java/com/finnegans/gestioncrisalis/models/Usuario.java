@@ -1,10 +1,13 @@
 package com.finnegans.gestioncrisalis.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import java.util.List;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -28,6 +31,13 @@ public class Usuario {
 
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "usuario"
+    )
+    @JsonIgnore
+    private List<Orden> ordenes;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

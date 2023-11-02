@@ -4,3 +4,10 @@ export type UsuariosType = {
   password: string;
   eliminado: boolean;
 };
+
+export const defaultUsuariosType = {
+  id: 0,
+  usuario: "",
+  password: "",
+  eliminado: false,
+};

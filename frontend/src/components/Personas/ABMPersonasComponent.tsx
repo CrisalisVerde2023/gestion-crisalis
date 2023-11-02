@@ -11,19 +11,22 @@ export default function ABMPersonasComponent() {
   }
 
   return (
-    <Container>
-      <Row>
-        <Col>
+    <div className="container mx-auto p-4">
+      <div className="flex flex-col items-center">
+        <div className="w-full">
           <LB_Personas />
-        </Col>
-      </Row>
-      <Row className="d-flex justify-content-center align-items-center">
-        <Col xs={6} className="d-flex justify-content-evenly">
-          <Button variant="primary" onClick={goToAMPersonas}>
+        </div>
+      </div>
+      <div className="flex justify-center items-center">
+        <div className="flex justify-evenly w-1/2">
+          <button
+            onClick={goToAMPersonas}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          >
             Crear nueva persona
-          </Button>
-        </Col>
-      </Row>
-    </Container>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

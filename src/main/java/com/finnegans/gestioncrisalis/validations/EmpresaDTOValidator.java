@@ -6,11 +6,11 @@ import org.apache.commons.lang3.StringUtils;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.text.ParseException;
+import java.util.Date;
 
 public class EmpresaDTOValidator implements ConstraintValidator<ValidEmpresaDTO, EmpresaDTO> {
+
     @Override
     public boolean isValid(EmpresaDTO empresaDTO, ConstraintValidatorContext context) {
         boolean nombreEmpty = StringUtils.isEmpty(empresaDTO.getNombreDTO());
@@ -22,10 +22,10 @@ public class EmpresaDTOValidator implements ConstraintValidator<ValidEmpresaDTO,
             throw new IllegalArgumentException("Start date is required.");
         }
 
-        LocalDateTime startDate = null;
+        Date startDate = null;
         try {
-            startDate = DateParser.parseStringToLocalDateTime(startDateString, "yyyy-MM-dd'T'HH:mm:ss");
-        } catch (DateTimeParseException e) {
+            startDate = DateParser.parseStringToDate(startDateString, "yyyy-MM-dd");
+        } catch (ParseException e) {
             // Handle the exception, perhaps log an error message
             throw new IllegalArgumentException("Invalid date format for start_date.");
         }

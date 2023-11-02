@@ -11,8 +11,10 @@ import com.finnegans.gestioncrisalis.validations.DateParser;
 import com.sun.jdi.request.InvalidRequestStateException;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,13 +28,13 @@ public class EmpresaServiceImpl implements EmpresaService {
 
     @Override
     public EmpresaResponseDTO save(EmpresaDTO empresaDTO) {
-        LocalDateTime startDate = null;
+        Date startDate = null;
         try {
-            startDate = DateParser.parseStringToLocalDateTime(empresaDTO.getStart_dateDTO(), "yyyy-MM-dd'T'HH:mm:ss");
-        } catch (DateTimeParseException e) {
-            //throw new YourCustomException("Invalid date format", e);
+            startDate = DateParser.parseStringToDate(empresaDTO.getStart_dateDTO(), "yyyy-MM-dd");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.out.println("Date parse error" );
         }
-
         Empresa empresa = this.empresaRepository.save(
                 Empresa.builder()
                         .nombre(empresaDTO.getNombreDTO())
@@ -67,9 +69,9 @@ public class EmpresaServiceImpl implements EmpresaService {
                 .orElseThrow(() -> new ResourceNotFound("Empresa no encontrada con id: " + id));
 
         try {
-            LocalDateTime parsedDate = DateParser.parseStringToLocalDateTime(empresaDTO.getStart_dateDTO(), "yyyy-MM-dd'T'HH:mm:ss");
+            Date parsedDate = DateParser.parseStringToDate(empresaDTO.getStart_dateDTO(), "yyyy-MM-dd");
             empresa.setStart_date(parsedDate);
-        } catch (DateTimeParseException e) {
+        } catch (ParseException e) {
             throw new InvalidRequestStateException("Invalid date format");
         }
 
