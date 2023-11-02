@@ -1,6 +1,6 @@
 import { PedidoType, UserLogged } from "../components/types/UserLogged";
 import { useContext } from "react";
-import { EncabezadoPedidoType } from "../components/types/encabezadoPedidoType";
+import { EncabezadoPedidoType } from "../components/types/EncabezadoPedidoType";
 import { ProductServiceType } from "../components/types/productServiceType";
 
 const URL_API_PRODS_SERVS = "http://localhost:8080/api/orden";
@@ -15,7 +15,7 @@ export async function createPedido(userLogged: UserLogged, pedido: Partial<Pedid
         detalleOrden: pedido.prods_servs?.map(({id, cantidad, garantia}) => ({idServicioProducto: id, cantidad, garantia})),
       }),
       headers: {
-        Authorization: userLogged.token,
+        //Authorization: userLogged.token,
         "Content-Type": "application/json",
       },
     })
@@ -34,7 +34,7 @@ export async function deletePedido(userLogged: UserLogged, id: number) {
     await fetch(`${URL_API_PRODS_SERVS}/${id}`, {
       method: "PATCH",
       headers: {
-        Authorization: userLogged.token,
+        //Authorization: userLogged.token,
         "Content-Type": "application/json",
       }
     })
