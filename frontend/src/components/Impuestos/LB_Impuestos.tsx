@@ -106,7 +106,7 @@ export default function LB_Impuestos() {
         </button>
         <button
           className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => navigate(`/usuarios/AMImpuestos/${row.id}`)}
+          onClick={() => navigate(`/impuestos/AMImpuestos/${row.id}`)}
         >
           <PencilFill />
         </button>
@@ -136,6 +136,7 @@ export default function LB_Impuestos() {
               <thead className="bg-denim-400 text-white">
                 <tr>
                   <th className="py-2 px-4 border-b">Impuesto</th>
+                  <th className="py-2 px-4 border-b">Porcentaje</th>
                   <th className="py-2 px-4 border-b">Acciones</th>
                 </tr>
               </thead>
@@ -155,6 +156,7 @@ export default function LB_Impuestos() {
                     .map((row, index) => (
                       <tr key={index} className="border-b">
                         <td className="py-2 px-4">{row.nombre}</td>
+                        <td className="py-2 px-4">{row.porcentaje}</td>
                         <td className="py-2 px-4">{actionButtons(row)}</td>
                       </tr>
                     ))

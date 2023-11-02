@@ -77,7 +77,7 @@ export function findImpuestoById(id: number): ImpuestosType | null {
   return foundItem ? foundItem : null;
 }
 
-export function getNextID() {
+/* export function getNextID() {
   const maxID = Math.max(...impuestos.map((impuesto) => impuesto.id));
   return maxID + 1;
-}
+}*/

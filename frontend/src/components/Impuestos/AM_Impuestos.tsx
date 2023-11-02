@@ -25,21 +25,38 @@ export default function AM_Impuestos() {
       ? findImpuestoById(idToModify) || {
           id: 0,
           nombre: "",
-          porcentaje: 0,
+          porcentaje: 0.0,
           eliminado: false
         }
-      : { id: 0, nombre: "", porcentaje: 0, eliminado: false }
+      : { id: 0, nombre: "", porcentaje: 0.0, eliminado: false }
   );
 
   const isFormComplete = () => {
-    return formData.nombre && formData.porcentaje ;
+    const errors = [];
+    
+    console.log(formData)
+
+    if (!formData.nombre)
+      errors.push("El nombre es obligatorio");
+    if (formData.nombre.length < 4 || formData.nombre.length > 15)
+      errors.push("El nombre debe contener entre 4 y 15 caracteres");
+  
+    if (!formData.porcentaje)
+      errors.push("El apellido es obligatorio");
+    if (formData.porcentaje > 0 || formData.porcentaje < 100){
+      errors.push("El apellido debe contener entre 4 y 15 caracteres");
+      console.log(formData)
+    }
+
+  
+    return errors.length === 0;
   };
 
   useEffect(() => {
     if (idToModify === undefined) {
       setFormData({
         ...formData,
-        id: getNextID(),
+        id: 0,
       });
     }
   }, []);
@@ -82,10 +99,10 @@ export default function AM_Impuestos() {
         <div className="w-1/2">
           <label className="block text-gray-700">porcentaje</label>
           <input
-            type="number"
+            type="text"
             value={formData.porcentaje}
             onChange={(e) =>
-              setFormData({ ...formData, porcentaje: parseInt(e.target.value) })
+              setFormData({ ...formData, porcentaje: e.target.value })
             }
             className="border rounded p-2 w-full"
           />
@@ -93,7 +110,7 @@ export default function AM_Impuestos() {
         
       </div>
       <button
-        disabled={!isFormComplete()}
+        //disabled={!isFormComplete()}
         className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 hover:bg-blue-600"
         onClick={handleSubmit}
       >

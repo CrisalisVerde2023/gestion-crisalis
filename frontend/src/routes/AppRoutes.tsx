@@ -79,9 +79,18 @@ export const AppRoutes = () => {
           path="/productosyservicios/AMServicios/:idProdServ"
           element={<AM_ProductService />}
         />
-        <Route path="/impuestos" element={<ABMImpuestos/>} />
-        <Route path="/impuestos/AMImpuestos" element={<AM_Impuestos/>}/>
-        <Route path="/impuestos/AMImpuestos/:idImpuesto" element={<AM_Impuestos/>}/>
+        <Route 
+          path="/impuestos" 
+          element={<ABMImpuestos/>} 
+        />
+        <Route 
+          path="/impuestos/AMImpuestos" 
+          element={<AM_Impuestos/>}
+        />
+        <Route 
+          path="/impuestos/AMImpuestos/:idImpuesto" 
+          element={<AM_Impuestos/>}
+        />
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
       </Routes>

@@ -1,5 +1,5 @@
 export type ImpuestosType = {
-    id: number;
+    id: number ;
     nombre: string;
     porcentaje: number; //Checkear esto
     eliminado: boolean;

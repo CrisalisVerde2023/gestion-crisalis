@@ -7,7 +7,7 @@ export default function ABMImpuestos() {
   const navigate = useNavigate();
 
   function goToAMImpuestos() {
-    navigate("/usuarios/AMImpuestos");
+    navigate("/impuestos/AMImpuestos");
   }
 
   const goBack = () => {
