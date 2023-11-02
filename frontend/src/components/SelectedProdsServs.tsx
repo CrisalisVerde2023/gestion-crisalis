@@ -16,7 +16,7 @@ export default function SelectedProdsServs() {
   }
 
   return !pedido.prods_servs.length
-    ? <p>No hay Productos / Servicios seleccionados...</p>
+    ? <p  className="py-2 bg-denim-400 text-white"><strong>No hay Productos / Servicios seleccionados...</strong></p>
     : 
       <div className="w-full">
   			<table className="min-w-full bg-white border-solid border-2 border-denim-400">
@@ -48,7 +48,7 @@ export default function SelectedProdsServs() {
                       type="number"
                       max={1000}
                       min={1}
-                      name="quantity"
+                      name="cantidad"
                       value={row.cantidad}
                       onChange={({target}) => handleChange(target, row)}>
                     </input>
@@ -59,7 +59,7 @@ export default function SelectedProdsServs() {
                         type="number"
                         max={5}
                         min={0}
-                        name="warranty"
+                        name="garantia"
                         value={row.garantia || 0}
                         onChange={({target}) => handleChange(target, row)}>
                       </input>
