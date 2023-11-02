@@ -6,6 +6,7 @@ import { Col, Container, Row, Table } from "react-bootstrap";
 
 export default function SelectedProdsServs() {
   const {pedido, setPedido} = useContext(UserLoggedContext);
+  let total:number = 0;
 
   const removeFromPedido = (row: ProductServiceType) => {
     setPedido({ ...pedido, prods_servs: pedido.prods_servs.filter(el => el.id !== row.id)});
@@ -65,12 +66,13 @@ export default function SelectedProdsServs() {
                       </input>
                     }
                   </td>
-                  <td className="py-2">{row.costo * row.cantidad + row.costo * row.cantidad * row.impuesto / 100 + (row.soporte || 0) * row.cantidad + (row.garantia || 0) * row.costo * row.cantidad * 0.2}</td>
+                  <td className="py-2">{- total + (total += row.costo * row.cantidad + row.costo * row.cantidad * row.impuesto / 100 + (row.soporte || 0) * row.cantidad + (row.garantia || 0) * row.costo * row.cantidad * 0.2)}</td>
                   <td className="py-2"><button onClick={() => removeFromPedido(row)}><XCircleFill /></button></td>
                 </tr>
               ))
             }
           </tbody>
         </table>
+        <p>Total del pedido: {total}</p>
       </div>
 }
