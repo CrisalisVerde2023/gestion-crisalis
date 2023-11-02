@@ -1,141 +1,75 @@
-import { Dispatch, SetStateAction } from "react";
-import { showNotification } from "../components/ToastNotification";
 import {
   ProductOrService,
   ProductServiceType,
 } from "../components/types/productServiceType";
-import { triggerLoading } from "./loadingEvent";
+import { useFetch, HTTPMethod, useFetchReturnType } from "./../hooks/useFetch";
 
-let productsAndServices: ProductServiceType[] = [];
+const URL_API_PRODS_SERVS = "http://localhost:8080/api/prods_servs";
 
-export const fetchProductServices = async (
-  setIsLoadingCallback: React.Dispatch<React.SetStateAction<boolean>>
+export const useFetchProds_Servs = (
+  id?: number,
+  shouldExecute: boolean = false
 ) => {
-  try {
-    triggerLoading(true, setIsLoadingCallback);
-    const response = await fetch("jsons/productAndServicesJson.json");
-    const data = await response.json();
-    productsAndServices = data; // <-- This line updates the productsAndServices array
-    triggerLoading(false, setIsLoadingCallback);
-    return data;
-  } catch (error) {
-    triggerLoading(false, setIsLoadingCallback);
-    console.error(`An error occurred: ${error}`);
-    throw error;
-  }
+  return useFetch(
+    {
+      method: HTTPMethod.GET,
+      url: `${URL_API_PRODS_SERVS}${id && id >= 0 ? `/${id}` : ""}`,
+      params: {},
+    },
+    shouldExecute
+  );
 };
 
-// Create a Product or Service
-export async function createProductService(
-  overrides: Partial<ProductServiceType> = {}
-) {
-  const combined = { ...defaultProductServiceValues, ...overrides };
-  try {
-    await fetch("http://localhost:8080/api/prods_servs", {
-      method: "POST",
-      body: JSON.stringify(combined),
-      headers: { "Content-Type": "application/json" },
-    }).then((resp) => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    });
-  } catch (error) {
-    console.error("Ocurrió un error al crear producto/servicio:", error);
-    throw error;
-  }
-}
-
-// Modify a Product or Service
-export async function modifyProductService(
-  id: number,
-  updatedData: Partial<ProductServiceType>
-) {
-  try {
-    await fetch(`http://localhost:8080/api/prods_servs/${id}`, {
-      method: "POST",
-      body: JSON.stringify(updatedData),
-      headers: { "Content-Type": "application/json" },
-    }).then((resp) => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    });
-  } catch (error) {
-    console.error("Ocurrió un error al modificar producto/servicio:", error);
-    throw error;
-  }
-}
-
-// Delete a Product or Service
-export async function deleteProductService(id: number) {
-  try {
-    await fetch(`http://localhost:8080/api/prods_servs/${id}`, {
-      method: "PATCH",
-    }).then((resp) => {
-      if (resp.status >= 400)
-        throw new Error("El servidor respondió con error");
-    });
-
-    const indexToDelete = productsAndServices.findIndex(
-      (item) => item.id === id
-    );
-    if (indexToDelete === -1) {
-      console.error(`Item with id ${id} not found.`);
-      return productsAndServices;
+export const useCreateProds_Servs = (
+  overrides: Partial<ProductServiceType> = {},
+  shouldExecute = false
+) => {
+  const params: Partial<ProductServiceType> = {};
+  (Object.keys(overrides) as (keyof ProductServiceType)[]).forEach((key) => {
+    const value = overrides[key];
+    if (value !== undefined && value !== null) {
+      (params as any)[key] = value;
     }
-
-    // Remove the item from the original array
-    const message =
-      productsAndServices[indexToDelete].tipo === ProductOrService.Producto
-        ? "Producto eliminado"
-        : "Servicio eliminado";
-    productsAndServices.splice(indexToDelete, 1);
-    return productsAndServices;
-  } catch (error) {
-    console.error(
-      "Ocurrió un error al cambiar estado de producto/servicio:",
-      error
-    );
-    throw error;
-  }
-}
-
-export const selectAll = (): ProductServiceType[] => {
-  return productsAndServices;
-};
-
-export const selectAllProducts = (): ProductServiceType[] => {
-  return selectAll().filter(
-    (item) => item.tipo.toString() === ProductOrService.Producto
+  });
+  return useFetch(
+    {
+      method: HTTPMethod.POST,
+      url: `${URL_API_PRODS_SERVS}`,
+      params,
+    },
+    shouldExecute
   );
 };
 
-export const selectAllServices = (): ProductServiceType[] => {
-  return selectAll().filter(
-    (item) => item.tipo.toString() === ProductOrService.Servicio
+export const useModifyProds_Servs = (
+  updatedData: Partial<ProductServiceType>,
+  shouldExecute = false
+) => {
+  const params: Partial<ProductServiceType> = {};
+  (Object.keys(updatedData) as (keyof ProductServiceType)[]).forEach((key) => {
+    const value = updatedData[key];
+    if (value !== undefined && value !== null) {
+      (params as any)[key] = value;
+    }
+  });
+
+  return useFetch(
+    {
+      method: HTTPMethod.POST,
+      url: `${URL_API_PRODS_SERVS}/${updatedData.id}`,
+      params,
+    },
+    shouldExecute
   );
 };
 
-export function findProductServiceById(id: number): ProductServiceType | null {
-  const foundItem = productsAndServices.find((item) => item.id === id);
-  return foundItem ? foundItem : null;
-}
-
-export function countProductServicios(): number {
-  return productsAndServices.length;
-}
-
-export function getNextID() {
-  const maxID = Math.max(
-    ...productsAndServices.map((prodOrServ) => prodOrServ.id)
+export const useDeleteProds_Servs = (id?: number, shouldExecute = false) => {
+  return useFetch(
+    {
+      method: HTTPMethod.PATCH,
+      url: `${URL_API_PRODS_SERVS}/${id}`,
+      params: {},
+    },
+    shouldExecute
   );
-  return maxID + 1;
-}
-
-export const defaultProductServiceValues: ProductServiceType = {
-  id: 0, // you can replace this with a logic to generate a unique id
-  nombre: "",
-  tipo: ProductOrService.Producto,
-  costo: 0,
-  soporte: null,
-  impuesto: 0,
-  cantidad: 1,
-  garantia: null
 };

@@ -17,14 +17,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ProductOrService,
   ProductServiceType,
+  defaultProductServiceValues,
 } from "../types/productServiceType";
 import {
-  createProductService,
-  deleteProductService,
-  fetchProductServices,
-  selectAll,
-  selectAllProducts,
-  selectAllServices,
+  useDeleteProds_Servs,
+  useFetchProds_Servs,
 } from "../../controller/ABMProductController";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
@@ -36,53 +33,112 @@ interface LB_ProductServiceProps {
 
 export default function LB_ProductService(props: LB_ProductServiceProps) {
   const { pedido, setPedido } = useContext(UserLoggedContext);
-  const [data, setData] = useState<ProductServiceType[]>([]);
-  const [originalData, setOriginalData] = useState<ProductServiceType[]>([]);
+  const [data, setData] = useState<ProductServiceType[] | null>(null);
+  const [originalData, setOriginalData] = useState<ProductServiceType[] | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const [filtrado, setFiltrado] = useState<string>("");
   const [selectedElement, setSelectedElement] =
     useState<ProductServiceType | null>(null);
+  const [shouldDelete, setShouldDelete] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
   const searchBoxRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  const defaultProductService: ProductServiceType = defaultProductServiceValues;
+  let fetchResponse = useFetchProds_Servs(undefined, shouldFetch);
+  let deleteResponse = useDeleteProds_Servs(idToDelete, shouldDelete);
 
-  const fetchData = async () => {
-    try {
-      const fetchedData = await fetchProductServices(setIsLoading);
-      console.log(fetchedData);
-      updateDataBasedOnFilter();
-    } catch (error) {
-      console.error(`An error occurred: ${error}`);
+  useEffect(() => {
+    if (fetchResponse && shouldFetch) {
+      if (
+        !fetchResponse.loading &&
+        !fetchResponse.hasError &&
+        fetchResponse.json
+      ) {
+        setOriginalData(fetchResponse.json);
+        setData(fetchResponse.json);
+        setShouldFetch(false);
+      } else if (!fetchResponse.loading && fetchResponse.hasError) {
+        Swal.fire("Error!", "No se han podido obtener datos.", "error");
+        setOriginalData(null);
+        setData(null);
+      }
     }
+  }, [fetchResponse]);
+
+  useEffect(() => {
+    if (deleteResponse && shouldDelete) {
+      setShouldDelete(false);
+      if (!deleteResponse.loading && !deleteResponse.hasError) {
+        Swal.fire("Perfecto!", "Elimino correctamente", "success");
+        setShouldFetch(true);
+      } else if (!deleteResponse.loading && deleteResponse.hasError) {
+        if (deleteResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al eliminar", "warning");
+        }
+      }
+    }
+  }, [deleteResponse]);
+
+  const selectAllProducts = (): ProductServiceType[] => {
+    let filtered: ProductServiceType[] = [];
+    if (originalData) {
+      console.log("Filtrando prod");
+
+      filtered = originalData.filter(
+        (item) => item.tipo.toString() === ProductOrService.Producto
+      );
+    }
+    console.log(filtered);
+
+    return filtered;
+  };
+
+  const selectAllServices = (): ProductServiceType[] => {
+    let filtered: ProductServiceType[] = [];
+    if (originalData) {
+      console.log("Filtrando serv");
+
+      filtered = originalData.filter(
+        (item) => item.tipo.toString() === ProductOrService.Servicio
+      );
+    }
+    console.log(filtered);
+    return filtered;
   };
 
   const updateDataBasedOnFilter = () => {
+    console.log(filtrado);
+    let filtered: ProductServiceType[] = [];
     if (filtrado === ProductOrService.Producto) {
-      const dataFetched = selectAllProducts();
-      setOriginalData(dataFetched);
-      setData(dataFetched);
+      filtered = selectAllProducts();
+      setData(filtered);
     } else if (filtrado === ProductOrService.Servicio) {
-      const dataFetched = selectAllServices();
-      setOriginalData(dataFetched);
-      setData(selectAllServices());
+      filtered = selectAllServices();
+      setData(filtered);
     } else {
-      const dataFetched = selectAll();
-      setOriginalData(dataFetched);
-      setData(dataFetched);
+      if (originalData) {
+        filtered = originalData;
+      }
     }
+    console.log(filtered);
+    setData(filtered);
   };
 
   useEffect(() => {
     handleSearch();
-  }, [data]);
+  }, [searchBoxRef.current?.value]);
 
   useEffect(() => {
     console.log(pedido.prods_servs);
   }, [pedido]);
 
   useEffect(() => {
-    if (selectAll().length === 0) {
-      fetchData();
+    if (!originalData || originalData.length === 0) {
+      setShouldFetch(true);
     } else {
       updateDataBasedOnFilter();
     }
@@ -96,7 +152,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
     impuesto: 0,
     soporte: null,
     cantidad: 1,
-    garantia: null
+    garantia: null,
   };
 
   const validColumnKeys: (keyof ProductServiceType)[] = Object.keys(
@@ -117,52 +173,44 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
           .map((str) => str.trim());
 
         if (validColumnKeys.includes(columnKey as keyof ProductServiceType)) {
-          filteredData = originalData.filter((item) =>
-            String(item[columnKey as keyof ProductServiceType])
-              .toLowerCase()
-              .includes(columnValue.toLowerCase())
-          );
+          if (data) {
+            filteredData = data.filter((item) =>
+              String(item[columnKey as keyof ProductServiceType])
+                .toLowerCase()
+                .includes(columnValue.toLowerCase())
+            );
+          }
         }
       } else {
-        filteredData = originalData.filter((item) => {
-          const idMatch = item.id === Number(searchTerm);
-          const nameMatch = item.nombre
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
-          const productMatch =
-            item.tipo === "PRODUCTO" && String(item.costo).includes(searchTerm);
-          const serviceMatch =
-            item.tipo === "SERVICIO" &&
-            String(item.soporte).includes(searchTerm);
+        if (data) {
+          filteredData = data.filter((item) => {
+            const idMatch = item.id === Number(searchTerm);
+            const nameMatch = item.nombre
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase());
+            const productMatch =
+              item.tipo === "PRODUCTO" &&
+              String(item.costo).includes(searchTerm);
+            const serviceMatch =
+              item.tipo === "SERVICIO" &&
+              String(item.soporte).includes(searchTerm);
 
-          return idMatch || nameMatch || productMatch || serviceMatch;
-        });
+            return idMatch || nameMatch || productMatch || serviceMatch;
+          });
+        }
       }
       setData(filteredData);
     } else {
-      setData(originalData);
+      setData(data);
     }
   };
 
-  const onConfirm = (productService: ProductServiceType) => {
-    if (productService)
-      deleteProductService(productService.id)
-        .then(() => {
-          Swal.fire({
-            title: "Realizado!",
-            text: "El producto/servicio ha sido eliminado.",
-            icon: "success",
-            timer: 2000,
-          });
-          updateDataBasedOnFilter();
-        })
-        .catch(() => {
-          Swal.fire(
-            "Error!",
-            "No se ha podido eliminar el producto/servicio.",
-            "error"
-          );
-        });
+  const onConfirm = async (productService: ProductServiceType) => {
+    if (productService) {
+      console.log(`Id to delete is : ${productService.id}`);
+      setIdToDelete(productService.id);
+      setShouldDelete(true);
+    }
   };
 
   const handleClickedElement = (selected: ProductServiceType) => {
@@ -216,13 +264,14 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
         >
           <XCircleFill />
         </button>
-        {
-          (props.seleccion === "multiple")
-          &&
-            <button className="p-2 hover:bg-blue-600 hover:text-white" onClick={() => addToPedido(row)}>
-              <PlusCircleFill />
-            </button>
-        }
+        {props.seleccion === "multiple" && (
+          <button
+            className="p-2 hover:bg-blue-600 hover:text-white"
+            onClick={() => addToPedido(row)}
+          >
+            <PlusCircleFill />
+          </button>
+        )}
         <button
           className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() =>
@@ -271,13 +320,6 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
             </select>
           </div>
         </div>
-        {filtrado !== ProductOrService.Producto && (
-          <div>
-            <h6 className="m-0 mb-3 p-0">
-              Costo de mantenimiento de servicios *($)
-            </h6>
-          </div>
-        )}
         {isLoading ? (
           <div>
             <LoadingComponent />
@@ -287,33 +329,51 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
             <table className="min-w-full bg-white border border-gray-300 ">
               <thead className="bg-denim-400 text-white ">
                 <tr>
-                  <th className="py-2 px-4 border-b">ID</th>
-                  <th className="py-2 px-4 border-b">Nombre</th>
-                  <th className="py-2 px-4 border-b">Tipo</th>
-                  <th className="py-2 px-4 border-b">Precio</th>
+                  {Object.keys(defaultProductService).map((key) => (
+                    <th className="py-2 px-4 border-b" key={key}>
+                      {key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}
+                    </th>
+                  ))}
                   <th className="py-2 px-4 border-b">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {data.length ? (
-                  data.map((row, index) => (
-                    <tr key={index} className="border-b">
-                      <td className="py-2">{row.id}</td>
-                      <td className="py-2">{row.nombre}</td>
-                      <td className="py-2">{row.tipo}</td>
-                      {row.tipo?.toString() === ProductOrService.Producto ? (
-                        <td className="py-2">{row.costo}</td>
-                      ) : (
-                        <td className="py-2">
-                          {row.costo} + *(<strong>{row.soporte}</strong>)
-                        </td>
-                      )}
-                      <td className="py-2">{actionButtons(row)}</td>
-                    </tr>
-                  ))
+                {data && data.length ? (
+                  data
+                    .filter((row) => !row.eliminado)
+                    .map(
+                      (
+                        row,
+                        index // Here we filter out the rows with eliminado === true
+                      ) => (
+                        <tr key={index} className="border-b">
+                          {Object.keys(defaultProductService).map((key) => {
+                            if (
+                              key === "costo" &&
+                              row.tipo?.toString() === ProductOrService.Producto
+                            ) {
+                              return <td className="py-2">{row[key]}</td>;
+                            } else if (
+                              key === "costo" &&
+                              row.tipo?.toString() === ProductOrService.Servicio
+                            ) {
+                              return <td className="py-2">{row[key]} </td>;
+                            } else {
+                              return (
+                                <td className="py-2">{(row as any)[key]}</td>
+                              );
+                            }
+                          })}
+                          <td className="py-2">{actionButtons(row)}</td>
+                        </tr>
+                      )
+                    )
                 ) : (
                   <tr className="border-b">
-                    <td colSpan={5} className="py-2 px-4">
+                    <td
+                      colSpan={Object.keys(defaultProductService).length + 1}
+                      className="py-2 px-4"
+                    >
                       No hay datos...
                     </td>
                   </tr>
