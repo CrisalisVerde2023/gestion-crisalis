@@ -20,6 +20,7 @@ export default function AM_Personas() {
     nombre: "",
     apellido: "",
     dni: "",
+    eliminado: false,
   });
 
 const [oldPersona, setOldPersona] = useState("");
@@ -151,7 +152,7 @@ const isFormComplete = () => {
         disabled={!isFormComplete()}
         style={{ marginTop: "10px" }}
         onClick={handleSubmit}
-        className="w-2/4 px-4 py-2 font-semibold leading-6 text-sm shadow text-white bg-denim hover:bg-denim-400 transition ease-in-out duration-150"
+        className="w-2/4 px-4 py-2 text-sm font-semibold leading-6 text-white transition duration-150 ease-in-out shadow bg-denim hover:bg-denim-400"
       >
         Crear persona
       </Button>

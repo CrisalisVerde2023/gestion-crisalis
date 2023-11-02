@@ -11,32 +11,32 @@ import {
 import { PersonasType } from "../types/personType";
 import { ConfirmDialog } from "../ConfirmDialog";
 import LoadingComponent from "../LoadingComponent";
+import Swal from "sweetalert2";
+
+let aux;
 
 export default function LB_Personas() {
   const [data, setData] = useState<PersonasType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedElement, setSelectedElement] = useState<PersonasType | null>(
-    null
-  );
+  
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
 
   const fetchData = async () => {
     try {
-      const fetchedData = await fetchPersonas(setIsLoading);
-      setData(fetchedData);
+      return await fetchPersonas(0);
     } catch (error) {
-      console.error(`An error occurred: ${error}`);
+      Swal.fire("Error!", "No se han podido obtener datos.", "error");
     }
   };
 
   useEffect(() => {
-    if (selectAllPersonas().length === 0) {
-      fetchData();
-    } else {
-      setData(selectAllPersonas());
-    }
+    setIsLoading(true);
+    fetchData().then((resp) => {
+      setData(resp);
+      setIsLoading(false);
+    });
   }, [location]);
 
   const handleSearch = () => {
@@ -50,21 +50,44 @@ export default function LB_Personas() {
     setData(filteredData);
   };
 
-  const onConfirm = () => {
-    if (selectedElement) {
-      deletePersona(selectedElement.id);
-      setShowDialog(false);
-      setData(selectAllPersonas());
-    }
+  const onConfirm = (persona: PersonasType) => {
+    if (persona)
+      deletePersona(persona.id)
+        .then(() => {
+          fetchData().then((resp) => {
+            setData(resp);
+            Swal.fire({
+              title: "Realizado!",
+              text: "Se ha cambiado el estado.",
+              icon: "success",
+              timer: 2000,
+            });
+          });
+        })
+        .catch(() => {
+          Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
+        });
   };
 
   const handleClickedElement = (selected: PersonasType) => {
-    setSelectedElement(selected);
-    setShowDialog(true);
+      Swal.fire({
+        title: "Confirmar cambio de estado de usuario?",
+        text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${
+          selected.id
+        }`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí! Estoy seguro.",
+        cancelButtonText: "Mejor no.",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+      }).then((result) => {
+        if (result.isConfirmed) onConfirm(selected);
+      });
   };
 
   const actionButtons = (row: PersonasType) => (
-    <div className="d-flex flex-row justify-content-evenly align-items-center">
+    <div className="flex-row d-flex justify-content-evenly align-items-center">
       <Button
         className="actionButton"
         onClick={() => handleClickedElement(row)}
@@ -81,23 +104,16 @@ export default function LB_Personas() {
     <>
       <Container>
         <Row
-          className="d-flex flex-row justify-content-center align-items-center"
+          className="flex-row d-flex justify-content-center align-items-center"
           style={{ marginBottom: "15px" }}
         >
           <Col xs="auto">
-            <input
+          <input
               type="text"
               placeholder="Buscar"
               className="inputSearch"
               value={searchTerm}
-              onChange={(e) => {
-                if (e.target.value.length === 0) {
-                  setData(selectAllPersonas());
-                  setSearchTerm("");
-                } else {
-                  setSearchTerm(e.target.value);
-                }
-              }}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </Col>
           <Col xs="auto">
@@ -129,31 +145,57 @@ export default function LB_Personas() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.id}</td>
-                      <td>{row.nombre}</td>
-                      <td>{row.apellido}</td>
-                      <td>{row.dni}</td>
-                      <td>{actionButtons(row)}</td>
+                  {data &&
+                  (aux = !searchTerm.length
+                    ? data
+                    : data.filter((persona: PersonasType) =>
+                        persona.nombre
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                          persona.apellido
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                          persona.dni
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                          persona.id === parseInt(searchTerm)
+                      )).length ? (
+                    aux
+                      .sort((a: PersonasType, b: PersonasType) =>
+                        a.nombre.toLowerCase() < b.nombre.toLowerCase()
+                          ? -1
+                          : 1
+                      )
+                      .map((row, index) => (
+                        <tr key={index}>
+                          <td>{row.id}</td>
+                          <td>{row.nombre}</td>
+                          <td>{row.apellido}</td>
+                          <td>{row.dni}</td>
+                          <td>{row.eliminado ? "Inactivo" : "Activo"}</td>
+                          <td>{actionButtons(row)}</td>
+                        </tr>
+                      ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3}>No hay datos...</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </Table>
             </Col>
           )}
         </Row>
       </Container>
-      {showDialog && selectedElement && (
+      {showDialog && (
         <ConfirmDialog
           show={showDialog}
           setShow={setShowDialog}
           title="Confirmar borrar persona"
-          content={`Esta por borrar ${selectedElement.nombre} ${selectedElement.apellido} con ID: ${selectedElement.id}`}
           onConfirm={onConfirm}
           onCancel={() => {
             setShowDialog(false);
-            setSelectedElement(null);
+            
           }}
         />
       )}
