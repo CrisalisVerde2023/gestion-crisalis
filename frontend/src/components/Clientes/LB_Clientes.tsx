@@ -148,44 +148,6 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     return (
         <>
             <Container className="relative">
-                {/* <div className="bg-black bg-opacity-50 w-full h-full absolute left-[0px] top-[-0px] flex justify-center items-center">
-                <form className={`w-1/3 ${clienteDTO.empresa_id === null ? 'bg-blue-200' : 'bg-green-200'}`} onSubmit={handleSubmit}>
-                        <div></div>
-                        <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Persona:</label>
-                        <select name="persona_id"
-                            id="countries"
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-
-                            onChange={handleSelectChange}
-                        >
-                            <option value={''}>---Seleccione Persona---</option>
-                            {
-                                personas.map((persona, index) => (
-                                    <option key={index} value={persona.id}>ID: {persona.id} - {persona.nombre} {persona.apellido}</option>
-                                ))
-                            }
-                        </select>
-                        <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Empresa:</label>
-                        <select name="empresa_id"
-                            id="countries"
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-
-                            onChange={handleSelectChange}
-                        >
-                            <option value={''}>---Seleccione Empresa---</option>
-                            {
-                                empresas.map((empresa, index) => (
-                                    <option key={index} value={empresa.id}>ID: {empresa.id} - {empresa.nombre}</option>
-                                ))
-                            }
-                        </select>
-                        <button type="submit" className="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                            {
-                                clienteDTO.empresa_id === null ? 'CREAR CLIENTE PERSONA' : 'CREAR CLIENTE EMPRESA'
-                            }
-                        </button>
-                    </form>
-                </div> */}
                 <Row className="d-flex flex-row justify-content-center align-items-center mt-4 mb-4">
 
                     <form className={`w-1/3 rounded-lg p-2 ${clienteDTO.empresa_id === null ? 'bg-blue-200' : 'bg-green-200'}`} onSubmit={handleSubmit}>

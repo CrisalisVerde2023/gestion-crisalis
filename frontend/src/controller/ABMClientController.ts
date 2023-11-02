@@ -16,7 +16,7 @@ export const fetchClientes = async (id: number) => {
       })
     ).json();
   } catch (error) {
-    console.error("Ocurrió un error al obtener personas:", error);
+    console.error("Ocurrió un error al obtener clientes:", error);
     throw error;
   }
 };
@@ -37,7 +37,7 @@ export async function createClient(overrides: Partial<ClienteDTO>) {
         if (resp.status >= 400) throw "El servidor respondió con error " + resp.status;
       });
     } catch (error) {
-      console.error("Ocurrió un error al crear usuario:", error);
+      console.error("Ocurrió un error al crear cliente:", error);
       throw error;
     }
 }
@@ -54,7 +54,7 @@ export async function deleteClient(id: number) {
       if (resp.status >= 400) throw "El servidor respondió con error " + resp.status;
     });
   } catch (error) {
-    console.error("Ocurrió un error al cambiar estado de usuario:", error);
+    console.error("Ocurrió un error al cambiar estado de cliente:", error);
     throw error;
   }
 }
@@ -76,7 +76,7 @@ export async function updateClient(overrides: Partial<ClienteDTO>, idCliente: nu
       
     });
   } catch (error) {
-    console.error("Ocurrió un error al crear usuario:", error);
+    console.error("Ocurrió un error al crear cliente:", error);
     throw error;
   }
 }
