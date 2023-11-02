@@ -42,7 +42,7 @@ export default function SelectedProdsServs() {
                   <td className="py-2">{row.tipo}</td>
                   <td className="py-2">{row.costo}</td>
                   <td className="py-2">{row.impuesto}</td>
-                  <td className="py-2">{row.soporte || "-"}</td>
+                  <td className="py-2">{row.soporte || (row.soporte === 0) ? 0 : "-"}</td>
                   <td className="py-2">
                     <input
                       style={{width: "60px", backgroundColor: "lightgrey", padding: "5px", borderRadius: "10%"}}
