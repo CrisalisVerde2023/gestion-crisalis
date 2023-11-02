@@ -14,6 +14,7 @@ import NotFoundComponent from "../components/NotFoundComponent";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { AuthRoute } from "./AuthRoute";
 import AltaPedidoComponent from "../components/Pedidos/AltaPedidoComponent";
+import ABMPedidos from "../components/Pedidos/ABMPedidos";
 
 export const AppRoutes = () => {
   const { userLogged } = useContext(UserLoggedContext);
@@ -80,6 +81,7 @@ export const AppRoutes = () => {
         />
         <Route path="/impuestos" element={/*<ABMImpuestosComponent />*/ null} />
         <Route path="/altaPedido" element={<AltaPedidoComponent />}/>
+        <Route path="/pedidos" element={<ABMPedidos />}/>
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
       </Routes>

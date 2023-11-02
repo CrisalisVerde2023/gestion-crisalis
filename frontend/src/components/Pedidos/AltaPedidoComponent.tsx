@@ -4,7 +4,7 @@ import SelectedProdsServs from "../SelectedProdsServs";
 import SelectedClient from "../SelectedClient";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { createPedido } from "../../controller/AltaPedidoController";
+import { createPedido } from "../../controller/ABMPedidoController";
 import { defaultPedidoState } from "../types/UserLogged";
 
 export default function AltaPedidoComponent() {
