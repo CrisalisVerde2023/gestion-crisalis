@@ -88,15 +88,20 @@ export default function LB_Personas() {
 
   const actionButtons = (row: PersonasType) => (
     <div className="flex-row d-flex justify-content-evenly align-items-center">
-      <Button
-        className="actionButton"
+      <button
+        className="p-2 hover:bg-blue-600 hover:text-white"
         onClick={() => handleClickedElement(row)}
       >
         <XCircleFill />
-      </Button>
-      <Link className="actionButton" to={`/personas/AMPersonas/${row.id}`}>
+      </button>
+      <button
+      className="p-2 hover:bg-blue-600 hover:text-white"
+      onClick={() => handleClickedElement(row)}
+      >
+      <Link className="" to={`/personas/AMPersonas/${row.id}`}>
         <PencilFill />
       </Link>
+      </button>
     </div>
   );
 
@@ -104,26 +109,17 @@ export default function LB_Personas() {
     <>
       <Container>
         <Row
-          className="flex-row d-flex justify-content-center align-items-center"
+          className="flex-row d-flex justify-content-center align-items-center "
           style={{ marginBottom: "15px" }}
         >
           <Col xs="auto">
           <input
               type="text"
               placeholder="Buscar"
-              className="inputSearch"
+              className="px-2 py-1 border-2 border-blue-500 inputSearch"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </Col>
-          <Col xs="auto">
-            <Button
-              onClick={handleSearch}
-              variant="primary"
-              className="searchButton"
-            >
-              <Search />
-            </Button>
           </Col>
         </Row>
         {/* Data Table */}
@@ -133,17 +129,18 @@ export default function LB_Personas() {
               <LoadingComponent />
             </Col>
           ) : (
-            <Col>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
+            <Col className="w-full">
+              <table className="min-w-full bg-white border-gray-300">
+              <thead className="text-white bg-denim-400 ">
+                <tr>
+                  <th className="px-4 py-2 border-b">ID</th>
+                  <th className="px-4 py-2 border-b">Nombre</th>
+                  <th className="px-4 py-2 border-b">Apellido</th>
+                  <th className="px-4 py-2 border-b">DNI</th>
+                  <th className="px-4 py-2 border-b">Estado</th>
+                  <th className="px-4 py-2 border-b">Acciones</th>
+                </tr>
+              </thead>
                 <tbody>
                   {data &&
                   (aux = !searchTerm.length
@@ -167,13 +164,13 @@ export default function LB_Personas() {
                           : 1
                       )
                       .map((row, index) => (
-                        <tr key={index}>
-                          <td>{row.id}</td>
-                          <td>{row.nombre}</td>
-                          <td>{row.apellido}</td>
-                          <td>{row.dni}</td>
-                          <td>{row.eliminado ? "Inactivo" : "Activo"}</td>
-                          <td>{actionButtons(row)}</td>
+                        <tr key={index} className="border-b">
+                          <td className="py-2">{row.id}</td>
+                          <td className="py-2">{row.nombre}</td>
+                          <td className="py-2">{row.apellido}</td>
+                          <td className="py-2">{row.dni}</td>
+                          <td className="py-2">{row.eliminado ? "Inactivo" : "Activo"}</td>
+                          <td className="py-2">{actionButtons(row)}</td>
                         </tr>
                       ))
                   ) : (
@@ -182,7 +179,7 @@ export default function LB_Personas() {
                     </tr>
                   )}
                 </tbody>
-              </Table>
+              </table>
             </Col>
           )}
         </Row>
