@@ -12,11 +12,9 @@ import javax.validation.constraints.NotBlank;
 public class OrdenDetalleDTO {
 
     @NotBlank(message = "El campo cliente no puede ser vacio.")
-    @JsonProperty("cantidad")
-    private Integer quantity;
-    @JsonProperty("tiempoGarantia")
-    private Integer tiempoGarantia;
+    private Integer cantidad;
 
+    private Integer garantia;
     @JsonProperty("idServicioProducto")
     private Long idProductService;
 

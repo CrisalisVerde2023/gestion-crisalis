@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,14 +24,15 @@ import java.util.List;
         @GenericGenerator(strategy = "native", name = "native")
         @Column(name = "ID", nullable = false)
         private Long id;
+
         @ManyToOne(fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL,
-            optional = false)
+            cascade = CascadeType.ALL)
         @JoinColumn(name="CLIENTE_ID")
         private Cliente cliente;
+
         @ManyToOne(fetch = FetchType.EAGER,
-                cascade = CascadeType.ALL,
-                optional = false)
+                cascade = CascadeType.ALL/*,
+                optional = false*/)
         @JoinColumn(name="USUARIO_ID")
         private Usuario usuario;
 
@@ -41,7 +43,12 @@ import java.util.List;
         private LocalDateTime fechaCreacion;
 
         @OneToMany(mappedBy = "orden")
-        private List<OrdenDetalle> OrdenDetalles;
+        private List<OrdenDetalle> ordenDetalles;
 
+        @PrePersist
+        public void prePersist() {
+                this.fechaCreacion = LocalDateTime.now();
+
+        }
     }
 

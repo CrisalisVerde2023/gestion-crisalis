@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 public interface OrdenDetalleRepository extends JpaRepository<OrdenDetalle,Long> {
-    Optional<OrdenDetalle> findById(Long id);
-
-    List<OrdenDetalle> findAllById(List<Long> listaId);
 
     List<OrdenDetalle> findByOrden(Long id);
 }

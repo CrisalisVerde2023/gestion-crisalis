@@ -1,16 +1,11 @@
 package com.finnegans.gestioncrisalis.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.finnegans.gestioncrisalis.dtos.ProductoDTO;
@@ -54,10 +49,11 @@ public class Producto {
     @Column(name = "FECHA_MODIFICACION")
     private LocalDateTime fechaModificacion;
 
-/*    
+
     @OneToMany(mappedBy = "productoServicio")
+    @JsonIgnore
     private List<OrdenDetalle> ordenDetalle;
-*/
+
 
     public Producto(ProductoDTO productDTO){
         this.nombre = productDTO.getNombre();

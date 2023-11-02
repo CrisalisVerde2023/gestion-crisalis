@@ -1,6 +1,7 @@
 package com.finnegans.gestioncrisalis.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Data
 @AllArgsConstructor
@@ -28,6 +30,7 @@ public class OrdenDetalle {
             optional = false
     )
     @JoinColumn(name="ORDEN_ID")
+    @JsonIgnore
     private Orden orden;
 
     @ManyToOne(
@@ -38,29 +41,30 @@ public class OrdenDetalle {
     @JoinColumn(name="PRODUCTO_ID")
     private Producto productoServicio;
 
-    @Column(name = "QUANTITY", nullable = false)
-    private Integer quantity;
+    @Column(name = "CANTIDAD", nullable = false)
+    private Integer cantidad;
 
-    @Column(name = "NAME", nullable = false)
-    private String name;
+    @Column(name = "NOMBRE", nullable = false)
+    private String nombre;
 
-    @Column(name = "COST", nullable = false)
-    private Float cost;
+    @Column(name = "COSTO", nullable = false)
+    private Float costo;
 
-    @Column(name = "TAX", nullable = false)
-    private Double tax;
+    @Column(name = "IMPUESTO")
+    private Double impuesto;
 
-    @Column(name = "DISCOUNT", nullable = false)
-    private Double discount;
+    @Column(name = "DESCUENTO")
+    private Double descuento;
 
-    @Column(name = "SERVICE_SUPPORT", nullable = false)
-    private Float service_support;
+    @Column(name = "SERVICIO_SOPORTE")
+    private Float servicioSoporte;
 
-    @Column(name = "WARRANTY_YEARS", nullable = false)
-    private Integer warranty_years;
+    @Column(name = "GARANTIA")
+    private Integer garantia;
 
-    @Column(name = "WARRANTY_COST", nullable = false)
-    private Double warranty_cost;
+    @Column(name = "GARANTIA_COSTO")
+    private Double garantiaCosto;
+
     @Column(name = "ANULADO", nullable = false)
     private boolean anulado;
 }

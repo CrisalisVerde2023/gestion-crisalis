@@ -1,5 +1,6 @@
 package com.finnegans.gestioncrisalis.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,9 +33,10 @@ public class Usuario {
     private String password;
 
     @OneToMany(
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "usuario"
     )
+    @JsonIgnore
     private List<Orden> ordenes;
 
     @ManyToMany(fetch = FetchType.EAGER)
