@@ -1,6 +1,8 @@
 import React, { createContext, ReactNode } from "react";
 import {
   defaultContext,
+  defaultPedidoState,
+  defaultUserLogState,
   UserLoggedContextType,
 } from "../components/types/UserLogged";
 import { useSessionStorage } from "usehooks-ts";
@@ -13,14 +15,16 @@ type Props = {
 };
 
 export default function UserLoggedProvider({ children }: Props) {
-  const [userLogged, setUserLogged] = useSessionStorage("userLogged", {
-    id: -1,
-    email: "",
-    isAuth: false,
-    isAdmin: false,
-  });
+  const [userLogged, setUserLogged] = useSessionStorage(
+    "userLogged",
+    defaultUserLogState
+  );
+  const [pedido, setPedido] = useSessionStorage("pedido", defaultPedidoState);
+
   return (
-    <UserLoggedContext.Provider value={{ userLogged, setUserLogged }}>
+    <UserLoggedContext.Provider
+      value={{ userLogged, setUserLogged, pedido, setPedido }}
+    >
       {children}
     </UserLoggedContext.Provider>
   );

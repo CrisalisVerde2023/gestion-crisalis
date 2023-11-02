@@ -16,7 +16,7 @@
 #root {
   margin: 0;
   padding: 0;
-  height: 100vh;
+  height: auto;
   width: 100vw;
 }
 a {
@@ -31,7 +31,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  /*place-items: center;*/
   justify-content: center;
   min-width: 320px;
   min-height: 100vh;

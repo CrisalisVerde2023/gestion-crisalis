@@ -1,21 +1,24 @@
+import { UserLogged } from "./../components/types/UserLogged";
 import { showNotification } from "../components/ToastNotification";
 import { EnterpriseType } from "../components/types/enterpriseType";
+import { useContext } from "react";
+import { UserLoggedContext } from "../contexts/UserLoggedContext";
 
 let enterprises: EnterpriseType[] = [];
 
 const URL_API_EMPRESAS = "http://localhost:8080/api/empresas";
 
-
 export const fetchEnterprises = async (
   setIsLoadingCallback: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
+  const { userLogged } = useContext(UserLoggedContext);
   try {
     const response = await fetch(`${URL_API_EMPRESAS}`, {
       headers: {
-        Authorization: sessionStorage.getItem("token"),
+        Authorization: userLogged.token,
         "Content-Type": "application/json",
       },
-    })
+    });
     const data = await response.json();
     enterprises = data;
     return data;
@@ -29,21 +32,25 @@ export const selectAll = (): EnterpriseType[] => {
   return enterprises;
 };
 
-export async function createEnterprise (overrides: Partial<EnterpriseType> = {}) {
+export async function createEnterprise(
+  overrides: Partial<EnterpriseType> = {}
+) {
+  const { userLogged } = useContext(UserLoggedContext);
   try {
     await fetch(`${URL_API_EMPRESAS}`, {
       method: "POST",
       body: JSON.stringify({
         nombre: overrides.nombre,
         cuit: overrides.cuit,
-        start_date: "2024-11-27T15:30:00"
+        start_date: overrides.start_date,
       }),
       headers: {
-        Authorization: sessionStorage.getItem("token"),
+        Authorization: userLogged.token,
         "Content-Type": "application/json",
       },
     }).then((resp) => {
-      if (resp.status >= 400) console.log("El servidor respondió con error", resp.status); 
+      if (resp.status >= 400)
+        console.log("El servidor respondió con error", resp.status);
     });
   } catch (error) {
     console.error("Ocurrió un error al crear usuario:", error);
@@ -87,11 +94,15 @@ export function getNextID() {
 }
 
 export function createEnterpriseDefaultValues(): EnterpriseType {
+  const today = new Date();
+  const formattedDate = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   return {
     id: 0,
     nombre: "",
     cuit: "",
-    start_date: new Date(),
+    start_date: formattedDate,
   };
 }
 

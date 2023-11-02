@@ -11,19 +11,22 @@ export default function ABMEmpresasComponent() {
   }
 
   return (
-    <Container>
-      <Row>
-        <Col>
+    <div className="container mx-auto p-4">
+      <div className="flex justify-center items-center">
+        <div className="w-full">
           <LB_Empresas />
-        </Col>
-      </Row>
-      <Row className="d-flex justify-content-center align-items-center">
-        <Col xs={6} className="d-flex justify-content-evenly">
-          <Button variant="primary" onClick={goToAMEmpresas}>
+        </div>
+      </div>
+      <div className="flex justify-center items-center mt-4">
+        <div className="w-1/2 flex justify-evenly">
+          <button
+            onClick={goToAMEmpresas}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          >
             Crear nueva empresa
-          </Button>
-        </Col>
-      </Row>
-    </Container>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

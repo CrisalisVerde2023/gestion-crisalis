@@ -87,30 +87,3 @@ export async function deletePersona(id: number) {
   }
 }
 
-export function countPersonas(): number {
-  return personas.length;
-}
-
-export function getNextID() {
-  const maxID = Math.max(...personas.map((persona) => persona.id));
-  return maxID + 1;
-}
-
-export function createPersonaDefaultValues(): PersonasType {
-  return {
-    id: 0,
-    nombre: "",
-    apellido: "",
-    dni: "",
-  };
-}
-
-export function findPersonaById(id: number): PersonasType | null {
-  const foundItem = personas.find((item) => item.id === id);
-  return foundItem ? foundItem : null;
-}
-
-export function findPersonaByDNI(dni: string): PersonasType | null {
-  const foundItem = personas.find((item) => item.dni === dni);
-  return foundItem ? foundItem : null;
-}

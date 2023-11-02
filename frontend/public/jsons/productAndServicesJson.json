@@ -1,72 +1,102 @@
 [
   {
-    "id": 0,
-    "name": "Portátil",
-    "type": "Producto",
-    "cost": 1000,
-    "support": 0
+    "id": 10,
+    "nombre": "Portátil",
+    "tipo": "PRODUCTO",
+    "costo": 1000,
+    "soporte": null,
+    "impuesto": 0,
+    "cantidad": 1,
+    "garantia": 0
   },
   {
     "id": 1,
-    "name": "Teléfono Móvil",
-    "type": "Producto",
-    "cost": 800,
-    "support": 0
+    "nombre": "Teléfono Móvil",
+    "tipo": "PRODUCTO",
+    "costo": 800,
+    "soporte": null,
+    "impuesto": 0,
+    "cantidad": 1,
+    "garantia": 0
   },
   {
     "id": 2,
-    "name": "Desarrollo Web",
-    "type": "Servicio",
-    "cost": 0,
-    "support": 100
+    "nombre": "Desarrollo Web",
+    "tipo": "SERVICIO",
+    "costo": 1500,
+    "soporte": 0,
+    "impuesto": 0,
+    "cantidad": 1,
+    "garantia": 0
   },
   {
     "id": 3,
-    "name": "Impresora",
-    "type": "Producto",
-    "cost": 200,
-    "support": 0
+    "nombre": "Impresora",
+    "tipo": "PRODUCTO",
+    "costo": 200,
+    "soporte": null,
+    "impuesto": 21,
+    "cantidad": 1,
+    "garantia": 0
   },
   {
     "id": 4,
-    "name": "Mantenimiento de Redes",
-    "type": "Servicio",
-    "cost": 0,
-    "support": 150
+    "nombre": "Mantenimiento de Redes",
+    "tipo": "SERVICIO",
+    "costo": 1800,
+    "soporte": 150,
+    "impuesto": 0,
+    "cantidad": 1,
+    "garantia": 0
   },
   {
     "id": 5,
-    "name": "Servidor",
-    "type": "Producto",
-    "cost": 2500,
-    "support": 0
+    "nombre": "Servidor",
+    "tipo": "PRODUCTO",
+    "costo": 2500,
+    "soporte": null,
+    "impuesto": 10.5,
+    "cantidad": 1,
+    "garantia": 0
   },
   {
     "id": 6,
-    "name": "Almacenamiento en la Nube",
-    "type": "Servicio",
-    "cost": 0,
-    "support": 80
+    "nombre": "Almacenamiento en la Nube",
+    "tipo": "SERVICIO",
+    "costo": 1200,
+    "soporte": 80,
+    "impuesto": 0,
+    "cantidad": 1,
+    "garantia": 0
   },
   {
     "id": 7,
-    "name": "Teclado Mecánico",
-    "type": "Producto",
-    "cost": 100,
-    "support": 0
+    "nombre": "Teclado Mecánico",
+    "tipo": "PRODUCTO",
+    "costo": 100,
+    "soporte": null,
+    "impuesto": 20,
+    "cantidad": 1,
+    "garantia": 0
   },
   {
     "id": 8,
-    "name": "Consultoría de Seguridad",
-    "type": "Servicio",
-    "cost": 0,
-    "support": 200
+    "nombre": "Consultoría de Seguridad",
+    "tipo": "SERVICIO",
+    "costo": 1600,
+    "soporte": 200,
+    "impuesto": 10,
+    "cantidad": 1,
+    "garantia": null
   },
   {
     "id": 9,
-    "name": "Monitor",
-    "type": "Producto",
-    "cost": 300,
-    "support": 0
+    "nombre": "Monitor",
+    "tipo": "PRODUCTO",
+    "costo": 300,
+    "soporte": null,
+    "impuesto": 0,
+    "cantidad": 1,
+    "garantia": 1
   }
 ]
