@@ -14,6 +14,7 @@ import NotFoundComponent from "../components/NotFoundComponent";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { AuthRoute } from "./AuthRoute";
 import ABMClientesComponent from "../components/Clientes/ABMClientes";
+import AM_Clientes from "../components/Clientes/AM_Clientes";
 
 export const AppRoutes = () => {
   const { userLogged } = useContext(UserLoggedContext);
@@ -33,6 +34,11 @@ export const AppRoutes = () => {
           element={<AM_Personas />}
         />
         <Route path="/clientes" element={<ABMClientesComponent/>} />
+        <Route
+          path="/clientes/AMClientes/:idCliente"
+          element={<AM_Clientes/>}
+        />
+        
         <Route path="/empresas" element={<ABMEmpresasComponent />} />
         <Route path="/empresas/AMEmpresas" element={<AM_Empresa />} />
         <Route

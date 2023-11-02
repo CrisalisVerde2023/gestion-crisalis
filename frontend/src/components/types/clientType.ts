@@ -6,5 +6,11 @@ export type ClientesType = {
     persona: PersonasType;
     empresa: EnterpriseType;
     eliminado: boolean;
-  };
+};
+
+export type ClienteDTO = {
+    persona_id: string | null;
+    empresa_id: string | null;
+};
+
   

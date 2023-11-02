@@ -18,13 +18,13 @@ export default function ABMClientesComponent() {
           <LB_Clientes />
         </Col>
       </Row>
-      <Row className="d-flex justify-content-center align-items-center">
+      {/* <Row className="d-flex justify-content-center align-items-center">
         <Col xs={6} className="d-flex justify-content-evenly">
           <Button variant="primary" onClick={goToAMClientes}>
             Crear nuevo CLIENTE
           </Button>
         </Col>
-      </Row>
+      </Row> */}
     </Container>
   );
 }
