@@ -12,7 +12,10 @@ import com.sun.jdi.request.InvalidRequestStateException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmpresaServiceImpl implements EmpresaService {
     private final EmpresaRepository empresaRepository;
+    private static final SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     public EmpresaServiceImpl(EmpresaRepository empresaRepository){
         this.empresaRepository = empresaRepository;
@@ -28,18 +32,18 @@ public class EmpresaServiceImpl implements EmpresaService {
 
     @Override
     public EmpresaResponseDTO save(EmpresaDTO empresaDTO) {
-        Date startDate = null;
+        Date inputDate = null;
         try {
-            startDate = DateParser.parseStringToDate(empresaDTO.getStart_dateDTO(), "yyyy-MM-dd");
+            inputDate = inputDateFormat.parse(empresaDTO.getStart_dateDTO());
         } catch (ParseException e) {
-            e.printStackTrace();
-            System.out.println("Date parse error" );
+            throw new RuntimeException(e);
         }
+
         Empresa empresa = this.empresaRepository.save(
                 Empresa.builder()
                         .nombre(empresaDTO.getNombreDTO())
                         .cuit(empresaDTO.getCuitDTO())
-                        .start_date(startDate)
+                        .start_date(inputDate)
                         .build()
         );
 
@@ -69,8 +73,7 @@ public class EmpresaServiceImpl implements EmpresaService {
                 .orElseThrow(() -> new ResourceNotFound("Empresa no encontrada con id: " + id));
 
         try {
-            Date parsedDate = DateParser.parseStringToDate(empresaDTO.getStart_dateDTO(), "yyyy-MM-dd");
-            empresa.setStart_date(parsedDate);
+            empresa.setStart_date(inputDateFormat.parse(empresaDTO.getStart_dateDTO()));
         } catch (ParseException e) {
             throw new InvalidRequestStateException("Invalid date format");
         }

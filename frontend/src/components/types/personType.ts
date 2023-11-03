@@ -3,4 +3,5 @@ export type PersonasType = {
   nombre: string;
   apellido: string;
   dni: string;
+  eliminado: boolean;
 };

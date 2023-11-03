@@ -1,41 +1,17 @@
+// @ts-nocheck
+import { ImpuestosType } from "../components/types/taxType";
 
+const URL_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
 
+let impuestos: ImpuestosType[] = [];
 
-import { showNotification } from "../components/ToastNotification";
-import { PersonasType } from "./../components/types/personType";
-
-let personas: PersonasType[] = [];
-
-const URL_API_PERSONAS = "http://localhost:8080/api/personas";
-
-export const fetchPersonas = async (id: number) => {
+export async function createImpuesto(overrides: Partial<ImpuestosType> = {}) {
   try {
-    return await (
-      await fetch(`${URL_API_PERSONAS}${id > 0 ? `/${id}` : ""}`, {
-        headers: {
-          Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
-          "Content-Type": "application/json",
-        },
-      })
-    ).json();
-  } catch (error) {
-    console.error("Ocurrió un error al obtener personas:", error);
-    throw error;
-  }
-};
-
-export const selectAll = (): PersonasType[] => {
-  return personas;
-};
-
-export async function createPersona(overrides: Partial<PersonasType> = {}) {
-  try {
-    await fetch(`${URL_API_PERSONAS}`, {
+    await fetch(`${URL_API_IMPUESTOS}`, {
       method: "POST",
       body: JSON.stringify({
         nombre: overrides.nombre,
-        apellido: overrides.apellido,
-        dni: overrides.dni
+        porcentaje: overrides.porcentaje,
       }),
       headers: {
         Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
@@ -50,15 +26,14 @@ export async function createPersona(overrides: Partial<PersonasType> = {}) {
   }
 }
 
-
-export async function modifyPersona(updatedData: Partial<PersonasType>) {
+export async function modifyImpuesto(updatedData: Partial<ImpuestosType>) {
   try {
-    await fetch(`${URL_API_PERSONAS}/${updatedData.id}`, {
+    await fetch(`${URL_API_IMPUESTOS}/${updatedData.id}`, {
       method: "POST",
       body: JSON.stringify({
+        id: updatedData.id,
         nombre: updatedData.nombre,
-        apellido: updatedData.apellido,
-        dni: updatedData.dni
+        porcentaje: updatedData.porcentaje,
       }),
       headers: {
         Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
@@ -73,9 +48,25 @@ export async function modifyPersona(updatedData: Partial<PersonasType>) {
   }
 }
 
-export async function deletePersona(id: number) {
+export const fetchImpuestos = async (id: number) => {
   try {
-    await fetch(`${URL_API_PERSONAS}/${id}`, {
+    return await (
+      await fetch(`${URL_API_IMPUESTOS}${id > 0 ? `/${id}` : ""}`, {
+        headers: {
+          Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
+          "Content-Type": "application/json",
+        },
+      })
+    ).json();
+  } catch (error) {
+    console.error("Ocurrió un error al obtener personas:", error);
+    throw error;
+  }
+};
+
+export async function deleteImpuesto(id: number) {
+  try {
+    await fetch(`${URL_API_IMPUESTOS}/${id}`, {
       method: "PATCH",
       headers: {
         Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
@@ -89,4 +80,3 @@ export async function deletePersona(id: number) {
     throw error;
   }
 }
-

@@ -289,7 +289,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
 
   const actionButtons = (row: ProductServiceType) => {
     return (
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <button
           className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() => handleClickedElement(row)}
@@ -324,13 +324,13 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
 
   return (
     <>
-      <div className="w-full flex flex-column justify-center items-center mb-2 mx-auto p-4 pb-0">
-        <div className="flex justify-center items-center mb-3">
+      <div className="flex items-center justify-center w-full p-4 pb-0 mx-auto mb-2 flex-column">
+        <div className="flex items-center justify-center mb-3">
           <div className="mr-4">
             <input
               type="text"
               placeholder="Buscar"
-              className="inputSearch border-2 border-blue-500 px-2 py-1"
+              className="px-2 py-1 border-2 border-blue-500 inputSearch"
               defaultValue={""}
               ref={searchBoxRef}
               onChange={() => {
@@ -342,7 +342,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
             <select
               name="productOrServiceType"
               id="productOrServiceType"
-              className="bg-blue-400 px-4 py-2 rounded text-white font-medium hover:bg-blue-500"
+              className="px-4 py-2 font-medium text-white bg-blue-400 rounded hover:bg-blue-500"
               defaultValue={""}
               onChange={(e) => handleSelectChange(e.target.value.toString())}
             >
@@ -359,7 +359,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
         ) : (
           <div className="w-full">
             <table className="min-w-full bg-white border border-gray-300 ">
-              <thead className="bg-denim-400 text-white ">
+              <thead className="text-white bg-denim-400 ">
                 <tr>
                   {Object.keys(defaultProductService).map((key) => (
                     <th className="py-2 px-4 border-b" key={key}>
