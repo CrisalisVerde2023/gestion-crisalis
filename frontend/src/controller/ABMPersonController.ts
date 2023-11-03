@@ -13,7 +13,7 @@ export const fetchPersonas = async (id: number) => {
     return await (
       await fetch(`${URL_API_PERSONAS}${id > 0 ? `/${id}` : ""}`, {
         headers: {
-          Authorization: sessionStorage.getItem("token"),
+          Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
           "Content-Type": "application/json",
         },
       })
@@ -38,7 +38,7 @@ export async function createPersona(overrides: Partial<PersonasType> = {}) {
         dni: overrides.dni
       }),
       headers: {
-        Authorization: sessionStorage.getItem("token"),
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
     }).then((resp) => {
@@ -61,7 +61,7 @@ export async function modifyPersona(updatedData: Partial<PersonasType>) {
         dni: updatedData.dni
       }),
       headers: {
-        Authorization: sessionStorage.getItem("token"),
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
     }).then((resp) => {
@@ -78,7 +78,7 @@ export async function deletePersona(id: number) {
     await fetch(`${URL_API_PERSONAS}/${id}`, {
       method: "PATCH",
       headers: {
-        Authorization: sessionStorage.getItem("token"),
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
     }).then((resp) => {

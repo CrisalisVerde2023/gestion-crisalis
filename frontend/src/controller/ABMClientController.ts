@@ -10,7 +10,7 @@ export const fetchClientes = async (id: number) => {
     return await (
       await fetch(`${URL_API_CLIENTES}${id > 0 ? `/${id}` : ""}`, {
         headers: {
-          Authorization: sessionStorage.getItem("token"),
+          Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
           "Content-Type": "application/json",
         },
       })
@@ -30,7 +30,7 @@ export async function createClient(overrides: Partial<ClienteDTO>) {
           empresa_id: overrides.empresa_id,
         }),
         headers: {
-          Authorization: sessionStorage.getItem("token"),
+          Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
           "Content-Type": "application/json",
         },
       }).then((resp) => {
@@ -47,7 +47,7 @@ export async function deleteClient(id: number) {
     await fetch(`${URL_API_CLIENTES}/${id}`, {
       method: "PATCH",
       headers: {
-        Authorization: sessionStorage.getItem("token"),
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
     }).then((resp) => {
@@ -68,7 +68,7 @@ export async function updateClient(overrides: Partial<ClienteDTO>, idCliente: nu
         empresa_id: overrides.empresa_id,
       }),
       headers: {
-        Authorization: sessionStorage.getItem("token"),
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
     }).then((resp) => {
