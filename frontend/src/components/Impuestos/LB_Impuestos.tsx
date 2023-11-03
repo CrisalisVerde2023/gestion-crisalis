@@ -5,10 +5,10 @@ import {
   CheckCircleFill,
 } from "react-bootstrap-icons";
 import { useLocation, useNavigate } from "react-router-dom";
-/* import {
+import {
   useDeleteImpuesto,
   useFetchImpuestos,
-} from "../../controller/ABMImpuestoController"; */
+} from "../../controller/ABMImpuestoController"; 
 import { ImpuestosType } from "../types/taxType";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
@@ -24,10 +24,10 @@ export default function LB_Impuestos() {
   const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
   let aux;
 
-  //let fetchResponse = useFetchImpuestos(undefined, shouldFetch);
-  //let deleteResponse = useDeleteImpuesto(idToDelete, shouldDelete);
+  let fetchResponse = useFetchImpuestos(undefined, shouldFetch);
+  let deleteResponse = useDeleteImpuesto(idToDelete, shouldDelete);
 
-  /* useEffect(() => {
+   useEffect(() => {
     if (fetchResponse && shouldFetch) {
       if (
         !fetchResponse.loading &&
@@ -63,7 +63,7 @@ export default function LB_Impuestos() {
         }
       }
     }
-  }, [deleteResponse]); */
+  }, [deleteResponse]); 
 
   const onConfirm = async (impuesto: ImpuestosType) => {
     if (impuesto) {
