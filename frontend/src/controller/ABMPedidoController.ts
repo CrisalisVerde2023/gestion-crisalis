@@ -98,7 +98,7 @@ export const fetchPedidos = async (userLogged: UserLogged, id: number) => {
         cantServicios,
         fechaCreacion: aux.fechaCreacion,
         total,
-        anulado: aux.eliminado
+        anulado: aux.anulado
       };
     });
 
