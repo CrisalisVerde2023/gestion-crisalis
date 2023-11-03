@@ -1,13 +1,19 @@
-import { showNotification } from "../components/ToastNotification";
 import { EnterpriseType } from "../components/types/enterpriseType";
 
 let enterprises: EnterpriseType[] = [];
+
+const URL_API_EMPRESAS = "http://localhost:8080/api/empresas";
 
 export const fetchEnterprises = async (
   setIsLoadingCallback: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const response = await fetch("jsons/enterpriseJson.json");
+    const response = await fetch(`${URL_API_EMPRESAS}`, {
+      headers: {
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
+        "Content-Type": "application/json",
+      },
+    });
     const data = await response.json();
     enterprises = data;
     return data;
@@ -21,43 +27,71 @@ export const selectAll = (): EnterpriseType[] => {
   return enterprises;
 };
 
-export function createEnterprise(overrides: Partial<EnterpriseType> = {}) {
-  const defaults: EnterpriseType = {
-    id: 0,
-    name: "",
-    cuit: "",
-    startDate: new Date(),
-  };
-
-  const combined = { ...defaults, ...overrides };
-  enterprises.push(combined);
-  showNotification("add", "Creacion exitosa", "Nueva empresa creada", true);
+export async function createEnterprise(
+  overrides: Partial<EnterpriseType> = {}
+) {
+  try {
+    await fetch(`${URL_API_EMPRESAS}`, {
+      method: "POST",
+      body: JSON.stringify({
+        nombre: overrides.nombre,
+        cuit: overrides.cuit,
+        start_date: overrides.start_date,
+      }),
+      headers: {
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
+        "Content-Type": "application/json",
+      },
+    }).then((resp) => {
+      if (resp.status >= 400)
+        console.log("El servidor respondió con error", resp.status);
+    });
+  } catch (error) {
+    console.error("Ocurrió un error al crear usuario:", error);
+    throw error;
+  }
 }
 
-export function modifyEnterprise(
+export async function modifyEnterprise(
   id: number,
   updatedData: Partial<EnterpriseType>
 ) {
-  const indexToModify = enterprises.findIndex((item) => item.id === id);
-  if (indexToModify === -1) {
-    console.error(`Item with id ${id} not found.`);
-    return;
+  try {
+    await fetch(`${URL_API_EMPRESAS}/${updatedData.id}`, {
+      method: "POST",
+      body: JSON.stringify({
+        nombre: updatedData.nombre,
+        cuit: updatedData.cuit,
+        start_date: updatedData.start_date,
+      }),
+      headers: {
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
+        "Content-Type": "application/json",
+      },
+    }).then((resp) => {
+      if (resp.status >= 400) throw "El servidor respondió con error";
+    });
+  } catch (error) {
+    console.error("Ocurrió un error al modificar usuario:", error);
+    throw error;
   }
-
-  const itemToModify = enterprises[indexToModify];
-  const updatedItem = { ...itemToModify, ...updatedData };
-  enterprises[indexToModify] = updatedItem;
-  showNotification("edit", "Modificacion exitosa", "Empresa modificada", true);
 }
 
-export function deleteEnterprise(id: number) {
-  const indexToDelete = enterprises.findIndex((item) => item.id === id);
-  if (indexToDelete === -1) {
-    console.error(`Item with id ${id} not found.`);
-    return;
+export async function deleteEnterprise(id: number) {
+  try {
+    await fetch(`${URL_API_EMPRESAS}/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
+        "Content-Type": "application/json",
+      },
+    }).then((resp) => {
+      if (resp.status >= 400) throw "El servidor respondió con error";
+    });
+  } catch (error) {
+    console.error("Ocurrió un error al cambiar estado de usuario:", error);
+    throw error;
   }
-  enterprises.splice(indexToDelete, 1);
-  showNotification("delete", "Borrado exitoso", "Empresa borrada", true);
 }
 
 export function countEnterprises(): number {
@@ -70,15 +104,20 @@ export function getNextID() {
 }
 
 export function createEnterpriseDefaultValues(): EnterpriseType {
+  const today = new Date();
+  const formattedDate = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   return {
     id: 0,
-    name: "",
+    nombre: "",
     cuit: "",
-    startDate: new Date(),
+    start_date: formattedDate,
   };
 }
 
 export function findEnterpriseById(id: number): EnterpriseType | null {
+  console.log(enterprises);
   const foundItem = enterprises.find((item) => item.id === id);
   return foundItem ? foundItem : null;
 }

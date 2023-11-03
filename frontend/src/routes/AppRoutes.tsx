@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import NavbarComponent from "../components/NavbarComponent";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "../components/Dashboard";
@@ -11,8 +11,19 @@ import AM_Usuarios from "../components/Usuarios/AM_Usuarios";
 import ABMProductServicesComponent from "../components/Productos y Servicios/ABMProductServicesComponent";
 import AM_ProductService from "../components/Productos y Servicios/AM_ProductServices";
 import NotFoundComponent from "../components/NotFoundComponent";
+import { UserLoggedContext } from "../contexts/UserLoggedContext";
+import { AuthRoute } from "./AuthRoute";
+import ABMImpuestos from "../components/Impuestos/ABMImpuestos";
+import AM_Impuestos from "../components/Impuestos/AM_Impuestos";
+import ABMClientesComponent from "../components/Clientes/ABMClientes";
+import AM_Clientes from "../components/Clientes/AM_Clientes";
+import AltaPedidoComponent from "../components/Pedidos/AltaPedidoComponent";
+import ABMPedidos from "../components/Pedidos/ABMPedidos";
 
 export const AppRoutes = () => {
+  const { userLogged } = useContext(UserLoggedContext);
+  const { isAdmin } = userLogged;
+
   return (
     <>
       <NavbarComponent />
@@ -26,7 +37,12 @@ export const AppRoutes = () => {
           path="/personas/AMPersonas/:idPersona"
           element={<AM_Personas />}
         />
-        <Route path="/clientes" element={/*<ABMClientesComponent />*/ null} />
+        <Route path="/clientes" element={<ABMClientesComponent/>} />
+        <Route
+          path="/clientes/AMClientes/:idCliente"
+          element={<AM_Clientes/>}
+        />
+
         <Route path="/empresas" element={<ABMEmpresasComponent />} />
         <Route path="/empresas/AMEmpresas" element={<AM_Empresa />} />
         <Route
@@ -40,19 +56,53 @@ export const AppRoutes = () => {
           path="/usuarios/AMUsuarios/:idUsuario"
           element={<AM_Usuarios />}
         />
-        <Route path="/productos" element={<ABMProductServicesComponent />} />
-        <Route path="/productos/AMProductos" element={<AM_ProductService />} />
         <Route
-          path="/productos/AMProductos/:idProdServ"
+          path="/productosyservicios"
+          element={<ABMProductServicesComponent />}
+        />
+        <Route
+          path="/productosyservicios/AMProductos"
           element={<AM_ProductService />}
         />
-        <Route path="/servicios" element={<ABMProductServicesComponent />} />
-        <Route path="/servicios/AMServicios" element={<AM_ProductService />} />
         <Route
-          path="/servicios/AMServicios/:idProdServ"
+          path="/productosyservicios/AMProductos/:idProdServ"
           element={<AM_ProductService />}
         />
-        <Route path="/impuestos" element={/*<ABMImpuestosComponent />*/ null} />
+        <Route
+          path="/productosyservicios"
+          element={<ABMProductServicesComponent />}
+        />
+        <Route
+          path="/productosyservicios/AMProductos"
+          element={<AM_ProductService />}
+        />
+        <Route
+          path="/productosyservicios/AMProductos/:idProdServ"
+          element={<AM_ProductService />}
+        />
+        <Route
+          path="/productosyservicios/AMServicios"
+          element={<AM_ProductService />}
+        />
+        <Route
+          path="/productosyservicios/AMServicios/:idProdServ"
+          element={<AM_ProductService />}
+        />
+        <Route
+          path="/impuestos"
+          element={<ABMImpuestos/>}
+        />
+        <Route
+          path="/impuestos/AMImpuestos"
+          element={<AM_Impuestos/>}
+        />
+        <Route
+          path="/impuestos/AMImpuestos/:idImpuesto"
+          element={<AM_Impuestos/>}
+        />
+        <Route path="/altaPedido" element={<AltaPedidoComponent />}/>
+        <Route path="/pedidos" element={<ABMPedidos />}/>
+        <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
       </Routes>
     </>

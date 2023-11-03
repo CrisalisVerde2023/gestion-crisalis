@@ -1,10 +1,11 @@
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode } from "react";
 import {
   defaultContext,
-  UserLogged,
+  defaultPedidoState,
+  defaultUserLogState,
   UserLoggedContextType,
 } from "../components/types/UserLogged";
-import { useLocalStorage } from "usehooks-ts";
+import { useSessionStorage } from "usehooks-ts";
 
 export const UserLoggedContext =
   createContext<UserLoggedContextType>(defaultContext);
@@ -14,12 +15,16 @@ type Props = {
 };
 
 export default function UserLoggedProvider({ children }: Props) {
-  const [userLogged, setUserLogged] = useLocalStorage("userLogged", {
-    id: -1,
-    email: "",
-  });
+  const [userLogged, setUserLogged] = useSessionStorage(
+    "userLogged",
+    defaultUserLogState
+  );
+  const [pedido, setPedido] = useSessionStorage("pedido", defaultPedidoState);
+
   return (
-    <UserLoggedContext.Provider value={{ userLogged, setUserLogged }}>
+    <UserLoggedContext.Provider
+      value={{ userLogged, setUserLogged, pedido, setPedido }}
+    >
       {children}
     </UserLoggedContext.Provider>
   );

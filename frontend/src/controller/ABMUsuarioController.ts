@@ -1,58 +1,70 @@
 import { UsuariosType } from "../components/types/userType";
+import { useFetch, HTTPMethod, useFetchReturnType } from "./../hooks/useFetch";
 
-export const fetchUsuarios = async (id: number) => {
-  try {
-    return await (await fetch(`http://localhost:8080/api/usuarios${(id > 0) ? `/${id}` : ""}`)).json();
-  }
-  catch(error) {
-    console.error("Ocurrió un error al obtener usuarios:", error);
-    throw error;
-  }
-}
+const URL_API_USUARIOS = "http://localhost:8080/api/usuarios";
 
-export async function createUsuario(overrides: Partial<UsuariosType> = {}) {
-  try{
-    await fetch("http://localhost:8080/api/usuarios", {
-      method: 'POST',
-      body: JSON.stringify({usuario: overrides.usuario, password: overrides.password}),
-      headers:{'Content-Type': 'application/json'}
-    })
-    .then(resp => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    })
-  }
-  catch(error) {
-    console.error("Ocurrió un error al crear usuario:", error);
-    throw error;
-  }
-}
+export const useFetchUsuarios = (
+  id?: number,
+  shouldExecute: boolean = false
+) => {
+  const params = {}; // Define any parameters you might need
+  return useFetch(
+    {
+      method: HTTPMethod.GET,
+      url: `${URL_API_USUARIOS}${id && id >= 0 ? `/${id}` : ""}`,
+      params: JSON.stringify(params),
+    },
+    shouldExecute
+  );
+};
 
-export async function modifyUsuario(updatedData: Partial<UsuariosType>) {
-  try{
-    await fetch(`http://localhost:8080/api/usuarios/${updatedData.id}`, {
-      method: 'POST',
-      body: JSON.stringify({usuario: updatedData.usuario, password: updatedData.password}),
-      headers:{'Content-Type': 'application/json'}
-    })
-    .then(resp => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    })
-  }
-  catch(error) {
-    console.error("Ocurrió un error al modificar usuario:", error);
-    throw error;
-  }
-}
+export const useCreateUsuario = (
+  overrides: Partial<UsuariosType> = {},
+  shouldExecute = false
+) => {
+  const params = {
+    usuario: overrides.usuario,
+    password: overrides.password,
+  };
 
-export async function deleteUsuario(id: number) {
-  try {
-    await fetch(`http://localhost:8080/api/usuarios/${id}`, { method: 'PATCH' })
-    .then(resp => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    })
-  }
-  catch(error) {
-    console.error("Ocurrió un error al cambiar estado de usuario:", error);
-    throw error;
-  }
-}
+  return useFetch(
+    {
+      method: HTTPMethod.POST,
+      url: `${URL_API_USUARIOS}`,
+      params,
+    },
+    shouldExecute
+  );
+};
+
+export const useModifyUsuario = (
+  updatedData: Partial<UsuariosType>,
+  shouldExecute = false
+) => {
+  const params = {
+    usuario: updatedData.usuario,
+    password: updatedData.password,
+  };
+
+  return useFetch(
+    {
+      method: HTTPMethod.POST,
+      url: `${URL_API_USUARIOS}/${updatedData.id}`,
+      params,
+    },
+    shouldExecute
+  );
+};
+
+() => {};
+
+export const useDeleteUsuario = (id?: number, shouldExecute = false) => {
+  return useFetch(
+    {
+      method: HTTPMethod.PATCH,
+      url: `${URL_API_USUARIOS}/${id}`,
+      params: {},
+    },
+    shouldExecute
+  );
+};

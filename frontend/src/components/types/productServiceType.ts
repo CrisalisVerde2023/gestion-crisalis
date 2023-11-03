@@ -1,12 +1,15 @@
 export enum ProductOrService {
-  Producto = "Producto",
-  Servicio = "Servicio",
+  Producto = "PRODUCTO",
+  Servicio = "SERVICIO",
 }
 
 export type ProductServiceType = {
   id: number;
-  name: string;
-  type: ProductOrService;
-  cost: number;
-  support: number;
+  nombre: string;
+  tipo: ProductOrService;
+  costo: number;
+  impuesto: number;
+  soporte: number | null;
+  cantidad: number;
+  garantia: number | null;
 };

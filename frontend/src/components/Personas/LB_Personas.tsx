@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import { PencilFill, XCircleFill, Search } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   fetchPersonas,
   selectAll as selectAllPersonas,
@@ -11,69 +11,95 @@ import {
 import { PersonasType } from "../types/personType";
 import { ConfirmDialog } from "../ConfirmDialog";
 import LoadingComponent from "../LoadingComponent";
+import Swal from "sweetalert2";
+
+let aux;
 
 export default function LB_Personas() {
   const [data, setData] = useState<PersonasType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedElement, setSelectedElement] = useState<PersonasType | null>(
-    null
-  );
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
 
   const fetchData = async () => {
     try {
-      const fetchedData = await fetchPersonas(setIsLoading);
-      setData(fetchedData);
+      return await fetchPersonas(0);
     } catch (error) {
-      console.error(`An error occurred: ${error}`);
+      Swal.fire("Error!", "No se han podido obtener datos.", "error");
     }
   };
 
   useEffect(() => {
-    if (selectAllPersonas().length === 0) {
-      fetchData();
-    } else {
-      setData(selectAllPersonas());
-    }
+    setIsLoading(true);
+    fetchData().then((resp) => {
+      setData(resp);
+      setIsLoading(false);
+    });
   }, [location]);
 
   const handleSearch = () => {
     const filteredData = selectAllPersonas().filter(
       (persona: PersonasType) =>
         persona.id.toString().includes(searchTerm) ||
-        persona.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        persona.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        persona.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        persona.apellido.toLowerCase().includes(searchTerm.toLowerCase()) ||
         persona.dni.includes(searchTerm)
     );
     setData(filteredData);
   };
 
-  const onConfirm = () => {
-    if (selectedElement) {
-      deletePersona(selectedElement.id);
-      setShowDialog(false);
-      setData(selectAllPersonas());
-    }
+  const onConfirm = (persona: PersonasType) => {
+    if (persona)
+      deletePersona(persona.id)
+        .then(() => {
+          fetchData().then((resp) => {
+            setData(resp);
+            Swal.fire({
+              title: "Realizado!",
+              text: "Se ha cambiado el estado.",
+              icon: "success",
+              timer: 2000,
+            });
+          });
+        })
+        .catch(() => {
+          Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
+        });
   };
 
   const handleClickedElement = (selected: PersonasType) => {
-    setSelectedElement(selected);
-    setShowDialog(true);
+      Swal.fire({
+        title: "Confirmar cambio de estado de usuario?",
+        text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${
+          selected.id
+        }`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí! Estoy seguro.",
+        cancelButtonText: "Mejor no.",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+      }).then((result) => {
+        if (result.isConfirmed) onConfirm(selected);
+      });
   };
 
   const actionButtons = (row: PersonasType) => (
-    <div className="d-flex flex-row justify-content-evenly align-items-center">
-      <Button
-        className="actionButton"
+    <div className="flex-row d-flex justify-content-evenly align-items-center">
+      <button
+        className="p-2 hover:bg-blue-600 hover:text-white"
         onClick={() => handleClickedElement(row)}
       >
         <XCircleFill />
-      </Button>
-      <Link className="actionButton" to={`/personas/AMPersonas/${row.id}`}>
-        <PencilFill />
-      </Link>
+      </button>
+      <button
+          className="p-2 hover:bg-blue-600 hover:text-white"
+          onClick={() => navigate(`/personas/AMPersonas/${row.id}`)}
+        >
+          <PencilFill />
+      </button>
     </div>
   );
 
@@ -81,33 +107,17 @@ export default function LB_Personas() {
     <>
       <Container>
         <Row
-          className="d-flex flex-row justify-content-center align-items-center"
+          className="flex-row d-flex justify-content-center align-items-center "
           style={{ marginBottom: "15px" }}
         >
           <Col xs="auto">
-            <input
+          <input
               type="text"
               placeholder="Buscar"
-              className="inputSearch"
+              className="px-2 py-1 border-2 border-blue-500 inputSearch"
               value={searchTerm}
-              onChange={(e) => {
-                if (e.target.value.length === 0) {
-                  setData(selectAllPersonas());
-                  setSearchTerm("");
-                } else {
-                  setSearchTerm(e.target.value);
-                }
-              }}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </Col>
-          <Col xs="auto">
-            <Button
-              onClick={handleSearch}
-              variant="primary"
-              className="searchButton"
-            >
-              <Search />
-            </Button>
           </Col>
         </Row>
         {/* Data Table */}
@@ -117,43 +127,70 @@ export default function LB_Personas() {
               <LoadingComponent />
             </Col>
           ) : (
-            <Col>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
+            <Col className="w-full">
+              <table className="min-w-full bg-white border-gray-300">
+              <thead className="text-white bg-denim-400 ">
+                <tr>
+                  <th className="px-4 py-2 border-b">ID</th>
+                  <th className="px-4 py-2 border-b">Nombre</th>
+                  <th className="px-4 py-2 border-b">Apellido</th>
+                  <th className="px-4 py-2 border-b">DNI</th>
+                  <th className="px-4 py-2 border-b">Estado</th>
+                  <th className="px-4 py-2 border-b">Acciones</th>
+                </tr>
+              </thead>
                 <tbody>
-                  {data.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.id}</td>
-                      <td>{row.firstName}</td>
-                      <td>{row.lastName}</td>
-                      <td>{row.dni}</td>
-                      <td>{actionButtons(row)}</td>
+                  {data &&
+                  (aux = !searchTerm.length
+                    ? data
+                    : data.filter((persona: PersonasType) =>
+                        persona.nombre
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                          persona.apellido
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                          persona.dni
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                          persona.id === parseInt(searchTerm)
+                      )).length ? (
+                    aux
+                      .sort((a: PersonasType, b: PersonasType) =>
+                        a.nombre.toLowerCase() < b.nombre.toLowerCase()
+                          ? -1
+                          : 1
+                      )
+                      .map((row, index) => (
+                        <tr key={index} className="border-b">
+                          <td className="py-2">{row.id}</td>
+                          <td className="py-2">{row.nombre}</td>
+                          <td className="py-2">{row.apellido}</td>
+                          <td className="py-2">{row.dni}</td>
+                          <td className="py-2">{row.eliminado ? "Inactivo" : "Activo"}</td>
+                          <td className="py-2">{actionButtons(row)}</td>
+                        </tr>
+                      ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3}>No hay datos...</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
-              </Table>
+              </table>
             </Col>
           )}
         </Row>
       </Container>
-      {showDialog && selectedElement && (
+      {showDialog && (
         <ConfirmDialog
           show={showDialog}
           setShow={setShowDialog}
           title="Confirmar borrar persona"
-          content={`Esta por borrar ${selectedElement.firstName} ${selectedElement.lastName} con ID: ${selectedElement.id}`}
           onConfirm={onConfirm}
           onCancel={() => {
             setShowDialog(false);
-            setSelectedElement(null);
+            
           }}
         />
       )}

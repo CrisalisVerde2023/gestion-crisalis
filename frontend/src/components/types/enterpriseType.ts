@@ -1,6 +1,6 @@
 export type EnterpriseType = {
   id: number;
-  name: string;
+  nombre: string;
   cuit: string;
-  startDate: string;
+  start_date: string;
 };

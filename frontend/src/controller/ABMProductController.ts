@@ -26,97 +26,75 @@ export const fetchProductServices = async (
 };
 
 // Create a Product or Service
-export function createProductService(
+export async function createProductService(
   overrides: Partial<ProductServiceType> = {}
 ) {
-  let defaults: ProductServiceType = {
-    id: 0,
-    name: "",
-    type: ProductOrService.Producto,
-    cost: 0,
-    support: 0,
-  };
-
-  const combined = { ...defaults, ...overrides };
-
-  if (combined.type === ProductOrService.Producto) {
-    combined.support = 0;
+  const combined = { ...defaultProductServiceValues, ...overrides };
+  try {
+    await fetch("http://localhost:8080/api/prods_servs", {
+      method: "POST",
+      body: JSON.stringify(combined),
+      headers: { "Content-Type": "application/json" },
+    }).then((resp) => {
+      if (resp.status >= 400) throw "El servidor respondió con error";
+    });
+  } catch (error) {
+    console.error("Ocurrió un error al crear producto/servicio:", error);
+    throw error;
   }
-
-  if (combined.type === ProductOrService.Servicio) {
-    combined.cost = 0;
-  }
-  console.log("Created prod/serv");
-  console.log(combined);
-  productsAndServices.push(combined);
-  const successMessage =
-    combined.type === ProductOrService.Producto
-      ? "Producto creado"
-      : "Servicio creado";
-  // Show the notification
-  showNotification("add", "Creacion exitosa", successMessage, true);
 }
 
 // Modify a Product or Service
-// Modify a Product or Service
-export function modifyProductService(
+export async function modifyProductService(
   id: number,
   updatedData: Partial<ProductServiceType>
 ) {
-  const indexToModify = productsAndServices.findIndex((item) => item.id === id);
-
-  if (indexToModify === -1) {
-    console.error(`Item with id ${id} not found.`);
-    return productsAndServices;
+  try {
+    await fetch(`http://localhost:8080/api/prods_servs/${id}`, {
+      method: "POST",
+      body: JSON.stringify(updatedData),
+      headers: { "Content-Type": "application/json" },
+    }).then((resp) => {
+      if (resp.status >= 400) throw "El servidor respondió con error";
+    });
+  } catch (error) {
+    console.error("Ocurrió un error al modificar producto/servicio:", error);
+    throw error;
   }
-
-  const itemToModify = productsAndServices[indexToModify];
-  console.log("Before modification: ");
-  console.log(itemToModify);
-
-  // Adjusting based on type
-  if (updatedData.type === ProductOrService.Producto) {
-    updatedData.support = 0;
-  } else if (updatedData.type === ProductOrService.Servicio) {
-    updatedData.cost = 0;
-  }
-
-  const updatedItem = { ...itemToModify, ...updatedData };
-  console.log("After modification: ");
-  console.log(updatedItem);
-
-  // Update the original array
-  productsAndServices[indexToModify] = updatedItem;
-  const successMessage =
-    updatedItem.type === ProductOrService.Producto
-      ? "Producto modificado"
-      : "Servicio modificado";
-  // Show the notification
-  showNotification("edit", "Modificación exitosa", successMessage, true);
 }
 
 // Delete a Product or Service
-export function deleteProductService(id: number) {
-  const indexToDelete = productsAndServices.findIndex((item) => item.id === id);
-  if (indexToDelete === -1) {
-    console.error(`Item with id ${id} not found.`);
-    showNotification(
-      "delete",
-      "Eliminacion fallo",
-      "No se encuentra el item",
-      true
-    );
-    return productsAndServices;
-  }
+export async function deleteProductService(id: number) {
+  try {
+    await fetch(`http://localhost:8080/api/prods_servs/${id}`, {
+      method: "PATCH",
+    }).then((resp) => {
+      if (resp.status >= 400)
+        throw new Error("El servidor respondió con error");
+    });
 
-  // Remove the item from the original array
-  const message =
-    productsAndServices[indexToDelete].type === ProductOrService.Producto
-      ? "Producto eliminado"
-      : "Servicio eliminado";
-  productsAndServices.splice(indexToDelete, 1);
-  showNotification("delete", "Borrado exitoso", message, true);
-  return productsAndServices;
+    const indexToDelete = productsAndServices.findIndex(
+      (item) => item.id === id
+    );
+    if (indexToDelete === -1) {
+      console.error(`Item with id ${id} not found.`);
+      return productsAndServices;
+    }
+
+    // Remove the item from the original array
+    const message =
+      productsAndServices[indexToDelete].tipo === ProductOrService.Producto
+        ? "Producto eliminado"
+        : "Servicio eliminado";
+    productsAndServices.splice(indexToDelete, 1);
+    return productsAndServices;
+  } catch (error) {
+    console.error(
+      "Ocurrió un error al cambiar estado de producto/servicio:",
+      error
+    );
+    throw error;
+  }
 }
 
 export const selectAll = (): ProductServiceType[] => {
@@ -125,13 +103,13 @@ export const selectAll = (): ProductServiceType[] => {
 
 export const selectAllProducts = (): ProductServiceType[] => {
   return selectAll().filter(
-    (item) => item.type.toString() === ProductOrService.Producto
+    (item) => item.tipo.toString() === ProductOrService.Producto
   );
 };
 
 export const selectAllServices = (): ProductServiceType[] => {
   return selectAll().filter(
-    (item) => item.type.toString() === ProductOrService.Servicio
+    (item) => item.tipo.toString() === ProductOrService.Servicio
   );
 };
 
@@ -151,12 +129,13 @@ export function getNextID() {
   return maxID + 1;
 }
 
-export function createProductServiceDefaultValues(): ProductServiceType {
-  return {
-    id: 0, // you can replace this with a logic to generate a unique id
-    name: "",
-    type: ProductOrService.Producto,
-    cost: 0,
-    support: 0,
-  };
-}
+export const defaultProductServiceValues: ProductServiceType = {
+  id: 0, // you can replace this with a logic to generate a unique id
+  nombre: "",
+  tipo: ProductOrService.Producto,
+  costo: 0,
+  soporte: null,
+  impuesto: 0,
+  cantidad: 1,
+  garantia: null
+};
