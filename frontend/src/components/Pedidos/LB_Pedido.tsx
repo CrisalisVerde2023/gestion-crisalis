@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { PencilFill, XCircleFill, Search, CheckCircleFill } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import { XCircleFill, CheckCircleFill } from "react-bootstrap-icons";
+import { useLocation } from "react-router-dom";
 import {
   fetchPedidos,
   deletePedido
@@ -16,6 +16,7 @@ export default function LB_Pedido() {
   const {userLogged} = useContext(UserLoggedContext);
   const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
+  let aux;
 
   const fetchData = async () => {
     try {
@@ -33,17 +34,6 @@ export default function LB_Pedido() {
       setIsLoading(false);
     });
   }, [location]);
-
-  const handleSearch = () => {
-    setData(
-      data.filter((el: EncabezadoPedidoType) =>
-        el.id.toString().includes(searchTerm) ||
-        el.persona.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        el.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        el.fechaCreacion.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-  };
 
   const onConfirm = (pedido: EncabezadoPedidoType) => {
     if (pedido)
@@ -94,51 +84,62 @@ export default function LB_Pedido() {
     <>
       <div className="container mx-auto p-4">
         <div className="flex justify-center items-center mb-4">
-          <div className="flex-auto">
-            <input
-              type="text"
-              placeholder="Buscar"
-              className="inputSearch"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Buscar"
+            className="inputSearch border-2 border-blue-500 px-2 py-1"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
         {/* Data Table */}
         <div>
           {isLoading ? (
-            <div>
-              <LoadingComponent />
-            </div>
+            <div><LoadingComponent /></div>
           ) : (
-            <div>
-              <table className="min-w-full bg-white border border-gray-300">
-                <thead>
+            <div className="w-full">
+              <table className="min-w-full bg-white border border-gray-300 ">
+                <thead className="bg-denim-400 text-white">
                   <tr>
-                    <th className="border border-gray-300">ID</th>
-                    <th className="border border-gray-300">Fecha</th>
-                    <th className="border border-gray-300">Persona</th>
-                    <th className="border border-gray-300">Empresa</th>
-                    <th className="border border-gray-300">Prods#</th>
-                    <th className="border border-gray-300">Servs#</th>
-                    <th className="border border-gray-300">Total</th>
-                    <th className="border border-gray-300">Estado</th>
+                    <th className="py-2 px-4 border-b">ID</th>
+                    <th className="py-2 px-4 border-b">Fecha</th>
+                    <th className="py-2 px-4 border-b">Persona</th>
+                    <th className="py-2 px-4 border-b">Empresa</th>
+                    <th className="py-2 px-4 border-b">Prods#</th>
+                    <th className="py-2 px-4 border-b">Servs#</th>
+                    <th className="py-2 px-4 border-b">Total</th>
+                    <th className="py-2 px-4 border-b">Estado</th>
+                    <th className="py-2 px-4 border-b">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((row, index) => (
-                    <tr key={index}>
-                      <td className="border border-gray-300">{row.id}</td>
-                      <td className="border border-gray-300">{row.fechaCreacion.substring(0, 10)}</td>
-                      <td className="border border-gray-300">{row.persona}</td>
-                      <td className="border border-gray-300">{row.empresa}</td>
-                      <td className="border border-gray-300">{row.cantProductos}</td>
-                      <td className="border border-gray-300">{row.cantServicios}</td>
-                      <td className="border border-gray-300">{row.total.toFixed(2)}</td>
-                      <td className="border border-gray-300">{(row.anulado) ? "Anulado" : "Activo"}</td>
-                      <td className="border border-gray-300">{actionButtons(row)}</td>
-                    </tr>
-                  ))}
+                  {
+                    data
+                    && (aux = (!searchTerm.length
+                      ? data
+                      : data.filter((el: EncabezadoPedidoType) =>
+                        el.id.toString().includes(searchTerm) ||
+                        el.persona.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        el.empresa?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        el.fechaCreacion.substring(0, 10).includes(searchTerm)
+                      )
+                    )).length
+                    ? aux.sort((a, b) => (a.id < b.id) ? -1 : 1)
+                      .map((row, index) => (
+                        <tr key={index} className="border-b">
+                          <td className="py-2 px-4">{row.id}</td>
+                          <td className="py-2 px-4">{row.fechaCreacion.substring(0, 10)}</td>
+                          <td className="py-2 px-4">{row.persona}</td>
+                          <td className="py-2 px-4">{row.empresa || "-"}</td>
+                          <td className="py-2 px-4">{row.cantProductos}</td>
+                          <td className="py-2 px-4">{row.cantServicios}</td>
+                          <td className="py-2 px-4">{row.total.toFixed(2)}</td>
+                          <td className="py-2 px-4">{(row.anulado) ? "Anulado" : "Activo"}</td>
+                          <td className="py-2 px-4">{actionButtons(row)}</td>
+                        </tr>
+                      ))
+                    : <tr><td colSpan={3}>No hay datos...</td></tr>
+                  }
                 </tbody>
               </table>
             </div>
