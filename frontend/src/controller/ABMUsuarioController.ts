@@ -7,12 +7,11 @@ export const useFetchUsuarios = (
   id?: number,
   shouldExecute: boolean = false
 ) => {
-  const params = {}; // Define any parameters you might need
   return useFetch(
     {
       method: HTTPMethod.GET,
       url: `${URL_API_USUARIOS}${id && id >= 0 ? `/${id}` : ""}`,
-      params: JSON.stringify(params),
+      params: {},
     },
     shouldExecute
   );
@@ -55,8 +54,6 @@ export const useModifyUsuario = (
     shouldExecute
   );
 };
-
-() => {};
 
 export const useDeleteUsuario = (id?: number, shouldExecute = false) => {
   return useFetch(
