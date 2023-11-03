@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+.d-none {
+  display: none !important;
+}
+
 .searchButton {
   display: flex;
   justify-content: center;
@@ -13,6 +17,33 @@
   color: white;
   height: 40px;
   width: 40px;
+}
+
+.draggable-element {
+  cursor: grab;
+}
+
+.drop-target {
+  background-color: #ccc;
+  height: 100px;
+  width: 200px;
+  text-align: center;
+  line-height: 100px;
+  z-index: 1;
+}
+
+.svgIconColored > g {
+  fill: unset !important;
+}
+
+.spaceVerticalChilds > * {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+}
+
+.spaceHorizontalChilds > * {
+  margin-left: 5px !important;
+  margin-right: 5px !important;
 }
 
 .inputSearch {

@@ -27,7 +27,7 @@ public class ProductoController {
     }
 
     // Listar todos
-    @GetMapping(value = "/list")
+    @GetMapping()
     public ResponseEntity<?> obtener() {
         return new ResponseEntity<>(this.productoService.obtener(), HttpStatus.OK);
     }

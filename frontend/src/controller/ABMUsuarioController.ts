@@ -11,7 +11,7 @@ export const useFetchUsuarios = (
     {
       method: HTTPMethod.GET,
       url: `${URL_API_USUARIOS}${id && id >= 0 ? `/${id}` : ""}`,
-      params: {},
+      params: {}, //!TEST THIS
     },
     shouldExecute
   );

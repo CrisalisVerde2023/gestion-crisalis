@@ -13,3 +13,14 @@ export type ProductServiceType = {
   cantidad: number;
   garantia: number | null;
 };
+
+export const defaultProductServiceValues: ProductServiceType = {
+  id: 0, // you can replace this with a logic to generate a unique id
+  nombre: "",
+  tipo: ProductOrService.Producto,
+  costo: 0,
+  soporte: null,
+  impuesto: 0,
+  cantidad: 1,
+  garantia: null,
+};

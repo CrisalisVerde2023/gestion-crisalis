@@ -71,7 +71,6 @@ export const useFetch = (
     const text = await response.text(); // Await the text Promise
     let jsonResponse;
     if (text.length > 0) {
-      console.log("Received:", text); // Log the received text
       jsonResponse = JSON.parse(text); // Then parse
     }
 
