@@ -35,7 +35,7 @@ public class EmpresaController {
         return new ResponseEntity<>(this.empresaService.getById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @Validated(EmpresaOnUpdate.class) @RequestBody EmpresaDTO empresaDTO) {
         this.empresaService.update(id, empresaDTO);
@@ -44,7 +44,7 @@ public class EmpresaController {
 
 
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         this.empresaService.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
