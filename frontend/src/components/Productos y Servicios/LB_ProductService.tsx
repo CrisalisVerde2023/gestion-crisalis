@@ -30,7 +30,11 @@ import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
-export default function LB_ProductService() {
+interface LB_ProductServiceProps {
+  seleccion: string;
+}
+
+export default function LB_ProductService(props: LB_ProductServiceProps) {
   const { pedido, setPedido } = useContext(UserLoggedContext);
   const [data, setData] = useState<ProductServiceType[]>([]);
   const [originalData, setOriginalData] = useState<ProductServiceType[]>([]);
@@ -86,10 +90,13 @@ export default function LB_ProductService() {
 
   const exampleObject: ProductServiceType = {
     id: 0,
-    name: "",
-    type: ProductOrService.Producto || ProductOrService.Servicio,
-    cost: 0,
-    support: 0,
+    nombre: "",
+    tipo: ProductOrService.Producto || ProductOrService.Servicio,
+    costo: 0,
+    impuesto: 0,
+    soporte: null,
+    cantidad: 1,
+    garantia: null
   };
 
   const validColumnKeys: (keyof ProductServiceType)[] = Object.keys(
@@ -119,14 +126,14 @@ export default function LB_ProductService() {
       } else {
         filteredData = originalData.filter((item) => {
           const idMatch = item.id === Number(searchTerm);
-          const nameMatch = item.name
+          const nameMatch = item.nombre
             .toLowerCase()
             .includes(searchTerm.toLowerCase());
           const productMatch =
-            item.type === "Producto" && String(item.cost).includes(searchTerm);
+            item.tipo === "PRODUCTO" && String(item.costo).includes(searchTerm);
           const serviceMatch =
-            item.type === "Servicio" &&
-            String(item.support).includes(searchTerm);
+            item.tipo === "SERVICIO" &&
+            String(item.soporte).includes(searchTerm);
 
           return idMatch || nameMatch || productMatch || serviceMatch;
         });
@@ -161,7 +168,7 @@ export default function LB_ProductService() {
   const handleClickedElement = (selected: ProductServiceType) => {
     Swal.fire({
       title: "Confirmar eliminación del producto o servicio?",
-      text: `Está a punto de eliminar ${selected.name}. ¿Está seguro?`,
+      text: `Está a punto de eliminar ${selected.nombre}. ¿Está seguro?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí! Estoy seguro.",
@@ -202,27 +209,28 @@ export default function LB_ProductService() {
 
   const actionButtons = (row: ProductServiceType) => {
     return (
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <button
           className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() => handleClickedElement(row)}
         >
           <XCircleFill />
         </button>
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => addToPedido(row)}
-        >
-          <PlusCircleFill />
-        </button>
+        {
+          (props.seleccion === "multiple")
+          &&
+            <button className="p-2 hover:bg-blue-600 hover:text-white" onClick={() => addToPedido(row)}>
+              <PlusCircleFill />
+            </button>
+        }
         <button
           className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() =>
             navigate(
               `${location.pathname}${
-                row.type === ProductOrService.Producto
+                row.tipo === ProductOrService.Producto
                   ? `/AMProductos/`
-                  : row.type === ProductOrService.Servicio && `/AMServicios/`
+                  : row.tipo === ProductOrService.Servicio && `/AMServicios/`
               }${row.id}`
             )
           }
@@ -235,13 +243,13 @@ export default function LB_ProductService() {
 
   return (
     <>
-      <div className="w-full flex flex-column justify-center items-center mb-2 mx-auto p-4 pb-0">
-        <div className="flex justify-center items-center mb-3">
+      <div className="flex items-center justify-center w-full p-4 pb-0 mx-auto mb-2 flex-column">
+        <div className="flex items-center justify-center mb-3">
           <div className="mr-4">
             <input
               type="text"
               placeholder="Buscar"
-              className="inputSearch border-2 border-blue-500 px-2 py-1"
+              className="px-2 py-1 border-2 border-blue-500 inputSearch"
               defaultValue={""}
               ref={searchBoxRef}
               onChange={() => {
@@ -253,7 +261,7 @@ export default function LB_ProductService() {
             <select
               name="productOrServiceType"
               id="productOrServiceType"
-              className="bg-blue-400 px-4 py-2 rounded text-white font-medium hover:bg-blue-500"
+              className="px-4 py-2 font-medium text-white bg-blue-400 rounded hover:bg-blue-500"
               defaultValue={""}
               onChange={(e) => handleSelectChange(e.target.value.toString())}
             >
@@ -265,7 +273,7 @@ export default function LB_ProductService() {
         </div>
         {filtrado !== ProductOrService.Producto && (
           <div>
-            <h6 className="m-0 mb-3 p-0">
+            <h6 className="p-0 m-0 mb-3">
               Costo de mantenimiento de servicios *($)
             </h6>
           </div>
@@ -277,27 +285,27 @@ export default function LB_ProductService() {
         ) : (
           <div className="w-full">
             <table className="min-w-full bg-white border border-gray-300 ">
-              <thead className="bg-denim-400 text-white ">
+              <thead className="text-white bg-denim-400 ">
                 <tr>
-                  <th className="py-2 px-4 border-b">ID</th>
-                  <th className="py-2 px-4 border-b">Nombre</th>
-                  <th className="py-2 px-4 border-b">Tipo</th>
-                  <th className="py-2 px-4 border-b">Precio</th>
-                  <th className="py-2 px-4 border-b">Acciones</th>
+                  <th className="px-4 py-2 border-b">ID</th>
+                  <th className="px-4 py-2 border-b">Nombre</th>
+                  <th className="px-4 py-2 border-b">Tipo</th>
+                  <th className="px-4 py-2 border-b">Precio</th>
+                  <th className="px-4 py-2 border-b">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {data.length ? (
                   data.map((row, index) => (
-                    <tr key={index} className="border-b">
+                    <tr key={index} className="border-b ">
                       <td className="py-2">{row.id}</td>
-                      <td className="py-2">{row.name}</td>
-                      <td className="py-2">{row.type}</td>
-                      {row.type.toString() === ProductOrService.Producto ? (
-                        <td className="py-2">{row.cost}</td>
+                      <td className="py-2">{row.nombre}</td>
+                      <td className="py-2">{row.tipo}</td>
+                      {row.tipo?.toString() === ProductOrService.Producto ? (
+                        <td className="py-2">{row.costo}</td>
                       ) : (
                         <td className="py-2">
-                          {row.cost} + *(<strong>{row.support}</strong>)
+                          {row.costo} + *(<strong>{row.soporte}</strong>)
                         </td>
                       )}
                       <td className="py-2">{actionButtons(row)}</td>
@@ -305,7 +313,7 @@ export default function LB_ProductService() {
                   ))
                 ) : (
                   <tr className="border-b">
-                    <td colSpan={5} className="py-2 px-4">
+                    <td colSpan={5} className="px-4 py-2">
                       No hay datos...
                     </td>
                   </tr>

@@ -37,6 +37,7 @@ export default function LB_Empresas() {
     if (selectAllEnterprise().length === 0) {
       fetchData();
     } else {
+      fetchData();
       setData(selectAllEnterprise());
     }
   }, [location]);

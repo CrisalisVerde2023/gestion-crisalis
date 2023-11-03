@@ -1,8 +1,4 @@
-import { UserLogged } from "./../components/types/UserLogged";
-import { showNotification } from "../components/ToastNotification";
 import { EnterpriseType } from "../components/types/enterpriseType";
-import { useContext } from "react";
-import { UserLoggedContext } from "../contexts/UserLoggedContext";
 
 let enterprises: EnterpriseType[] = [];
 
@@ -11,11 +7,10 @@ const URL_API_EMPRESAS = "http://localhost:8080/api/empresas";
 export const fetchEnterprises = async (
   setIsLoadingCallback: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const { userLogged } = useContext(UserLoggedContext);
   try {
     const response = await fetch(`${URL_API_EMPRESAS}`, {
       headers: {
-        Authorization: userLogged.token,
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
     });
@@ -35,7 +30,6 @@ export const selectAll = (): EnterpriseType[] => {
 export async function createEnterprise(
   overrides: Partial<EnterpriseType> = {}
 ) {
-  const { userLogged } = useContext(UserLoggedContext);
   try {
     await fetch(`${URL_API_EMPRESAS}`, {
       method: "POST",
@@ -45,7 +39,7 @@ export async function createEnterprise(
         start_date: overrides.start_date,
       }),
       headers: {
-        Authorization: userLogged.token,
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
     }).then((resp) => {
@@ -58,30 +52,46 @@ export async function createEnterprise(
   }
 }
 
-export function modifyEnterprise(
+export async function modifyEnterprise(
   id: number,
   updatedData: Partial<EnterpriseType>
 ) {
-  const indexToModify = enterprises.findIndex((item) => item.id === id);
-  if (indexToModify === -1) {
-    console.error(`Item with id ${id} not found.`);
-    return;
+  try {
+    await fetch(`${URL_API_EMPRESAS}/${updatedData.id}`, {
+      method: "POST",
+      body: JSON.stringify({
+        nombre: updatedData.nombre,
+        cuit: updatedData.cuit,
+        start_date: updatedData.start_date,
+      }),
+      headers: {
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
+        "Content-Type": "application/json",
+      },
+    }).then((resp) => {
+      if (resp.status >= 400) throw "El servidor respondió con error";
+    });
+  } catch (error) {
+    console.error("Ocurrió un error al modificar usuario:", error);
+    throw error;
   }
-
-  const itemToModify = enterprises[indexToModify];
-  const updatedItem = { ...itemToModify, ...updatedData };
-  enterprises[indexToModify] = updatedItem;
-  showNotification("edit", "Modificacion exitosa", "Empresa modificada", true);
 }
 
-export function deleteEnterprise(id: number) {
-  const indexToDelete = enterprises.findIndex((item) => item.id === id);
-  if (indexToDelete === -1) {
-    console.error(`Item with id ${id} not found.`);
-    return;
+export async function deleteEnterprise(id: number) {
+  try {
+    await fetch(`${URL_API_EMPRESAS}/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
+        "Content-Type": "application/json",
+      },
+    }).then((resp) => {
+      if (resp.status >= 400) throw "El servidor respondió con error";
+    });
+  } catch (error) {
+    console.error("Ocurrió un error al cambiar estado de usuario:", error);
+    throw error;
   }
-  enterprises.splice(indexToDelete, 1);
-  showNotification("delete", "Borrado exitoso", "Empresa borrada", true);
 }
 
 export function countEnterprises(): number {
@@ -107,6 +117,7 @@ export function createEnterpriseDefaultValues(): EnterpriseType {
 }
 
 export function findEnterpriseById(id: number): EnterpriseType | null {
+  console.log(enterprises);
   const foundItem = enterprises.find((item) => item.id === id);
   return foundItem ? foundItem : null;
 }

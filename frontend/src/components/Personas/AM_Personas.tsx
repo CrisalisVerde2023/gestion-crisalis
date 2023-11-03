@@ -2,111 +2,161 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  countPersonas,
   createPersona,
-  findPersonaById,
-  getNextID,
+  fetchPersonas,
   modifyPersona,
 } from "./../../controller/ABMPersonController";
 import { PersonasType } from "./../types/personType";
+import LoadingComponent from "../LoadingComponent";
+import Swal from "sweetalert2";
 
-export default function AM_Persona() {
+export default function AM_Personas() {
   const { idPersona } = useParams<{ idPersona: string }>();
-  const idToModify = idPersona ? parseInt(idPersona, 10) : undefined;
-  const location = useLocation();
+  const idToModify = idPersona ? parseInt(idPersona) : undefined;
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [formData, setFormData] = useState<PersonasType>({
+    id: 0,
+    nombre: "",
+    apellido: "",
+    dni: "",
+    eliminado: false,
+  });
 
-  const goBack = () => {
-    navigate(-1);
+const [oldPersona, setOldPersona] = useState("");
+
+const goBack = () => {
+  navigate(-1);
+};
+
+const isFormComplete = () => {
+  const errors = [];
+
+  if (!formData.nombre)
+    errors.push("El nombre es obligatorio");
+  if (formData.nombre.length < 4 || formData.nombre.length > 15)
+    errors.push("El nombre debe contener entre 4 y 15 caracteres");
+
+  if (!formData.apellido)
+    errors.push("El apellido es obligatorio");
+  if (formData.apellido.length < 4 || formData.apellido.length > 15)
+    errors.push("El apellido debe contener entre 4 y 15 caracteres");
+
+  if (!formData.dni)
+    errors.push("El DNI es obligatorio");
+  if (formData.dni.length !== 8 || !/^\d{8}$/.test(formData.dni))
+    errors.push("El DNI deben ser 8 dígitos numéricos");
+
+  return errors.length === 0;
+};
+
+
+
+
+
+  const fetchData = async () => {
+    try {
+      return await fetchPersonas(idToModify || 0);
+    } catch (error) {
+      Swal.fire("Error!", "No se han podido obtener los datos.", "error").then(
+        () => goBack()
+      );
+    }
   };
 
-  const [formData, setFormData] = useState<PersonasType>(
-    idToModify !== undefined
-      ? findPersonaById(idToModify) || {
-          id: 0,
-          firstName: "",
-          lastName: "",
-          dni: "",
-        }
-      : { id: 0, firstName: "", lastName: "", dni: "" }
-  );
-
-  const isFormComplete = () => {
-    return formData.firstName && formData.lastName && formData.dni;
-  };
 
   useEffect(() => {
-    if (idToModify === undefined) {
-      setFormData({
-        ...formData,
-        id: getNextID(),
+    if (idToModify) {
+      setIsLoading(true);
+      fetchData().then((resp) => {
+        setFormData({ ...resp});
+        setOldPersona(resp.persona);
+        setIsLoading(false);
+        
       });
     }
   }, []);
 
-  const handleSubmit = async () => {
+  
+
+  const handleSubmit = () => {
     if (isFormComplete()) {
-      try {
-        if (idToModify !== undefined) {
-          await modifyPersona(idToModify, formData);
-        } else {
-          await createPersona(formData);
-        }
-        goBack();
-      } catch (error) {
-        console.error("Error while saving data:", error);
-      }
-    }
+      Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
+      (!idToModify ? createPersona(formData) : modifyPersona(formData))
+        .then(() => {
+          Swal.fire({
+            title: "Realizado!",
+            text: `Se ha ${!idToModify ? "creado" : "modificado"} la persona.`,
+            icon: "success",
+            timer: 2000,
+          }).then(() => goBack());
+        })
+        .catch(() => {
+          Swal.fire(
+            "Error!",
+            `No se ha podido ${
+              !idToModify ? "crear" : "modificar"
+            } la persona.`,
+            "error"
+          );
+        });
+    } else
+      Swal.fire(
+        "Atención!",
+        "Debe completar los campos requeridos correctamente.",
+        "warning"
+      );
   };
 
   return (
-    <div className="container mx-auto p-4 containerAM">
-      <div className="flex justify-center">
+    <Container className="containerAM">
+      <Row className="d-flex justify-content-center">
         <h4 className="headerStyles">Alta y modificación de personas</h4>
-      </div>
-      <div className="flex flex-col justify-center items-center">
-        <div className="w-1/2">
-          <label className="block text-gray-700">ID: {formData.id}</label>
-        </div>
-        <div className="w-1/2">
-          <label className="block text-gray-700">Name</label>
-          <input
+      </Row>
+      <Row className="d-flex flex-column justify-content-center align-items-center">
+        <Col xs={6}>
+          <Form.Label>ID: {formData.id}</Form.Label>
+        </Col>
+        <Col xs={6}>
+          <Form.Label>Nombre</Form.Label>
+          <Form.Control
             type="text"
-            value={formData.firstName}
+            value={formData.nombre}
             onChange={(e) =>
-              setFormData({ ...formData, firstName: e.target.value })
+              setFormData({ ...formData, nombre: e.target.value })
             }
-            className="border rounded p-2 w-full"
           />
-        </div>
-        <div className="w-1/2">
-          <label className="block text-gray-700">Last Name</label>
-          <input
+        </Col>
+        <Col xs={6}>
+          <Form.Label>Apellido</Form.Label>
+          <Form.Control
             type="text"
-            value={formData.lastName}
+            value={formData.apellido}
             onChange={(e) =>
-              setFormData({ ...formData, lastName: e.target.value })
+              setFormData({ ...formData, apellido: e.target.value })
             }
-            className="border rounded p-2 w-full"
           />
-        </div>
-        <div className="w-1/2">
-          <label className="block text-gray-700">DNI</label>
-          <input
+        </Col>
+        <Col xs={6}>
+          <Form.Label>DNI</Form.Label>
+          <Form.Control
             type="text"
             value={formData.dni}
             onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
-            className="border rounded p-2 w-full"
           />
-        </div>
-      </div>
-      <button
+        </Col>
+      </Row>
+      <div>
+      <Button 
+        
         disabled={!isFormComplete()}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 hover:bg-blue-600"
+        style={{ marginTop: "10px" }}
         onClick={handleSubmit}
+        className="w-2/4 px-4 py-2 text-sm font-semibold leading-6 text-white transition duration-150 ease-in-out shadow bg-denim hover:bg-denim-400"
       >
-        Submit
-      </button>
-    </div>
+        Crear persona
+      </Button>
+      </div>
+    </Container>
   );
 }

@@ -31,7 +31,7 @@ export async function createProductService(
 ) {
   const combined = { ...defaultProductServiceValues, ...overrides };
   try {
-    await fetch("http://localhost:8080/api/productosyservicios", {
+    await fetch("http://localhost:8080/api/prods_servs", {
       method: "POST",
       body: JSON.stringify(combined),
       headers: { "Content-Type": "application/json" },
@@ -50,7 +50,7 @@ export async function modifyProductService(
   updatedData: Partial<ProductServiceType>
 ) {
   try {
-    await fetch(`http://localhost:8080/api/productosyservicios/${id}`, {
+    await fetch(`http://localhost:8080/api/prods_servs/${id}`, {
       method: "POST",
       body: JSON.stringify(updatedData),
       headers: { "Content-Type": "application/json" },
@@ -66,7 +66,7 @@ export async function modifyProductService(
 // Delete a Product or Service
 export async function deleteProductService(id: number) {
   try {
-    await fetch(`http://localhost:8080/api/productosyservicios/${id}`, {
+    await fetch(`http://localhost:8080/api/prods_servs/${id}`, {
       method: "PATCH",
     }).then((resp) => {
       if (resp.status >= 400)
@@ -83,7 +83,7 @@ export async function deleteProductService(id: number) {
 
     // Remove the item from the original array
     const message =
-      productsAndServices[indexToDelete].type === ProductOrService.Producto
+      productsAndServices[indexToDelete].tipo === ProductOrService.Producto
         ? "Producto eliminado"
         : "Servicio eliminado";
     productsAndServices.splice(indexToDelete, 1);
@@ -103,13 +103,13 @@ export const selectAll = (): ProductServiceType[] => {
 
 export const selectAllProducts = (): ProductServiceType[] => {
   return selectAll().filter(
-    (item) => item.type.toString() === ProductOrService.Producto
+    (item) => item.tipo.toString() === ProductOrService.Producto
   );
 };
 
 export const selectAllServices = (): ProductServiceType[] => {
   return selectAll().filter(
-    (item) => item.type.toString() === ProductOrService.Servicio
+    (item) => item.tipo.toString() === ProductOrService.Servicio
   );
 };
 
@@ -131,8 +131,11 @@ export function getNextID() {
 
 export const defaultProductServiceValues: ProductServiceType = {
   id: 0, // you can replace this with a logic to generate a unique id
-  name: "",
-  type: ProductOrService.Producto,
-  cost: 0,
-  support: 0,
+  nombre: "",
+  tipo: ProductOrService.Producto,
+  costo: 0,
+  soporte: null,
+  impuesto: 0,
+  cantidad: 1,
+  garantia: null
 };

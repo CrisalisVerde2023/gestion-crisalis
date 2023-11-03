@@ -6,6 +6,7 @@ import { Col, Container, Row, Table } from "react-bootstrap";
 
 export default function SelectedProdsServs() {
   const {pedido, setPedido} = useContext(UserLoggedContext);
+  let total:number = 0;
 
   const removeFromPedido = (row: ProductServiceType) => {
     setPedido({ ...pedido, prods_servs: pedido.prods_servs.filter(el => el.id !== row.id)});
@@ -16,7 +17,7 @@ export default function SelectedProdsServs() {
   }
 
   return !pedido.prods_servs.length
-    ? <p>No hay Productos / Servicios seleccionados...</p>
+    ? <p  className="py-2 bg-denim-400 text-white"><strong>No hay Productos / Servicios seleccionados...</strong></p>
     : 
       <div className="w-full">
   			<table className="min-w-full bg-white border-solid border-2 border-denim-400">
@@ -41,14 +42,14 @@ export default function SelectedProdsServs() {
                   <td className="py-2">{row.tipo}</td>
                   <td className="py-2">{row.costo}</td>
                   <td className="py-2">{row.impuesto}</td>
-                  <td className="py-2">{row.soporte || "-"}</td>
+                  <td className="py-2">{row.soporte || (row.soporte === 0) ? 0 : "-"}</td>
                   <td className="py-2">
                     <input
                       style={{width: "60px", backgroundColor: "lightgrey", padding: "5px", borderRadius: "10%"}}
                       type="number"
                       max={1000}
                       min={1}
-                      name="quantity"
+                      name="cantidad"
                       value={row.cantidad}
                       onChange={({target}) => handleChange(target, row)}>
                     </input>
@@ -59,18 +60,19 @@ export default function SelectedProdsServs() {
                         type="number"
                         max={5}
                         min={0}
-                        name="warranty"
+                        name="garantia"
                         value={row.garantia || 0}
                         onChange={({target}) => handleChange(target, row)}>
                       </input>
                     }
                   </td>
-                  <td className="py-2">{row.costo * row.cantidad + row.costo * row.cantidad * row.impuesto / 100 + (row.soporte || 0) * row.cantidad + (row.garantia || 0) * row.costo * row.cantidad * 0.2}</td>
+                  <td className="py-2">{- total + (total += row.costo * row.cantidad + row.costo * row.cantidad * row.impuesto / 100 + (row.soporte || 0) * row.cantidad + (row.garantia || 0) * row.costo * row.cantidad * 0.2)}</td>
                   <td className="py-2"><button onClick={() => removeFromPedido(row)}><XCircleFill /></button></td>
                 </tr>
               ))
             }
           </tbody>
         </table>
+        <p>Total del pedido: {total}</p>
       </div>
 }

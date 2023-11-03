@@ -21,6 +21,9 @@ export default function AM_Empresa() {
     navigate(-1);
   };
 
+  console.log(idEnterprise);
+  console.log(idToModify);
+
   const [formData, setFormData] = useState<EnterpriseType>(
     idToModify !== undefined
       ? findEnterpriseById(idToModify) || {
@@ -33,6 +36,7 @@ export default function AM_Empresa() {
   );
 
   const isFormComplete = () => {
+    console.log(formData);
     return formData.nombre && formData.cuit && formData.start_date;
   };
 
@@ -40,7 +44,7 @@ export default function AM_Empresa() {
     if (idToModify === undefined) {
       setFormData({
         ...formData,
-        id: getNextID(),
+        /* id: getNextID(), */
       });
     }
   }, []);
