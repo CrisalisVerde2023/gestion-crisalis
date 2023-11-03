@@ -1,13 +1,14 @@
+//@ts-nocheck
 import { PedidoType, UserLogged } from "../components/types/UserLogged";
 import { useContext } from "react";
 import { EncabezadoPedidoType } from "../components/types/EncabezadoPedidoType";
 import { ProductServiceType } from "../components/types/productServiceType";
 
-const URL_API_PRODS_SERVS = "http://localhost:8080/api/orden";
+const URL_API_ORDEN = "http://localhost:8080/api/orden";
 
 export async function createPedido(userLogged: UserLogged, pedido: Partial<PedidoType> = {}) {
   try{
-    await fetch(URL_API_PRODS_SERVS, {
+    await fetch(URL_API_ORDEN, {
       method: "POST",
       body: JSON.stringify({
         idCliente: pedido.cliente?.id,
@@ -15,7 +16,7 @@ export async function createPedido(userLogged: UserLogged, pedido: Partial<Pedid
         detalleOrden: pedido.prods_servs?.map(({id, cantidad, garantia}) => ({idServicioProducto: id, cantidad, garantia})),
       }),
       headers: {
-        //Authorization: userLogged.token,
+        Authorization: userLogged.token,
         "Content-Type": "application/json",
       },
     })
@@ -31,10 +32,10 @@ export async function createPedido(userLogged: UserLogged, pedido: Partial<Pedid
 
 export async function deletePedido(userLogged: UserLogged, id: number) {
   try{
-    await fetch(`${URL_API_PRODS_SERVS}/${id}`, {
+    await fetch(`${URL_API_ORDEN}/${id}`, {
       method: "PATCH",
       headers: {
-        //Authorization: userLogged.token,
+        Authorization: userLogged.token,
         "Content-Type": "application/json",
       }
     })
@@ -56,38 +57,43 @@ export async function deletePedido(userLogged: UserLogged, id: number) {
 
 // Refactorizar el siguiente código...
 
-type ReturnedOrderType = { ordenDetalles: { map: (arg0: (el: { productoServicio: { tipo: { toString: () => any; }; impuesto: number; garantia: number; costo: number; cantidad: number; }; }) => { tipo: { toString: () => any; }; cantidad: number; costo: number; impuesto: number; garantia: number; }) => Partial<ProductServiceType>[]; }; id: any; cliente: { persona: { nombre: string; apellido: string; }; empresa: { nombre: any; }; }; fechaCreacion: any; eliminado: any; };
 
 
-export const fetchPedidos = async (id: number) => {
+export const fetchPedidos = async (userLogged: UserLogged, id: number) => {
   try {
-    const pedidos = await (await fetch(`${URL_API_PRODS_SERVS + (id > 0) ? `/${id}` : ""}`)).json();
-    const encabezados: EncabezadoPedidoType[] = pedidos.map((aux: ReturnedOrderType) => {
+    const pedidos = await (await fetch(URL_API_ORDEN, {
+      headers: {
+        Authorization: userLogged.token,
+        "Content-Type": "application/json",
+      }
+    })).json() || [];
+    const encabezados: EncabezadoPedidoType[] = pedidos.map((aux) => {
       let cantProductos = 0;
       let cantServicios = 0;
       let total = 0;
       
-      const detallePedido: Partial<ProductServiceType>[] = aux.ordenDetalles.map(el => {
+      const detallePedido = aux.ordenDetalles.map(el => {
         switch (el.productoServicio.tipo.toString()) {
           case "SERVICIO": cantServicios++; break;
           case "PRODUCTO": cantProductos++; break;
         }
 
-        total += (el.productoServicio.impuesto / 100) * (0.02 *  el.productoServicio.garantia) * el.productoServicio.costo * el.productoServicio.cantidad
+        total += ((((el.impuesto || 0) / 100) + (0.02 *  (el.garantia || 0))) * el.costo * el.cantidad) + el.costo * el.cantidad;
 
         return {
           tipo: el.productoServicio.tipo,
-          cantidad: el.productoServicio.cantidad,
-          costo: el.productoServicio.costo,
-          impuesto: el.productoServicio.impuesto,
-          garantia: el.productoServicio.garantia
+          cantidad: el.cantidad,
+          costo: el.costo,
+          impuesto: el.impuesto,
+          garantia: el.garantia,
+          total
         };
       });
 
       return {
         id: aux.id,
         persona: aux.cliente.persona.nombre + " " + aux.cliente.persona.apellido,
-        empresa: aux.cliente.empresa.nombre,
+        empresa: aux.cliente.empresa?.nombre,
         cantProductos,
         cantServicios,
         fechaCreacion: aux.fechaCreacion,

@@ -7,7 +7,7 @@ import {
 } from "../../controller/ABMPedidoController";
 import LoadingComponent from "../LoadingComponent";
 import Swal from 'sweetalert2';
-import { EncabezadoPedidoType } from "../types/encabezadoPedidoType";
+import { EncabezadoPedidoType } from "../types/EncabezadoPedidoType";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 
 export default function LB_Pedido() {
@@ -19,7 +19,7 @@ export default function LB_Pedido() {
 
   const fetchData = async () => {
     try {
-      return await fetchPedidos(0);
+      return await fetchPedidos(userLogged, 0);
     }
     catch (error) {
       Swal.fire('Error!', 'No se han podido obtener datos.', 'error')
