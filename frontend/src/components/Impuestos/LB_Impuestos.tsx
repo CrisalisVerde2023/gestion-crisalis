@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   PencilFill,
   XCircleFill,
@@ -6,8 +6,6 @@ import {
 } from "react-bootstrap-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  useCreateImpuesto,
-  useModifyImpuesto,
   useDeleteImpuesto,
   useFetchImpuestos,
 } from "../../controller/ABMImpuestoController";
@@ -76,23 +74,23 @@ export default function LB_Impuestos() {
   };
 
   const handleClickedElement = (selected: ImpuestosType) => {
-      Swal.fire({
-        title: "Confirmar cambio de estado de Impuesto?",
-        text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${
-          selected.eliminado
-        }`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí! Estoy seguro.",
-        cancelButtonText: "Mejor no.",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          onConfirm(selected);
-        } else if (result.isDenied || result.isDismissed) {
-        }
-      });
+    Swal.fire({
+      title: "Confirmar cambio de estado de Impuesto?",
+      text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${
+        selected.eliminado
+      }`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí! Estoy seguro.",
+      cancelButtonText: "Mejor no.",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onConfirm(selected);
+      } else if (result.isDenied || result.isDismissed) {
+      }
+    });
   };
 
   const actionButtons = (row: ImpuestosType) => {

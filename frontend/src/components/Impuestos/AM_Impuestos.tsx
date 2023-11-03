@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  useCreateImpuesto,
-  useModifyImpuesto,
-  useDeleteImpuesto,
-  findImpuestoById,
-  getNextID
+  createImpuesto,
+  modifyImpuesto,
+  fetchImpuestos,
 } from "./../../controller/ABMImpuestoController";
 import { ImpuestosType } from "./../types/taxType";
+import Swal from "sweetalert2";
 
 export default function AM_Impuestos() {
   const { idImpuesto } = useParams<{ idImpuesto: string }>();
@@ -20,35 +19,18 @@ export default function AM_Impuestos() {
     navigate(-1);
   };
 
-  const [formData, setFormData] = useState<ImpuestosType>(
-    idToModify !== undefined
-      ? findImpuestoById(idToModify) || {
-          id: 0,
-          nombre: "",
-          porcentaje: 0.0,
-          eliminado: false
-        }
-      : { id: 0, nombre: "", porcentaje: 0.0, eliminado: false }
-  );
+  const [formData, setFormData] = useState<ImpuestosType>({
+    id: 0,
+    nombre: "",
+    porcentaje: 0.0,
+    eliminado: false,
+  });
 
   const isFormComplete = () => {
     const errors = [];
-    
-    console.log(formData)
+    if (!formData.nombre) errors.push("El nombre es obligatorio");
+    if (!formData.porcentaje) errors.push("El apellido es obligatorio");
 
-    if (!formData.nombre)
-      errors.push("El nombre es obligatorio");
-    if (formData.nombre.length < 4 || formData.nombre.length > 15)
-      errors.push("El nombre debe contener entre 4 y 15 caracteres");
-  
-    if (!formData.porcentaje)
-      errors.push("El apellido es obligatorio");
-    if (formData.porcentaje > 0 || formData.porcentaje < 100){
-      errors.push("El apellido debe contener entre 4 y 15 caracteres");
-      console.log(formData)
-    }
-
-  
     return errors.length === 0;
   };
 
@@ -56,26 +38,39 @@ export default function AM_Impuestos() {
     if (idToModify === undefined) {
       setFormData({
         ...formData,
-        id: 0,
+        /* id: 0, */
+      });
+    } else {
+      fetchData().then((resp) => {
+        setFormData({ ...resp });
       });
     }
   }, []);
 
+  const fetchData = async () => {
+    try {
+      return await fetchImpuestos(idToModify || 0);
+    } catch (error) {
+      Swal.fire("Error!", "No se han podido obtener los datos.", "error").then(
+        () => goBack()
+      );
+    }
+  };
+
   const handleSubmit = async () => {
     if (isFormComplete()) {
       try {
-        if (idToModify !== undefined) {
-          await useModifyImpuesto(idToModify, formData);
-        } else {
-          await useModifyImpuesto(formData);
-        }
+        !idToModify
+          ? await createImpuesto(formData)
+          : await modifyImpuesto(formData);
+
         goBack();
       } catch (error) {
         console.error("Error while saving data:", error);
       }
     }
   };
-  
+
   return (
     <div className="container mx-auto p-4 containerAM">
       <div className="flex justify-center">
@@ -107,7 +102,6 @@ export default function AM_Impuestos() {
             className="border rounded p-2 w-full"
           />
         </div>
-        
       </div>
       <button
         //disabled={!isFormComplete()}
