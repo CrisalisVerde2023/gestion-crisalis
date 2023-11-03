@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { ImpuestosType } from "../components/types/taxType";
+import { HTTPMethod, useFetch } from "../hooks/useFetch";
 
 const URL_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
 
@@ -80,3 +81,29 @@ export async function deleteImpuesto(id: number) {
     throw error;
   }
 }
+
+export const useFetchImpuestos = (
+  id?: number,
+  shouldExecute: boolean = false
+) => {
+  const params = {}; // Define any parameters you might need
+  return useFetch(
+    {
+      method: HTTPMethod.GET,
+      url: `${URL_API_IMPUESTOS}${id && id >= 0 ? `/${id}` : ""}`,
+      params: JSON.stringify(params),
+    },
+    shouldExecute
+  );
+};
+
+export const useDeleteImpuesto = (id?: number, shouldExecute = false) => {
+  return useFetch(
+    {
+      method: HTTPMethod.PATCH,
+      url: `${URL_API_IMPUESTOS}/${id}`,
+      params: {},
+    },
+    shouldExecute
+  );
+};
