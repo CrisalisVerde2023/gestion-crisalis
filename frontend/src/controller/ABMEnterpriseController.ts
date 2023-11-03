@@ -14,7 +14,7 @@ export const fetchEnterprises = async (
   try {
     const response = await fetch(`${URL_API_EMPRESAS}`, {
       headers: {
-        Authorization: sessionStorage.getItem("token"),
+        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
     });
