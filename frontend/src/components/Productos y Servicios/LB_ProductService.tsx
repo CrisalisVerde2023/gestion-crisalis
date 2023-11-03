@@ -111,26 +111,54 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
   };
 
   const updateDataBasedOnFilter = () => {
-    console.log(filtrado);
     let filtered: ProductServiceType[] = [];
+
+    // Filter based on 'filtrado' selection
     if (filtrado === ProductOrService.Producto) {
       filtered = selectAllProducts();
-      setData(filtered);
     } else if (filtrado === ProductOrService.Servicio) {
       filtered = selectAllServices();
-      setData(filtered);
-    } else {
-      if (originalData) {
-        filtered = originalData;
+    } else if (originalData) {
+      filtered = [...originalData]; // Make a copy of the original data
+    }
+
+    // If there's a search term, apply the search filter
+    if (searchBoxRef.current?.value) {
+      const searchTerm = searchBoxRef.current.value.toLowerCase();
+
+      // Apply the search term
+      if (searchTerm) {
+        if (searchTerm.includes(":")) {
+          // Specific column search
+          const [columnKey, columnValue] = searchTerm
+            .split(":")
+            .map((str) => str.trim());
+          if (validColumnKeys.includes(columnKey as keyof ProductServiceType)) {
+            filtered = filtered.filter((item) =>
+              String(item[columnKey as keyof ProductServiceType])
+                .toLowerCase()
+                .includes(columnValue)
+            );
+          }
+        } else {
+          // General search across all keys
+          filtered = filtered.filter((item) =>
+            Object.keys(item).some((key) =>
+              String(item[key as keyof ProductServiceType])
+                .toLowerCase()
+                .includes(searchTerm)
+            )
+          );
+        }
       }
     }
-    console.log(filtered);
-    setData(filtered);
+
+    setData(filtered); // Update the state with the filtered data
   };
 
   useEffect(() => {
-    handleSearch();
-  }, [searchBoxRef.current?.value]);
+    updateDataBasedOnFilter();
+  }, [searchBoxRef.current?.value, filtrado]);
 
   useEffect(() => {
     console.log(pedido.prods_servs);
@@ -163,46 +191,50 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
     if (!searchBoxRef.current) {
       return;
     }
-    const searchTerm = searchBoxRef.current.value.toLowerCase();
-    if (searchTerm.length > 0) {
-      let filteredData: ProductServiceType[] = [];
-      const hasColon = searchTerm.includes(":");
-      if (hasColon) {
-        const [columnKey, columnValue] = searchTerm
-          .split(":")
-          .map((str) => str.trim());
 
-        if (validColumnKeys.includes(columnKey as keyof ProductServiceType)) {
-          if (data) {
-            filteredData = data.filter((item) =>
+    const searchTerm = searchBoxRef.current.value.toLowerCase();
+
+    // If there's no search term, reset data to the original filtered by 'filtrado'
+    if (!searchTerm) {
+      updateDataBasedOnFilter();
+      return;
+    }
+
+    let filteredData: ProductServiceType[] = [];
+
+    // Specific column search
+    if (searchTerm.includes(":")) {
+      const [columnKey, columnValue] = searchTerm
+        .split(":")
+        .map((str) => str.trim());
+
+      if (validColumnKeys.includes(columnKey as keyof ProductServiceType)) {
+        filteredData = data
+          ? data.filter((item) =>
               String(item[columnKey as keyof ProductServiceType])
                 .toLowerCase()
-                .includes(columnValue.toLowerCase())
-            );
-          }
-        }
-      } else {
-        if (data) {
-          filteredData = data.filter((item) => {
-            const idMatch = item.id === Number(searchTerm);
-            const nameMatch = item.nombre
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase());
-            const productMatch =
-              item.tipo === "PRODUCTO" &&
-              String(item.costo).includes(searchTerm);
-            const serviceMatch =
-              item.tipo === "SERVICIO" &&
-              String(item.soporte).includes(searchTerm);
-
-            return idMatch || nameMatch || productMatch || serviceMatch;
-          });
-        }
+                .includes(columnValue)
+            )
+          : [];
       }
-      setData(filteredData);
     } else {
-      setData(data);
+      filteredData = data
+        ? data.filter((item) =>
+            Object.keys(item).some((key) =>
+              String(item[key as keyof ProductServiceType])
+                .toLowerCase()
+                .includes(searchTerm)
+            )
+          )
+        : [];
     }
+
+    // Apply 'filtrado' filter if it's not empty
+    if (filtrado !== "") {
+      filteredData = filteredData.filter((item) => item.tipo === filtrado);
+    }
+
+    setData(filteredData);
   };
 
   const onConfirm = async (productService: ProductServiceType) => {
@@ -340,34 +372,33 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
               <tbody>
                 {data && data.length ? (
                   data
-                    .filter((row) => !row.eliminado)
-                    .map(
-                      (
-                        row,
-                        index // Here we filter out the rows with eliminado === true
-                      ) => (
-                        <tr key={index} className="border-b">
-                          {Object.keys(defaultProductService).map((key) => {
-                            if (
-                              key === "costo" &&
-                              row.tipo?.toString() === ProductOrService.Producto
-                            ) {
-                              return <td className="py-2">{row[key]}</td>;
-                            } else if (
-                              key === "costo" &&
-                              row.tipo?.toString() === ProductOrService.Servicio
-                            ) {
-                              return <td className="py-2">{row[key]} </td>;
-                            } else {
-                              return (
-                                <td className="py-2">{(row as any)[key]}</td>
-                              );
-                            }
-                          })}
-                          <td className="py-2">{actionButtons(row)}</td>
-                        </tr>
-                      )
-                    )
+                    .filter((row: any) => !row.eliminado)
+                    .map((row, index) => (
+                      <tr key={index} className="border-b">
+                        {Object.keys(defaultProductService).map((key) => {
+                          if (
+                            key === "costo" &&
+                            row.tipo?.toString() === ProductOrService.Producto
+                          ) {
+                            return (
+                              <td key={key + "Column"} className="py-2">
+                                {row[key]}
+                              </td>
+                            );
+                          } else if (
+                            key === "costo" &&
+                            row.tipo?.toString() === ProductOrService.Servicio
+                          ) {
+                            return <td className="py-2">{row[key]} </td>;
+                          } else {
+                            return (
+                              <td className="py-2">{(row as any)[key]}</td>
+                            );
+                          }
+                        })}
+                        <td className="py-2">{actionButtons(row)}</td>
+                      </tr>
+                    ))
                 ) : (
                   <tr className="border-b">
                     <td
