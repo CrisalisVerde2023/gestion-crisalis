@@ -2,29 +2,52 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  createImpuesto,
-  modifyImpuesto,
-  fetchImpuestos,
+  useCreateImpuesto,
+  useModifyImpuestos,
+  useFetchImpuestos,
 } from "./../../controller/ABMImpuestoController";
-import { ImpuestosType } from "./../types/taxType";
+import { ImpuestosType, defaultImpuestosType } from "./../types/taxType";
 import Swal from "sweetalert2";
+import { useFetchReturnType } from "../../hooks/useFetch";
 
 export default function AM_Impuestos() {
   const { idImpuesto } = useParams<{ idImpuesto: string }>();
   const idToModify = idImpuesto ? parseInt(idImpuesto, 10) : undefined;
+  const [shouldCreate, setShouldCreate] = useState(false);
+  const [shouldModify, setShouldModify] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  let fetchedData: useFetchReturnType | null = null;
+  const [response, setResponse] = useState<useFetchReturnType | null>(null);
+  const [formData, setFormData] = useState<ImpuestosType>(defaultImpuestosType);
+
+  const createResponse = useCreateImpuesto(formData, shouldCreate);
+  const modifyResponse = useModifyImpuestos(formData, shouldModify);
+
+  if (idToModify !== undefined) {
+    fetchedData = useFetchImpuestos(idToModify, true);
+  }
+
+  useEffect(() => {
+    if (fetchedData && !fetchedData.hasError && fetchedData.json) {
+      setFormData({ ...fetchedData.json, password: "" });
+    }
+  }, [fetchedData]);
+
+  useEffect(() => {
+    if (response) {
+      if (!response.loading && !response.hasError && response.json) {
+        console.log("here");
+      } else if (!response.loading && response.hasError) {
+        // logic for handling errors
+      }
+    }
+  }, [response]);
 
   const goBack = () => {
     navigate(-1);
   };
-
-  const [formData, setFormData] = useState<ImpuestosType>({
-    id: 0,
-    nombre: "",
-    porcentaje: 0.0,
-    eliminado: false,
-  });
 
   const isFormComplete = () => {
     const errors = [];
@@ -34,42 +57,52 @@ export default function AM_Impuestos() {
     return errors.length === 0;
   };
 
-  useEffect(() => {
-    if (idToModify === undefined) {
-      setFormData({
-        ...formData,
-        /* id: 0, */
-      });
-    } else {
-      fetchData().then((resp) => {
-        setFormData({ ...resp });
-      });
-    }
-  }, []);
+  const handleSubmit = () => {
+    const complete = isFormComplete();
 
-  const fetchData = async () => {
-    try {
-      return await fetchImpuestos(idToModify || 0);
-    } catch (error) {
-      Swal.fire("Error!", "No se han podido obtener los datos.", "error").then(
-        () => goBack()
+    if (complete) {
+      console.log("ok");
+      Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
+      if (!idToModify) {
+        setShouldCreate(true);
+      } else {
+        setShouldModify(true);
+      }
+    } else {
+      Swal.fire(
+        "Atención!",
+        "Debe completar los campos requeridos correctamente.",
+        "warning"
       );
     }
   };
 
-  const handleSubmit = async () => {
-    if (isFormComplete()) {
-      try {
-        !idToModify
-          ? await createImpuesto(formData)
-          : await modifyImpuesto(formData);
-
+  useEffect(() => {
+    Swal.close();
+    if (createResponse && shouldCreate) {
+      setShouldCreate(false);
+      if (!createResponse.loading && !createResponse.hasError) {
+        Swal.fire("Perfecto!", "Usuario creado correctamente", "success");
         goBack();
-      } catch (error) {
-        console.error("Error while saving data:", error);
+      } else if (!createResponse.loading && createResponse.hasError) {
+        if (createResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al crear usuario", "warning");
+        }
       }
     }
-  };
+    if (modifyResponse && shouldModify) {
+      setShouldModify(false);
+      console.log(modifyResponse);
+      if (!modifyResponse.loading && !modifyResponse.hasError) {
+        Swal.fire("Perfecto!", "Usuario modificado correctamente", "success");
+        goBack();
+      } else if (!modifyResponse.loading && modifyResponse.hasError) {
+        if (modifyResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al modificar usuario", "warning");
+        }
+      }
+    }
+  }, [createResponse, modifyResponse]);
 
   return (
     <div className="container mx-auto p-4 containerAM">
@@ -97,7 +130,7 @@ export default function AM_Impuestos() {
             type="text"
             value={formData.porcentaje}
             onChange={(e) =>
-              setFormData({ ...formData, porcentaje: e.target.value })
+              setFormData({ ...formData, porcentaje: Number(e.target.value) })
             }
             className="border rounded p-2 w-full"
           />
