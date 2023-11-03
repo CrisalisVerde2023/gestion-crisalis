@@ -35,14 +35,12 @@ public class OrdenController {
     public ResponseEntity<?> getById(@PathVariable @PositiveOrZero Long id){
         return new ResponseEntity<>(this.ordenService.getById(id), HttpStatus.OK);
     }
-/*
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> anular(@PathVariable @PositiveOrZero Long id){
         this.ordenService.anular(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-*/
-
 }
 
 
