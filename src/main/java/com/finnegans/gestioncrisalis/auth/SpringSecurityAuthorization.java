@@ -52,9 +52,9 @@ public class SpringSecurityAuthorization {
     SecurityFilterChain filterChain (HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers("/api/usuarios").hasRole("ADMIN")
-                .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
-                .anyRequest().authenticated()
+                //.antMatchers("/api/usuarios").hasRole("ADMIN")
+                .antMatchers("/api/**").permitAll()//hasAnyRole("ADMIN", "USER")
+                //.anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), getApplicationContext()))
                 .addFilter(new JwtValidationFilter(authenticationConfiguration.getAuthenticationManager()))
