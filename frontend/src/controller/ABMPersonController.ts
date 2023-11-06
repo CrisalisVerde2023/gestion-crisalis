@@ -30,7 +30,7 @@ export const selectAll = (): PersonasType[] => {
 
 export async function createPersona(overrides: Partial<PersonasType> = {}) {
   try {
-    await fetch(`${URL_API_PERSONAS}`, {
+    const response = await fetch(`${URL_API_PERSONAS}`, {
       method: "POST",
       body: JSON.stringify({
         nombre: overrides.nombre,
@@ -41,9 +41,14 @@ export async function createPersona(overrides: Partial<PersonasType> = {}) {
         Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
         "Content-Type": "application/json",
       },
-    }).then((resp) => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    });
+    })
+    if(response.status >= 400) {
+       throw "El servidor respondió con error";
+    };
+    const data = await response.json();
+    console.log("persona creada", data);
+    return data;
+
   } catch (error) {
     console.error("Ocurrió un error al crear persona:", error);
     throw error;

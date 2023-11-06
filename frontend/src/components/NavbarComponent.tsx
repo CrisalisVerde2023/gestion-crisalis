@@ -24,7 +24,7 @@ export default function NavbarComponent() {
   }
 
   return (
-    <div className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800 mb-4">
+    <div className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
       <div className="container mx-auto flex items-center">
         <Link to="/home">
           <img src={logo} alt="Logo" className="mr-3 h-10" />
