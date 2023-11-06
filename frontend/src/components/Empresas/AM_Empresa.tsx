@@ -2,67 +2,118 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  countEnterprises,
-  createEnterprise,
-  findEnterpriseById,
-  getNextID,
-  modifyEnterprise,
+  useCreateEmpresa,
+  useFetchEmpresa,
+  useModifyEmpresa,
 } from "./../../controller/ABMEnterpriseController";
-import { EnterpriseType } from "./../types/enterpriseType";
+import {
+  EnterpriseType,
+  defaultEnterpriseType,
+} from "./../types/enterpriseType";
 import { formatDate, formatDateToInput } from "../../tools/formatDate";
+import { useFetchReturnType } from "../../hooks/useFetch";
+import Swal from "sweetalert2";
 
 export default function AM_Empresa() {
   const { idEnterprise } = useParams<{ idEnterprise: string }>();
-  const idToModify = idEnterprise ? parseInt(idEnterprise, 10) : undefined;
+  const idToModify =
+    idEnterprise !== undefined
+      ? idEnterprise === "0"
+        ? 0
+        : parseInt(idEnterprise)
+      : undefined;
+  const [shouldCreate, setShouldCreate] = useState(false);
+  const [shouldModify, setShouldModify] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [response, setResponse] = useState<useFetchReturnType | null>(null);
+  const [formData, setFormData] = useState<EnterpriseType>(
+    defaultEnterpriseType
+  );
 
   const goBack = () => {
     navigate(-1);
   };
 
-  console.log(idEnterprise);
-  console.log(idToModify);
+  let fetchedData: useFetchReturnType | null = null;
 
-  const [formData, setFormData] = useState<EnterpriseType>(
-    idToModify !== undefined
-      ? findEnterpriseById(idToModify) || {
-          id: 0,
-          nombre: "",
-          cuit: "",
-          start_date: "",
-        }
-      : { id: 0, nombre: "", cuit: "", start_date: "" }
-  );
-
-  const isFormComplete = () => {
-    console.log(formData);
-    return formData.nombre && formData.cuit && formData.start_date;
-  };
+  if (idToModify !== undefined) {
+    fetchedData = useFetchEmpresa(idToModify, true);
+  }
 
   useEffect(() => {
-    if (idToModify === undefined) {
-      setFormData({
-        ...formData,
-        /* id: getNextID(), */
-      });
+    if (fetchedData && !fetchedData.hasError && fetchedData.json) {
+      setFormData({ ...fetchedData.json, password: "" });
     }
-  }, []);
+  }, [fetchedData]);
 
-  const handleSubmit = async () => {
-    if (isFormComplete()) {
-      try {
-        if (idToModify !== undefined) {
-          await modifyEnterprise(idToModify, formData);
-        } else {
-          await createEnterprise(formData);
-        }
-        goBack();
-      } catch (error) {
-        console.error("Error while saving data:", error);
+  useEffect(() => {
+    if (response) {
+      if (!response.loading && !response.hasError && response.json) {
+        console.log("here");
+      } else if (!response.loading && response.hasError) {
+        // logic for handling errors
       }
     }
+  }, [response]);
+
+  const createResponse = useCreateEmpresa(formData, shouldCreate);
+  const modifyResponse = useModifyEmpresa(formData, shouldModify);
+
+  useEffect(() => {
+    Swal.close();
+    if (createResponse && shouldCreate) {
+      setShouldCreate(false);
+      if (!createResponse.loading && !createResponse.hasError) {
+        Swal.fire("Perfecto!", "Usuario creado correctamente", "success");
+        goBack();
+      } else if (!createResponse.loading && createResponse.hasError) {
+        if (createResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al crear usuario", "warning");
+        }
+      }
+    }
+    if (modifyResponse && shouldModify) {
+      setShouldModify(false);
+      console.log(modifyResponse);
+      if (!modifyResponse.loading && !modifyResponse.hasError) {
+        Swal.fire("Perfecto!", "Usuario modificado correctamente", "success");
+        goBack();
+      } else if (!modifyResponse.loading && modifyResponse.hasError) {
+        if (modifyResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al modificar usuario", "warning");
+        }
+      }
+    }
+  }, [createResponse, modifyResponse]);
+
+  const handleSubmit = () => {
+    const complete = isFormComplete();
+
+    if (complete) {
+      console.log("ok");
+      Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
+      if (!idToModify) {
+        setShouldCreate(true);
+      } else {
+        setShouldModify(true);
+      }
+    } else {
+      Swal.fire(
+        "Atención!",
+        "Debe completar los campos requeridos correctamente.",
+        "warning"
+      );
+    }
   };
+
+  function isFormComplete(): boolean {
+    return (
+      formData.nombre.length > 0 &&
+      formData.cuit.length > 0 &&
+      formData.start_date.length > 0
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">

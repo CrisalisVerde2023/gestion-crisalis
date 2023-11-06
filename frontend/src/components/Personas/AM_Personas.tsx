@@ -2,111 +2,119 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  createPersona,
-  fetchPersonas,
-  modifyPersona,
+  useCreatePersonas,
+  useModifyPersonas,
+  useFetchPersonas,
 } from "./../../controller/ABMPersonController";
-import { PersonasType } from "./../types/personType";
-import LoadingComponent from "../LoadingComponent";
+import { PersonasType, defaultPersonasType } from "./../types/personType";
 import Swal from "sweetalert2";
+import { useFetchReturnType } from "../../hooks/useFetch";
 
 export default function AM_Personas() {
   const { idPersona } = useParams<{ idPersona: string }>();
   const idToModify = idPersona ? parseInt(idPersona) : undefined;
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<PersonasType>({
-    id: 0,
-    nombre: "",
-    apellido: "",
-    dni: "",
-    eliminado: false,
-  });
+  const [shouldCreate, setShouldCreate] = useState(false);
+  const [shouldModify, setShouldModify] = useState(false);
+  const [response, setResponse] = useState<useFetchReturnType | null>(null);
+  const [formData, setFormData] = useState<PersonasType>(defaultPersonasType);
+  const [oldPersona, setOldPersona] =
+    useState<PersonasType>(defaultPersonasType);
 
-const [oldPersona, setOldPersona] = useState("");
+  let fetchedData: useFetchReturnType | null = null;
 
-const goBack = () => {
-  navigate(-1);
-};
-
-const isFormComplete = () => {
-  const errors = [];
-
-  if (!formData.nombre)
-    errors.push("El nombre es obligatorio");
-  if (formData.nombre.length < 4 || formData.nombre.length > 15)
-    errors.push("El nombre debe contener entre 4 y 15 caracteres");
-
-  if (!formData.apellido)
-    errors.push("El apellido es obligatorio");
-  if (formData.apellido.length < 4 || formData.apellido.length > 15)
-    errors.push("El apellido debe contener entre 4 y 15 caracteres");
-
-  if (!formData.dni)
-    errors.push("El DNI es obligatorio");
-  if (formData.dni.length !== 8 || !/^\d{8}$/.test(formData.dni))
-    errors.push("El DNI deben ser 8 dígitos numéricos");
-
-  return errors.length === 0;
-};
-
-
-
-
-
-  const fetchData = async () => {
-    try {
-      return await fetchPersonas(idToModify || 0);
-    } catch (error) {
-      Swal.fire("Error!", "No se han podido obtener los datos.", "error").then(
-        () => goBack()
-      );
-    }
-  };
-
+  if (idToModify !== undefined) {
+    fetchedData = useFetchPersonas(idToModify, true);
+  }
 
   useEffect(() => {
-    if (idToModify) {
-      setIsLoading(true);
-      fetchData().then((resp) => {
-        setFormData({ ...resp});
-        setOldPersona(resp.persona);
-        setIsLoading(false);
-        
-      });
+    if (fetchedData && !fetchedData.hasError && fetchedData.json) {
+      setFormData({ ...fetchedData.json, password: "" });
     }
-  }, []);
+  }, [fetchedData]);
 
-  
+  useEffect(() => {
+    if (response) {
+      if (!response.loading && !response.hasError && response.json) {
+        console.log("here");
+      } else if (!response.loading && response.hasError) {
+        // logic for handling errors
+      }
+    }
+  }, [response]);
+
+  const goBack = () => {
+    navigate(-1);
+  };
+
+  const isFormComplete = () => {
+    const errors = [];
+
+    if (!formData.nombre) errors.push("El nombre es obligatorio");
+    if (formData.nombre.length < 4 || formData.nombre.length > 15)
+      errors.push("El nombre debe contener entre 4 y 15 caracteres");
+
+    if (!formData.apellido) errors.push("El apellido es obligatorio");
+    if (formData.apellido.length < 4 || formData.apellido.length > 15)
+      errors.push("El apellido debe contener entre 4 y 15 caracteres");
+
+    if (!formData.dni) errors.push("El DNI es obligatorio");
+    if (formData.dni.length !== 8 || !/^\d{8}$/.test(formData.dni))
+      errors.push("El DNI deben ser 8 dígitos numéricos");
+
+    return errors.length === 0;
+  };
+
+  const createResponse = useCreatePersonas(formData, shouldCreate);
+  const modifyResponse = useModifyPersonas(formData, shouldModify);
 
   const handleSubmit = () => {
-    if (isFormComplete()) {
+    const complete = isFormComplete();
+
+    if (complete) {
+      console.log("ok");
       Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
-      (!idToModify ? createPersona(formData) : modifyPersona(formData))
-        .then(() => {
-          Swal.fire({
-            title: "Realizado!",
-            text: `Se ha ${!idToModify ? "creado" : "modificado"} la persona.`,
-            icon: "success",
-            timer: 2000,
-          }).then(() => goBack());
-        })
-        .catch(() => {
-          Swal.fire(
-            "Error!",
-            `No se ha podido ${
-              !idToModify ? "crear" : "modificar"
-            } la persona.`,
-            "error"
-          );
-        });
-    } else
+      if (!idToModify) {
+        setShouldCreate(true);
+      } else {
+        setShouldModify(true);
+      }
+    } else {
       Swal.fire(
         "Atención!",
         "Debe completar los campos requeridos correctamente.",
         "warning"
       );
+    }
   };
+
+  useEffect(() => {
+    Swal.close();
+    if (createResponse && shouldCreate) {
+      setShouldCreate(false);
+      if (!createResponse.loading && !createResponse.hasError) {
+        Swal.fire("Perfecto!", "Persona creada correctamente", "success");
+        goBack();
+      } else if (!createResponse.loading && createResponse.hasError) {
+        if (createResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al crear persona", "warning");
+        }
+      }
+    }
+    if (modifyResponse && shouldModify) {
+      setShouldModify(false);
+      console.log(modifyResponse);
+      if (!modifyResponse.loading && !modifyResponse.hasError) {
+        Swal.fire("Perfecto!", "Persona modificado correctamente", "success");
+        goBack();
+      } else if (!modifyResponse.loading && modifyResponse.hasError) {
+        if (modifyResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al modificar persona", "warning");
+        }
+      }
+    }
+  }, [createResponse, modifyResponse]);
 
   return (
     <Container className="containerAM">
@@ -147,15 +155,14 @@ const isFormComplete = () => {
         </Col>
       </Row>
       <div>
-      <Button 
-        
-        disabled={!isFormComplete()}
-        style={{ marginTop: "10px" }}
-        onClick={handleSubmit}
-        className="w-2/4 px-4 py-2 text-sm font-semibold leading-6 text-white transition duration-150 ease-in-out shadow bg-denim hover:bg-denim-400"
-      >
-        Crear persona
-      </Button>
+        <Button
+          disabled={!isFormComplete()}
+          style={{ marginTop: "10px" }}
+          onClick={handleSubmit}
+          className="w-2/4 px-4 py-2 text-sm font-semibold leading-6 text-white transition duration-150 ease-in-out shadow bg-denim hover:bg-denim-400"
+        >
+          Crear persona
+        </Button>
       </div>
     </Container>
   );

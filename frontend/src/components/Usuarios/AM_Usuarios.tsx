@@ -26,7 +26,6 @@ export default function AM_Usuario() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UsuariosType>(defaultUsuariosType);
   const [oldUsuario, setOldUsuario] = useState("");
-  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
   const [response, setResponse] = useState<useFetchReturnType | null>(null);
   let fetchedData: useFetchReturnType | null = null;
 

@@ -30,7 +30,7 @@ export type useFetchReturnType = {
   statusCode: number;
 };
 
-const defaultUseFetchValues = {
+export const defaultUseFetchValues = {
   json: null,
   loading: true,
   hasError: false,
