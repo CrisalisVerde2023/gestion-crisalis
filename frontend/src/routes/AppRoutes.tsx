@@ -37,10 +37,10 @@ export const AppRoutes = () => {
         <Route path="/" element={<Navigate to={"/home"} />} />
         <Route path="/home" element={<Dashboard />} />
         <Route path="/personas" element={<ABMPersonasComponent />} />
-        <Route path="/personas/AMPersonas" element={<AM_Personas callBackProp={goBack}/>} />
+        <Route path="/personas/AMPersonas" element={<AM_Personas />} />
         <Route
           path="/personas/AMPersonas/:idPersona"
-          element={<AM_Personas callBackProp={goBack} />}
+          element={<AM_Personas />}
         />
         <Route path="/clientes" element={<ABMClientesComponent/>} />
         <Route

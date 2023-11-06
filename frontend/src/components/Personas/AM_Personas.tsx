@@ -90,7 +90,10 @@ const isFormComplete = () => {
             icon: "success",
             timer: 2000,
           }).then(() => {
-            callBackProp();
+            callBackProp ?
+            callBackProp()
+            :
+            goBack()
           }).then(() => {cargarIdPersonaCreada && cargarIdPersonaCreada(data.id)} );
         })
         .catch(() => {
