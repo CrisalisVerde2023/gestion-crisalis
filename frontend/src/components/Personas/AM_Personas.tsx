@@ -10,7 +10,7 @@ import { PersonasType } from "./../types/personType";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 
-export default function AM_Personas() {
+export default function AM_Personas({ callBackProp, cargarIdPersonaCreada }) {
   const { idPersona } = useParams<{ idPersona: string }>();
   const idToModify = idPersona ? parseInt(idPersona) : undefined;
   const [isLoading, setIsLoading] = useState(false);
@@ -51,9 +51,6 @@ const isFormComplete = () => {
 };
 
 
-
-
-
   const fetchData = async () => {
     try {
       return await fetchPersonas(idToModify || 0);
@@ -77,19 +74,24 @@ const isFormComplete = () => {
     }
   }, []);
 
-  
 
   const handleSubmit = () => {
     if (isFormComplete()) {
       Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
       (!idToModify ? createPersona(formData) : modifyPersona(formData))
-        .then(() => {
+        .then((data) => {
+          //Para registrar el id cuando se crea una persona desde Clientes
+          cargarIdPersonaCreada && console.log("de mi componente", data); 
+          cargarIdPersonaCreada && console.log("se ha cargado el id de la persona creada: ", data.id);
+          
           Swal.fire({
             title: "Realizado!",
             text: `Se ha ${!idToModify ? "creado" : "modificado"} la persona.`,
             icon: "success",
             timer: 2000,
-          }).then(() => goBack());
+          }).then(() => {
+            callBackProp();
+          }).then(() => {cargarIdPersonaCreada && cargarIdPersonaCreada(data.id)} );
         })
         .catch(() => {
           Swal.fire(

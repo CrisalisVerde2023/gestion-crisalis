@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import {
@@ -23,6 +24,8 @@ import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 import { PersonasType } from "../types/personType";
 import { EnterpriseType } from "../types/enterpriseType";
+import AM_Personas from "../Personas/AM_Personas";
+import AM_Empresa from "../Empresas/AM_Empresa";
 
 interface LB_ClientesProps {
     seleccion: string;
@@ -39,7 +42,13 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     const [empresas, setEmpresas] = useState<EnterpriseType[]>([]);
 
     //El cliente que se envia para la creacion
-    const [clienteDTO, setClienteDTO] = useState({ persona_id: null, empresa_id: null });
+    const [clienteDTO, setClienteDTO] = useState<{ persona_id: number | null, empresa_id: number | null }>({ persona_id: null, empresa_id: null });
+
+
+    //Manejo de modal de creacioón
+    const [showModal, setShowModal] = useState(false);
+    const [agregando, setAgregando] = useState('');
+    const [idPersonaCreada, setIdPersonaCreada] = useState(0);
 
     const { userLogged } = useContext(UserLoggedContext);
 
@@ -57,6 +66,8 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
 
+        setIdPersonaCreada(0)
+
         if (value === '') {
             setClienteDTO({
                 ...clienteDTO,
@@ -69,12 +80,12 @@ export default function LB_Clientes(props: LB_ClientesProps) {
             ...clienteDTO,
             [name]: value,
         });
-        console.log(clienteDTO)
+        //console.log(clienteDTO)
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("se envio esto:", clienteDTO)
+        //console.log("se envio esto:", clienteDTO)
         await createClient(clienteDTO).catch(() => {
             Swal.fire(
                 "Error!",
@@ -84,7 +95,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
         });
         setIsLoading(true);
         fetchData().then((resp) => {
-            console.log(resp)
+            //console.log(resp)
             setData(resp);
             setIsLoading(false);
         });
@@ -110,27 +121,6 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     };
 
 
-    useEffect(() => {
-        setIsLoading(true);
-        fetchData().then((resp) => {
-            console.log(resp)
-            setData(resp);
-            setIsLoading(false);
-        });
-        //fetch personas
-        fetchPersonas(0).then((resp) => {
-            setPersonas(resp);
-            console.log(resp)
-        });
-        //fetch empresas
-        fetchEnterprises(setIsLoading).then((resp) => {
-            setEmpresas(resp);
-            console.log(resp)
-        });
-    }, [location]);
-
-
-
     const actionButtons = (row: ClientesType) => (
         <div className="d-flex flex-row align-items-center">
             <Button
@@ -145,9 +135,92 @@ export default function LB_Clientes(props: LB_ClientesProps) {
         </div>
     );
 
+    const handleAddPersona = () => {
+
+        setAgregando('persona');
+        setShowModal(true);
+
+    }
+    const handleAddEmpresa = () => {
+
+        setAgregando('empresa');
+        setShowModal(true);
+
+    }
+
+    const handleCloseModal = () => {
+        
+        setShowModal(false);
+        agregando === 'persona' ?
+            //fetch personas
+            fetchPersonas(0).then((resp) => {
+                setPersonas(resp);
+                console.log(resp)
+            })
+            :
+            //fetch empresas
+            fetchEnterprises(setIsLoading).then((resp) => {
+                setEmpresas(resp);
+                console.log(resp)
+            });
+
+
+        setAgregando('');
+    }
+
+    //Para controlar el ingreso del id de la persona creada
+    useEffect(() => {
+        console.log("el id de la persona es:", idPersonaCreada)
+        if (idPersonaCreada !== 0) {
+            setClienteDTO({
+                ...clienteDTO,
+                persona_id: idPersonaCreada,
+            });
+        }
+    },[idPersonaCreada])
+
+    useEffect(() => {
+        setIsLoading(true);
+        fetchData().then((resp) => {
+            //console.log(resp)
+            setData(resp);
+            setIsLoading(false);
+        });
+        //fetch personas
+        fetchPersonas(0).then((resp) => {
+            setPersonas(resp);
+            //console.log(resp)
+        });
+        //fetch empresas
+        fetchEnterprises(setIsLoading).then((resp) => {
+            setEmpresas(resp);
+            //console.log(resp)
+        });
+    }, [location]);
+
     return (
         <>
-            <Container className="relative">
+            <Container className="relative min-h-[500px]">
+                {
+                    showModal &&
+                    <div className="bg-black bg-opacity-50 w-full h-full absolute left-0 top-0 flex flex-col items-center justify-center">
+                        <div className="bg-white w-[500px] rounded-2xl">
+
+                            {
+                                agregando === 'persona'
+                                    ?
+                                    <>
+                                        <AM_Personas callBackProp={handleCloseModal} cargarIdPersonaCreada={setIdPersonaCreada}/>
+                                    </>
+                                    :
+                                    <AM_Empresa/>
+
+                            }
+                        </div>
+                        <button className=" bg-red-500  px-5 py-2 text-white font-bold mt-2" onClick={handleCloseModal}>Cancelar</button>
+                    </div>
+                }
+
                 <Row className="d-flex flex-row justify-content-center align-items-center mt-4 mb-4">
 
                     <form className={`w-1/3 rounded-lg p-2 ${clienteDTO.empresa_id === null ? 'bg-blue-200' : 'bg-green-200'}`} onSubmit={handleSubmit}>
@@ -158,8 +231,11 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                             <select name="persona_id"
                                 id="countries"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
-
                                 onChange={handleSelectChange}
+
+                                {
+                                    ...idPersonaCreada && {value: idPersonaCreada}
+                                }
                             >
                                 <option value={''}>---Seleccione Persona---</option>
                                 {
@@ -169,7 +245,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                                 }
                             </select>
 
-                            <div onClick={() => console.log("agregar persona")} className="flex items-center ml-1 cursor-pointer">
+                            <div onClick={() => handleAddPersona()} className="flex items-center ml-1 cursor-pointer">
                                 <PersonWorkspace /> +
                             </div>
                         </div>
@@ -188,7 +264,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                                     ))
                                 }
                             </select>
-                            <div onClick={() => console.log("agregar empresa")} className="flex items-center ml-1 cursor-pointer">
+                            <div onClick={() => handleAddEmpresa()} className="flex items-center ml-1 cursor-pointer">
                                 <Building /> +
                             </div>
                         </div>

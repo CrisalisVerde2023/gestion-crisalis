@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import NavbarComponent from "../components/NavbarComponent";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Dashboard from "../components/Dashboard";
 import ABMPersonasComponent from "../components/Personas/ABMPersonasComponent";
 import AM_Personas from "../components/Personas/AM_Personas";
@@ -24,6 +24,11 @@ export const AppRoutes = () => {
   const { userLogged } = useContext(UserLoggedContext);
   const { isAdmin } = userLogged;
 
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       <NavbarComponent />
@@ -32,10 +37,10 @@ export const AppRoutes = () => {
         <Route path="/" element={<Navigate to={"/home"} />} />
         <Route path="/home" element={<Dashboard />} />
         <Route path="/personas" element={<ABMPersonasComponent />} />
-        <Route path="/personas/AMPersonas" element={<AM_Personas />} />
+        <Route path="/personas/AMPersonas" element={<AM_Personas callBackProp={goBack}/>} />
         <Route
           path="/personas/AMPersonas/:idPersona"
-          element={<AM_Personas />}
+          element={<AM_Personas callBackProp={goBack} />}
         />
         <Route path="/clientes" element={<ABMClientesComponent/>} />
         <Route
