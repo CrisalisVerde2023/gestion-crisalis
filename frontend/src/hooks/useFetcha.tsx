@@ -82,25 +82,42 @@ export const useFetcha = ({ url }) => {
           response.status === 400 ||
           (response.status > 401 && response.status < 500)
         ) {
-          setEstado({ ...estado, hasError: true });
           throw new Error(
-            `Hubo un error con la petición: ${response.status} : ${response.statusText}`
+            `Hubo un error con la petición: ${response.status}: ${response.statusText}`
           );
         }
 
         if (response.status > 499) {
-          setEstado({ ...estado, hasError: true });
           throw new Error(
-            `Ocurrió un error: "${error.name}" con codigo: "${error.code}" y mensaje: "${error.message}" al hacer la peticion a "${error.config.url}"`,
-            {
-              cause: error,
-            }
+            `Hubo un error con el servidor: ${response.status}: ${response.statusText}`
           );
         }
+
+        setEstado({ ...estado, hasError: true });
+        return;
       }
+
+      Swal.fire({
+        title: "Realizado!",
+        text: "Se ha cambiado el estado.",
+        icon: "success",
+        timer: 2000,
+      });
+
+      const { json } = { ...estado };
+      const impuestoIndex = json.findIndex((impuesto) => impuesto.id == id);
+      const newJson = [
+        ...json.slice(0, impuestoIndex),
+        {
+          ...json[impuestoIndex],
+          eliminado: !json[impuestoIndex].eliminado,
+        },
+        ...json.slice(impuestoIndex + 1),
+      ];
 
       setEstado({
         ...estado,
+        json: newJson,
         loading: false,
         statusCode: response.status,
       });
@@ -108,7 +125,7 @@ export const useFetcha = ({ url }) => {
       setEstado({ ...estado, hasError: true });
 
       throw new Error(
-        `Hubo un error con la construccion petición: ${error.message}`
+        `Ocurrió un error: "${error.name}" con codigo: "${error.code}" y mensaje: "${error.message}" al hacer la peticion a "${error.config.url}"`
       );
     }
   };

@@ -504,7 +504,8 @@ export const TableImpuestos = () => {
           <div className="flex justify-evenly w-1/2 mx-2">
             <button
               onClick={goBack}
-              className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
+              /* className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700" */
+              className="py-2 px-3 text-sm font-semibold text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
             >
               Volver
             </button>
