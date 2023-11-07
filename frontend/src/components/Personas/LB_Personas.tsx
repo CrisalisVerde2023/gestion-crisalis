@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import { PencilFill, XCircleFill, Search } from "react-bootstrap-icons";
+import { PencilFill, XCircleFill, Search, CheckCircleFill } from "react-bootstrap-icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   fetchPersonas,
@@ -70,38 +70,57 @@ export default function LB_Personas() {
   };
 
   const handleClickedElement = (selected: PersonasType) => {
-      Swal.fire({
-        title: "Confirmar cambio de estado de usuario?",
-        text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${
-          selected.id
+    Swal.fire({
+      title: "Confirmar cambio de estado de usuario?",
+      text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${selected.id
         }`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí! Estoy seguro.",
-        cancelButtonText: "Mejor no.",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-      }).then((result) => {
-        if (result.isConfirmed) onConfirm(selected);
-      });
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí! Estoy seguro.",
+      cancelButtonText: "Mejor no.",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) onConfirm(selected);
+    });
   };
 
-  const actionButtons = (row: PersonasType) => (
-    <div className="flex-row d-flex justify-content-evenly align-items-center">
-      <button
-        className="p-2 hover:bg-blue-600 hover:text-white"
-        onClick={() => handleClickedElement(row)}
-      >
-        <XCircleFill />
-      </button>
-      <button
+  // const actionButtons = (row: PersonasType) => (
+  //   <div className="flex-row d-flex justify-content-evenly align-items-center">
+  //     <button
+  //       className="p-2 hover:bg-blue-600 hover:text-white"
+  //       onClick={() => handleClickedElement(row)}
+  //     >
+  //       <XCircleFill />
+  //     </button>
+  //     <button
+  //       className="p-2 hover:bg-blue-600 hover:text-white"
+  //       onClick={() => navigate(`/personas/AMPersonas/${row.id}`)}
+  //     >
+  //       <PencilFill />
+  //     </button>
+  //   </div>
+  // );
+
+
+  const actionButtons = (row: PersonasType) => {
+    return (
+      <div className="flex-row d-flex justify-content-evenly align-items-center">
+        <button
+          className="p-2 hover:bg-blue-600 hover:text-white"
+          onClick={() => handleClickedElement(row)}
+        >
+          {row.eliminado ? <CheckCircleFill /> : <XCircleFill />}
+        </button>
+        <button
           className="p-2 hover:bg-blue-600 hover:text-white"
           onClick={() => navigate(`/personas/AMPersonas/${row.id}`)}
         >
           <PencilFill />
-      </button>
-    </div>
-  );
+        </button>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -111,7 +130,7 @@ export default function LB_Personas() {
           style={{ marginBottom: "15px" }}
         >
           <Col xs="auto">
-          <input
+            <input
               type="text"
               placeholder="Buscar"
               className="px-2 py-1 border-2 border-blue-500 inputSearch"
@@ -129,31 +148,31 @@ export default function LB_Personas() {
           ) : (
             <Col className="w-full">
               <table className="min-w-full bg-white border-gray-300">
-              <thead className="text-white bg-denim-400 ">
-                <tr>
-                  <th className="px-4 py-2 border-b">ID</th>
-                  <th className="px-4 py-2 border-b">Nombre</th>
-                  <th className="px-4 py-2 border-b">Apellido</th>
-                  <th className="px-4 py-2 border-b">DNI</th>
-                  <th className="px-4 py-2 border-b">Estado</th>
-                  <th className="px-4 py-2 border-b">Acciones</th>
-                </tr>
-              </thead>
+                <thead className="text-white bg-denim-400 ">
+                  <tr>
+                    <th className="px-4 py-2 border-b">ID</th>
+                    <th className="px-4 py-2 border-b">Nombre</th>
+                    <th className="px-4 py-2 border-b">Apellido</th>
+                    <th className="px-4 py-2 border-b">DNI</th>
+                    <th className="px-4 py-2 border-b">Estado</th>
+                    <th className="px-4 py-2 border-b">Acciones</th>
+                  </tr>
+                </thead>
                 <tbody>
                   {data &&
-                  (aux = !searchTerm.length
-                    ? data
-                    : data.filter((persona: PersonasType) =>
+                    (aux = !searchTerm.length
+                      ? data
+                      : data.filter((persona: PersonasType) =>
                         persona.nombre
                           .toLowerCase()
                           .includes(searchTerm.toLowerCase()) ||
-                          persona.apellido
+                        persona.apellido
                           .toLowerCase()
                           .includes(searchTerm.toLowerCase()) ||
-                          persona.dni
+                        persona.dni
                           .toLowerCase()
                           .includes(searchTerm.toLowerCase()) ||
-                          persona.id === parseInt(searchTerm)
+                        persona.id === parseInt(searchTerm)
                       )).length ? (
                     aux
                       .sort((a: PersonasType, b: PersonasType) =>
@@ -167,7 +186,7 @@ export default function LB_Personas() {
                           <td className="py-2">{row.nombre}</td>
                           <td className="py-2">{row.apellido}</td>
                           <td className="py-2">{row.dni}</td>
-                          <td className="py-2">{row.eliminado ? "Inactivo" : "Activo"}</td>
+                          <td>{row.eliminado ? <p className="font-bold text-red-600">Inactivo</p> : <p className="font-bold text-green-600">Activo</p>}</td>
                           <td className="py-2">{actionButtons(row)}</td>
                         </tr>
                       ))
@@ -190,7 +209,7 @@ export default function LB_Personas() {
           onConfirm={onConfirm}
           onCancel={() => {
             setShowDialog(false);
-            
+
           }}
         />
       )}
