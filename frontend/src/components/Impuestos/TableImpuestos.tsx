@@ -1,22 +1,45 @@
-import React from "react";
-import { useFetcha } from "../../hooks/useFetcha";
+import React, { useState } from "react";
+import { useCrud } from "../../hooks/useCrud";
 import { useNavigate } from "react-router-dom";
 import { RowImpuestos } from "./RowImpuestos";
 
 const HOST_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
 
 export const TableImpuestos = () => {
+  const [search, setSearch] = useState("");
+  const [showModalCreate, setShowModalCreate] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    porcentaje: "",
+  });
   const navigate = useNavigate();
   const {
     estado: { loading, json },
-    patchData,
-  } = useFetcha({
+    create,
+    deleteByIdData,
+    updateByIdData,
+  } = useCrud({
     url: HOST_API_IMPUESTOS,
   });
 
-  function goToAMImpuestos() {
-    navigate("/impuestos/AMImpuestos");
-  }
+  const handleModalCreate = () => {
+    setShowModalCreate(!showModalCreate);
+  };
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+    const body = { ...formData, porcentaje: Number(formData.porcentaje) };
+    create({ body }).then(handleModalCreate());
+  };
+
+  const filteredImpuestos = () => {
+    if (search.length === 0) return json;
+
+    return json.filter((impuesto) =>
+      impuesto.nombre.toLowerCase().includes(search.toLowerCase())
+    );
+  };
+
   const goBack = () => {
     navigate(-1);
   };
@@ -24,7 +47,7 @@ export const TableImpuestos = () => {
   return (
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
-        <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+        <div className="bg-white dark:bg-gray-800  shadow-md sm:rounded-lg overflow-hidden">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
             {/* Buscar */}
             <div className="w-full md:w-1/2">
@@ -53,7 +76,8 @@ export const TableImpuestos = () => {
                     id="simple-search"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Buscar"
-                    required
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
               </form>
@@ -66,7 +90,7 @@ export const TableImpuestos = () => {
                 data-modal-target="createProductModal"
                 data-modal-toggle="createProductModal"
                 className="flex items-center justify-center text-white bg-denim hover:bg-denim-400 tracking-wide transition ease-in-out duration-150 cursor-not-allowed focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
-                onClick={goToAMImpuestos}
+                onClick={handleModalCreate}
               >
                 <svg
                   className="h-3.5 w-3.5 mr-2"
@@ -374,23 +398,48 @@ export const TableImpuestos = () => {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr className="animate-pulse">
-                    <td className="px-4 py-3">
-                      <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                    </td>
-                  </tr>
+                  <>
+                    <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                    </tr>
+                    <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                    </tr>
+                    <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                    </tr>
+                  </>
                 ) : (
-                  json.map((impuesto) => (
+                  filteredImpuestos().map((impuesto) => (
                     <RowImpuestos
                       impuesto={impuesto}
                       key={impuesto.id}
-                      patchData={patchData}
+                      deleteByIdData={deleteByIdData}
+                      updateByIdData={updateByIdData}
                     />
                   ))
                 )}
@@ -504,14 +553,186 @@ export const TableImpuestos = () => {
           <div className="flex justify-evenly w-1/2 mx-2">
             <button
               onClick={goBack}
-              /* className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700" */
-              className="py-2 px-3 text-sm font-semibold text-gray-500 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+              className="py-2 px-3 flex text-sm justify-between font-semibold text-gray bg-white-pure shadow-md rounded-lg border border-gray hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-300 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
             >
+              <svg
+                className="w-5 h-5 text-gray-800 dark:text-white pr-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 8 14"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M7 1 1.3 6.326a.91.91 0 0 0 0 1.348L7 13"
+                />
+              </svg>
               Volver
             </button>
           </div>
         </div>
       </div>
+
+      {showModalCreate && (
+        <div
+          id="createProductModal"
+          tabIndex={-1}
+          aria-hidden="true"
+          className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex backdrop-blur-sm backdrop-brightness-75"
+        >
+          <div className="relative p-4 w-full max-w-2xl max-h-full">
+            {/* <!-- Modal content --> */}
+            <div className="relative p-4 bg-white rounded-lg shadow-2xl drop-shadow-2xl dark:bg-gray-800 sm:p-5">
+              {/* <!-- Modal header --> */}
+              <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Crear impuesto
+                </h3>
+                <button
+                  type="button"
+                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                  data-modal-target="createProductModal"
+                  data-modal-toggle="createProductModal"
+                  onClick={() => setShowModalCreate(false)}
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span className="sr-only">Close modal</span>
+                </button>
+              </div>
+              {/* <!-- Modal body --> */}
+              <form>
+                <div className="grid gap-4 mb-4 sm:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor="nombre-modal-create"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Impuesto
+                    </label>
+                    <input
+                      value={formData.nombre}
+                      onChange={(e) =>
+                        setFormData({ ...formData, nombre: e.target.value })
+                      }
+                      type="text"
+                      name="nombre-modal-create"
+                      id="nombre-modal-create"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="IVA"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="porcentaje-moda-create"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Porcentaje
+                    </label>
+                    <input
+                      value={formData.porcentaje}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          porcentaje: e.target.value,
+                        })
+                      }
+                      type="text"
+                      name="porcentaje-moda-create"
+                      id="porcentaje-moda-create"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="21.5"
+                      required
+                    />
+                  </div>
+                  {/* <div>
+                    <label
+                      htmlFor="price"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Price
+                    </label>
+                    <input
+                      type="number"
+                      name="price"
+                      id="price"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="$2999"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="category"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Category
+                    </label>
+                    <select
+                      id="category"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    >
+                      <option selected="">Select category</option>
+                      <option value="TV">TV/Monitors</option>
+                      <option value="PC">PC</option>
+                      <option value="GA">Gaming/Console</option>
+                      <option value="PH">Phones</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label
+                      htmlFor="description"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Description
+                    </label>
+                    <textarea
+                      id="description"
+                      rows="4"
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="Write product description here"
+                    ></textarea>
+                  </div> */}
+                </div>
+                <button
+                  type="submit"
+                  className="text-white inline-flex items-center bg-denim hover:bg-denim-400 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                  onClick={handleCreate}
+                >
+                  <svg
+                    className="mr-1 -ml-1 w-6 h-6"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  Agregar nuevo impuesto
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
