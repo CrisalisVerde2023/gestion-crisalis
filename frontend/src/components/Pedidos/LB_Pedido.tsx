@@ -128,11 +128,11 @@ export default function LB_Pedido() {
                       .map((row, index) => (
                         <tr key={index} className="border-b">
                           <td className="py-2 px-4">{row.id}</td>
-                          <td className="py-2 px-4">{row.fechaCreacion.substring(0, 10)}</td>
+                          <td className="py-2 px-4">{row.fechaCreacion?.substring(0, 10)}</td>
                           <td className="py-2 px-4">{row.persona}</td>
                           <td className="py-2 px-4">{row.empresa || "-"}</td>
-                          <td className="py-2 px-4">{row.cantProductos}</td>
-                          <td className="py-2 px-4">{row.cantServicios}</td>
+                          <td className="py-2 px-4">{row.cantProds}</td>
+                          <td className="py-2 px-4">{row.cantServs}</td>
                           <td className="py-2 px-4">{row.total.toFixed(2)}</td>
                           <td className="py-2 px-4">{(row.anulado) ? "Anulado" : "Activo"}</td>
                           <td className="py-2 px-4">{actionButtons(row)}</td>

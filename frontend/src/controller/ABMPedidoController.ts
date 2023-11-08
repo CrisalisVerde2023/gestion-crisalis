@@ -73,3 +73,21 @@ export const useDeletePedidos = (id?: number, shouldExecute = false) => {
     shouldExecute
   );
 };
+
+export const fetchPedidos = async (userLogged: UserLogged, id: number) => {
+  try {
+    return (
+      (await (
+        await fetch(URL_API_ORDEN, {
+          headers: {
+            Authorization: userLogged.token,
+            "Content-Type": "application/json",
+          },
+        })
+      ).json()) || []
+    );
+  } catch (error) {
+    console.error("Ocurrió un error al obtener pedidos:", error);
+    throw error;
+  }
+};
