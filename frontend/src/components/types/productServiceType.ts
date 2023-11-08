@@ -8,10 +8,13 @@ export type ProductServiceType = {
   nombre: string;
   tipo: ProductOrService;
   costo: number;
-  impuesto: number;
+  
   soporte: number | null;
   cantidad: number;
   garantia: number | null;
+
+  //Agrego un array para los impuestos
+  idImpuestos: number[];
 };
 
 export const defaultProductServiceValues: ProductServiceType = {
@@ -20,7 +23,9 @@ export const defaultProductServiceValues: ProductServiceType = {
   tipo: ProductOrService.Producto,
   costo: 0,
   soporte: null,
-  impuesto: 0,
+  
   cantidad: 1,
   garantia: null,
+
+  idImpuestos: [],
 };
