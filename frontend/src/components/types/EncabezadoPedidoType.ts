@@ -2,8 +2,8 @@ export type EncabezadoPedidoType = {
   id: number;
   persona: string;
   empresa: string;
-  cantProductos: number;
-  cantServicios: number;
+  cantProds: number;
+  cantServs: number;
   fechaCreacion: string;
   total: number;
   anulado: boolean;
