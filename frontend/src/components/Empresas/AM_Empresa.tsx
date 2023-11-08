@@ -55,10 +55,6 @@ export default function AM_Empresa() {
     navigate(-1);
   };
 
-  function isFormComplete(): boolean {
-    return Boolean(formData.nombre && formData.cuit && formData.start_date);
-  }
-
   const errorsForm = () => {
     const errors = [];
 
@@ -133,6 +129,14 @@ export default function AM_Empresa() {
       }
     }
   }, [createResponse, modifyResponse]);
+
+  function isFormComplete(): boolean {
+    return (
+      formData.nombre.length > 0 &&
+      formData.cuit.length > 0 &&
+      formData.start_date.length > 0
+    );
+  }
 
   return (
     <section className={idToModify ? "bg-atlantis-25" : "bg-denim-25"}>

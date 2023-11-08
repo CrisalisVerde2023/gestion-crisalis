@@ -6,7 +6,7 @@ export type UsuariosType = {
 };
 
 export const defaultUsuariosType = {
-  id: 0,
+  id: -1,
   usuario: "",
   password: "",
   eliminado: false,

@@ -21,11 +21,16 @@ export const useCreateEmpresa = (
   overrides: Partial<EnterpriseType> = {},
   shouldExecute = false
 ) => {
+  const params = {
+    nombre: overrides.nombre,
+    cuit: overrides.cuit,
+    start_date: overrides.start_date,
+  };
   return useFetch(
     {
       method: HTTPMethod.POST,
       url: `${URL_API_EMPRESAS}`,
-      params: overrides,
+      params: params,
     },
     shouldExecute
   );
@@ -35,11 +40,16 @@ export const useModifyEmpresa = (
   updatedData: Partial<EnterpriseType>,
   shouldExecute = false
 ) => {
+  const params = {
+    nombre: updatedData.nombre,
+    cuit: updatedData.cuit,
+    start_date: updatedData.start_date,
+  };
   return useFetch(
     {
       method: HTTPMethod.POST,
       url: `${URL_API_EMPRESAS}/${updatedData.id}`,
-      params: updatedData,
+      params,
     },
     shouldExecute
   );

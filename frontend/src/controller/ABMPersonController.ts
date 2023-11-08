@@ -1,97 +1,72 @@
-
-
-
-import { showNotification } from "../components/ToastNotification";
+import { HTTPMethod, useFetch } from "../hooks/useFetch";
 import { PersonasType } from "./../components/types/personType";
-
-let personas: PersonasType[] = [];
 
 const URL_API_PERSONAS = "http://localhost:8080/api/personas";
 
-export const fetchPersonas = async (id: number) => {
-  try {
-    return await (
-      await fetch(`${URL_API_PERSONAS}${id > 0 ? `/${id}` : ""}`, {
-        headers: {
-          Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
-          "Content-Type": "application/json",
-        },
-      })
-    ).json();
-  } catch (error) {
-    console.error("Ocurrió un error al obtener personas:", error);
-    throw error;
-  }
+export const useFetchPersonas = (
+  id?: number,
+  shouldExecute: boolean = false
+) => {
+  return useFetch(
+    {
+      method: HTTPMethod.GET,
+      url: `${URL_API_PERSONAS}${id && id >= 0 ? `/${id}` : ""}`,
+      params: {},
+    },
+    shouldExecute
+  );
 };
 
-export const selectAll = (): PersonasType[] => {
-  return personas;
+export const useCreatePersonas = (
+  overrides: Partial<PersonasType> = {},
+  shouldExecute = false
+) => {
+  const params = {
+    id: overrides.id,
+    nombre: overrides.nombre,
+    apellido: overrides.apellido,
+    dni: Number(overrides.dni),
+    eliminado: overrides.eliminado,
+  };
+
+  return useFetch(
+    {
+      method: HTTPMethod.POST,
+      url: `${URL_API_PERSONAS}`,
+      params: params,
+    },
+    shouldExecute
+  );
 };
 
-export async function createPersona(overrides: Partial<PersonasType> = {}) {
-  try {
-    const response = await fetch(`${URL_API_PERSONAS}`, {
-      method: "POST",
-      body: JSON.stringify({
-        nombre: overrides.nombre,
-        apellido: overrides.apellido,
-        dni: overrides.dni
-      }),
-      headers: {
-        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
-        "Content-Type": "application/json",
-      },
-    })
-    if(response.status >= 400) {
-       throw "El servidor respondió con error";
-    };
-    const data = await response.json();
-    console.log("persona creada", data);
-    return data;
+export const useModifyPersonas = (
+  updatedData: Partial<PersonasType>,
+  shouldExecute = false
+) => {
+  const params = {
+    id: updatedData.id,
+    nombre: updatedData.nombre,
+    apellido: updatedData.apellido,
+    dni: Number(updatedData.dni),
+    eliminado: updatedData.eliminado,
+  };
+  return useFetch(
+    {
+      method: HTTPMethod.POST,
+      url: `${URL_API_PERSONAS}/${updatedData.id}`,
+      params: params,
+    },
+    shouldExecute
+  );
+};
 
-  } catch (error) {
-    console.error("Ocurrió un error al crear persona:", error);
-    throw error;
-  }
-}
-
-
-export async function modifyPersona(updatedData: Partial<PersonasType>) {
-  try {
-    await fetch(`${URL_API_PERSONAS}/${updatedData.id}`, {
-      method: "POST",
-      body: JSON.stringify({
-        nombre: updatedData.nombre,
-        apellido: updatedData.apellido,
-        dni: updatedData.dni
-      }),
-      headers: {
-        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
-        "Content-Type": "application/json",
-      },
-    }).then((resp) => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    });
-  } catch (error) {
-    console.error("Ocurrió un error al modificar usuario:", error);
-    throw error;
-  }
-}
-
-export async function deletePersona(id: number) {
-  try {
-    await fetch(`${URL_API_PERSONAS}/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: JSON.parse(sessionStorage.getItem("userLogged")).token,
-        "Content-Type": "application/json",
-      },
-    }).then((resp) => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    });
-  } catch (error) {
-    console.error("Ocurrió un error al cambiar estado de usuario:", error);
-    throw error;
-  }
-}
-
+export const useDeletePersonas = (id?: number, shouldExecute = false) => {
+  return useFetch(
+    {
+      method: HTTPMethod.PATCH,
+      url: `${URL_API_PERSONAS}/${id}`,
+      params: {},
+    },
+    shouldExecute
+  );
+};

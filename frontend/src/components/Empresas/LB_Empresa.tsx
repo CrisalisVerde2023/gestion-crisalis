@@ -148,7 +148,6 @@ export default function LB_Empresas() {
             />
           </div>
         </div>
-        {/* Data Table */}
         <div>
           {isLoading ? (
             <div>

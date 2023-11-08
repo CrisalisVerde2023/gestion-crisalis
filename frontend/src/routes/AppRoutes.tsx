@@ -17,7 +17,7 @@ import ABMImpuestos from "../components/Impuestos/ABMImpuestos";
 import AM_Impuestos from "../components/Impuestos/AM_Impuestos";
 import ABMClientesComponent from "../components/Clientes/ABMClientes";
 import AM_Clientes from "../components/Clientes/AM_Clientes";
-import AltaPedidoComponent from "../components/Pedidos/AltaPedidoComponent";
+import AM_Pedidos from "../components/Pedidos/AM_Pedidos";
 import ABMPedidos from "../components/Pedidos/ABMPedidos";
 
 export const AppRoutes = () => {
@@ -42,10 +42,10 @@ export const AppRoutes = () => {
           path="/personas/AMPersonas/:idPersona"
           element={<AM_Personas />}
         />
-        <Route path="/clientes" element={<ABMClientesComponent/>} />
+        <Route path="/clientes" element={<ABMClientesComponent />} />
         <Route
           path="/clientes/AMClientes/:idCliente"
-          element={<AM_Clientes/>}
+          element={<AM_Clientes />}
         />
 
         <Route path="/empresas" element={<ABMEmpresasComponent />} />
@@ -93,20 +93,14 @@ export const AppRoutes = () => {
           path="/productosyservicios/AMServicios/:idProdServ"
           element={<AM_ProductService />}
         />
-        <Route
-          path="/impuestos"
-          element={<ABMImpuestos/>}
-        />
-        <Route
-          path="/impuestos/AMImpuestos"
-          element={<AM_Impuestos/>}
-        />
+        <Route path="/impuestos" element={<ABMImpuestos />} />
+        <Route path="/impuestos/AMImpuestos" element={<AM_Impuestos />} />
         <Route
           path="/impuestos/AMImpuestos/:idImpuesto"
-          element={<AM_Impuestos/>}
+          element={<AM_Impuestos />}
         />
-        <Route path="/altaPedido" element={<AltaPedidoComponent />}/>
-        <Route path="/pedidos" element={<ABMPedidos />}/>
+        <Route path="/altaPedido" element={<AM_Pedidos />} />
+        <Route path="/pedidos" element={<ABMPedidos />} />
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
       </Routes>
