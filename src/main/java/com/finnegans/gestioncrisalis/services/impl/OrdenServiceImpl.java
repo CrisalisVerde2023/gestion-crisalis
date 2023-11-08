@@ -1,6 +1,7 @@
 package com.finnegans.gestioncrisalis.services.impl;
 
 import com.finnegans.gestioncrisalis.dtos.OrdenDetalleDTO;
+import com.finnegans.gestioncrisalis.dtos.request.OrdenEncabezadoDTO;
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.*;
 import com.finnegans.gestioncrisalis.repositories.*;
@@ -69,9 +70,8 @@ public class OrdenServiceImpl implements OrdenService {
     }
 
     @Override
-    public List<Orden> getAll() {
-        List<Orden> ordenes = this.ordenRepository.findAll();
-        return ordenes;
+    public List<OrdenEncabezadoDTO> getAll() {
+        return this.ordenRepository.metodoPrueba();
     }
 
 
