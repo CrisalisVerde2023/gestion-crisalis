@@ -155,14 +155,15 @@ export default function LB_Empresas() {
             </div>
           ) : (
             <div>
-              <table className="min-w-full bg-white border border-gray-300">
-                <thead>
+              <table className="min-w-full bg-white border border-gray-300 ">
+                <thead className="bg-denim-400 text-white">
                   <tr>
-                    <th className="border border-gray-300">ID</th>
-                    <th className="border border-gray-300">Nombre</th>
-                    <th className="border border-gray-300">CUIT</th>
-                    <th className="border border-gray-300">Fecha de Inicio</th>
-                    <th className="border border-gray-300">Acciones</th>
+                    <th className="py-2 px-4 border-b">ID</th>
+                    <th className="py-2 px-4 border-b">Nombre</th>
+                    <th className="py-2 px-4 border-b">CUIT</th>
+                    <th className="py-2 px-4 border-b">Fecha de Inicio</th>
+                    <th className="py-2 px-4 border-b">Estado</th>
+                    <th className="py-2 px-4 border-b">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>

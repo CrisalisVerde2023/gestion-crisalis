@@ -132,10 +132,6 @@ export default function LB_Clientes(props: LB_ClientesProps) {
         !fetchResponseClientes.hasError &&
         fetchResponseClientes.json
       ) {
-        /*setClienteDTO({
-          persona_id: fetchResponseClientes.json.persona_id,
-          empresa_id: fetchResponseClientes.json.empresa_id,
-        });*/
         console.log(fetchResponseClientes.json);
         setClientes(fetchResponseClientes.json);
         setShouldFetchClientes(false);
@@ -166,6 +162,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
       }
     }
   }, [deleteResponse]);
+
   const handleSearch = (searchTerm: string) => {
     let filteredClientes = clientes;
 
@@ -309,7 +306,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
       <div className="relative">
         <div className="flex flex-row justify-center items-center mt-4 mb-4">
           <form
-            className={`w-1/3 rounded-lg p-2 ${
+            className={`flex flex-column justify-content-center align-items-center rounded-lg p-2 ${
               clienteDTO?.empresa_id === null ? "bg-blue-200" : "bg-green-200"
             }`}
             onSubmit={(e) => {
@@ -319,7 +316,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
           >
             <label
               htmlFor="persona_id"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white pt-1"
             >
               Persona:
             </label>
@@ -327,7 +324,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               <select
                 name="persona_id"
                 id="persona_id"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
+                className="border-2 border-blue-500 px-2 py-1 inputSearch"
                 onChange={handleSelectChange}
               >
                 <option value="">---Seleccione Persona---</option>
@@ -340,14 +337,14 @@ export default function LB_Clientes(props: LB_ClientesProps) {
 
               <div
                 onClick={() => console.log("agregar persona")}
-                className="flex items-center ml-1 cursor-pointer"
+                className="flex items-center ml-1 cursor-pointer px-2"
               >
                 <PersonWorkspace /> +
               </div>
             </div>
             <label
               htmlFor="empresa_id"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white pt-3"
             >
               Empresa:
             </label>
@@ -355,7 +352,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               <select
                 name="empresa_id"
                 id="empresa_id"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="border-2 border-blue-500 px-2 py-1 inputSearch"
                 onChange={handleSelectChange}
               >
                 <option value="">---Seleccione Empresa---</option>
@@ -367,7 +364,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               </select>
               <div
                 onClick={() => console.log("agregar empresa")}
-                className="flex items-center ml-1 cursor-pointer"
+                className="flex items-center ml-1 cursor-pointer px-2"
               >
                 <Building /> +
               </div>
@@ -388,7 +385,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
             <input
               type="text"
               placeholder="Buscar"
-              className="border-2 border-blue-500 px-2 py-1"
+              className="inputSearch border-2 border-blue-500 px-2 py-1"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);

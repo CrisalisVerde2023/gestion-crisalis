@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFetchPersonas } from "../../controller/ABMPersonController";
-import { useFetchEmpresa } from "../../controller/ABMEnterpriseController";
+import { useFetchEmpresas } from "../../controller/ABMEnterpriseController";
 import {
   useCreateCliente,
   useFetchClientes,
@@ -42,7 +42,7 @@ export default function AM_Clientes() {
 
   if (idToModify !== undefined) {
     fetchedDataPersonas = useFetchPersonas(idToModify, true);
-    fetchedDataEmpresas = useFetchEmpresa(idToModify, true);
+    fetchedDataEmpresas = useFetchEmpresas(idToModify, true);
   }
 
   //Busco el cliente a modificar
