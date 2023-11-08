@@ -60,7 +60,8 @@ public class OrdenServiceImpl implements OrdenService {
                     producto.getSoporte() == null ? 0 : producto.getSoporte(), // En el caso de que sea un servicio se pasa esto, si no null
                     item.getGarantia(),
                     (item.getGarantia() != null) ? (item.getGarantia() * .02 * producto.getCosto()) : 0, // El cost de gtia. por regla de negocio, costo de producto y años de gtia.
-                    false
+                    false,
+                    producto.getTipo()
             ));
         }
 
