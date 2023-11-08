@@ -1,5 +1,6 @@
 package com.finnegans.gestioncrisalis.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,6 @@ import java.util.List;
 @Builder
 @Entity
 @Table (name="IMPUESTOS")
-
-
 public class Impuesto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +31,10 @@ public class Impuesto {
     private boolean eliminado;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinTable(
             name = "PRODUCTOS_IMPUESTOS",
             joinColumns = @JoinColumn( name = "IMPUESTO_ID"),
             inverseJoinColumns = @JoinColumn( name = "PRODUCTO_ID"))
     private List<Producto> productos;
-
-
 }

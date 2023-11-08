@@ -10,19 +10,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.finnegans.gestioncrisalis.dtos.ProductoDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
+@Getter //El @Data te arma bardo, cuidadillo
+@Setter //El @Data te arma bardo, cuidadillo
 @Table(name = "PRODUCTOS_SERVICIOS")
 @JsonIgnoreProperties({"fechaCreacion", "fechaModificacion", "ordenDetalle"})
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
