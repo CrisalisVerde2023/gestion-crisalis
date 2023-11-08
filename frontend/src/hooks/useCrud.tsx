@@ -194,6 +194,7 @@ export const useCrud = ({ url }) => {
   };
 
   const updateByIdData = async ({ id, body }) => {
+    console.log("body", body);
     try {
       const response = await fetch(`${url}/${id}`, {
         method: "POST",
@@ -240,12 +241,16 @@ export const useCrud = ({ url }) => {
 
       const { json } = { ...estado };
       const impuestoIndex = json.findIndex((impuesto) => impuesto.id == id);
+
+      const keysBody = Object.keys(body)
+      keysBody.forEach(key => )
+      
       const newJson = [
         ...json.slice(0, impuestoIndex),
         {
           ...json[impuestoIndex],
-          nombre: body.nombre,
-          porcentaje: body.porcentaje,
+          /* nombre: body.nombre,
+          porcentaje: body.porcentaje, */
         },
         ...json.slice(impuestoIndex + 1),
       ];
