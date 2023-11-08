@@ -66,4 +66,7 @@ public class OrdenDetalle {
 
     @Column(name = "ANULADO", nullable = false)
     private boolean anulado;
+
+    @Column(name = "TIPO", nullable = false)
+    private String tipo;
 }
