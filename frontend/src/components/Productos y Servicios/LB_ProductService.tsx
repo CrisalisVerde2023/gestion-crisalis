@@ -177,10 +177,12 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
     nombre: "",
     tipo: ProductOrService.Producto || ProductOrService.Servicio,
     costo: 0,
-    impuesto: 0,
+    
     soporte: null,
     cantidad: 1,
     garantia: null,
+
+    idImpuestos: [],
   };
 
   const validColumnKeys: (keyof ProductServiceType)[] = Object.keys(
