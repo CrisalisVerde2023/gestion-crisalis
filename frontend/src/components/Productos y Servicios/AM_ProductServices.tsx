@@ -114,9 +114,8 @@ export default function AM_ProductService() {
     } else if (location.pathname.includes("/AMServicios")) {
       // Explicitly allow formData.soporte to be 0
       return (
-        formData.nombre.length > 0 &&
-        formData.soporte !== null &&
-        formData.soporte !== undefined
+        formData.nombre.length > 0
+      
       );
     } else {
       return false; // Or some other default logic
@@ -132,12 +131,7 @@ export default function AM_ProductService() {
       errors.push("No olvides ingresar el precio");
     }
     // Allow formData.soporte to be 0 but not null or undefined
-    if (
-      formData.tipo === ProductOrService.Servicio &&
-      formData.soporte == null
-    ) {
-      errors.push("No olvides ingresar el costo de mantenimiento");
-    }
+   
 
     return errors;
   };
