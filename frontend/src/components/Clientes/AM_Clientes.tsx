@@ -18,16 +18,14 @@ import { useFetchReturnType } from "../../hooks/useFetch";
 export default function AM_Clientes() {
   const { idCliente } = useParams<{ idCliente: string }>();
   const idToModify = idCliente ? parseInt(idCliente, 10) : undefined;
-  const location = useLocation();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<ClientesType>(defaultClienteType);
   const [shouldCreate, setShouldCreate] = useState(false);
   const [shouldModify, setShouldModify] = useState(false);
 
   //Loadings
   const [personasLoading, setPersonasLoading] = useState(true);
   const [empresasLoading, setEmpresasLoading] = useState(true);
-  const [clientesLoading, setClientesLoading] = useState(true);
+  const [clientesLoading, setClientesLoading] = useState(false);
 
   //Pido personas y empresas
   const [personas, setPersonas] = useState<PersonasType[]>([]);
@@ -39,14 +37,16 @@ export default function AM_Clientes() {
 
   let fetchedDataPersonas: useFetchReturnType | null = null;
   let fetchedDataEmpresas: useFetchReturnType | null = null;
+  let fetchedDataClientes: useFetchReturnType | null = null;
 
+  fetchedDataPersonas = useFetchPersonas(undefined, true);
+  fetchedDataEmpresas = useFetchEmpresas(undefined, true);
   if (idToModify !== undefined) {
-    fetchedDataPersonas = useFetchPersonas(idToModify, true);
-    fetchedDataEmpresas = useFetchEmpresas(idToModify, true);
-  }
+    fetchedDataClientes = useFetchClientes(idToModify, clientesLoading);
+  } else fetchedDataClientes = useFetchClientes(idToModify, clientesLoading);
 
   //Busco el cliente a modificar
-  const [cliente, setCliente] = useState<ClientesType>();
+  const [cliente, setCliente] = useState<ClientesType | undefined>(undefined);
 
   //El cliente que se envia para la creacion
   const [clienteDTO, setClienteDTO] = useState({
@@ -55,16 +55,40 @@ export default function AM_Clientes() {
   });
 
   useEffect(() => {
+    if (!personasLoading && !empresasLoading) {
+      setClientesLoading(true);
+    }
+  }, [personasLoading, empresasLoading]);
+
+  useEffect(() => {
+    if (clientesLoading) {
+      console.log("trying fetch Clientes");
+    }
+  }, [clientesLoading]);
+
+  useEffect(() => {
+    if (
+      clientesLoading &&
+      fetchedDataClientes &&
+      !fetchedDataClientes.hasError &&
+      !fetchedDataClientes.loading
+    ) {
+      console.log(fetchedDataClientes.json);
+      setCliente(fetchedDataClientes.json);
+      setClientesLoading(false);
+    }
+  }, [fetchedDataClientes]);
+
+  useEffect(() => {
     if (
       fetchedDataPersonas &&
       !fetchedDataPersonas.hasError &&
-      fetchedDataPersonas.json &&
+      !fetchedDataPersonas.loading &&
       fetchedDataEmpresas &&
       !fetchedDataEmpresas.hasError &&
-      fetchedDataEmpresas.json
+      !fetchedDataEmpresas.loading
     ) {
-      setClientesLoading(false);
-      setFormData({ ...fetchedDataPersonas.json, ...fetchedDataEmpresas });
+      setClientesLoading(true);
     }
   }, [fetchedDataPersonas, fetchedDataEmpresas]);
 
@@ -73,34 +97,40 @@ export default function AM_Clientes() {
   };
 
   useEffect(() => {
-    if (responsePersonas) {
-      if (
-        !responsePersonas.loading &&
-        !responsePersonas.hasError &&
-        responsePersonas.json
-      ) {
-        console.log("Personas loaded");
-        setPersonasLoading(false);
-      } else if (!responsePersonas.loading && responsePersonas.hasError) {
-        // logic for handling errors
-      }
+    if (
+      fetchedDataPersonas &&
+      !fetchedDataPersonas.hasError &&
+      !fetchedDataPersonas.loading
+    ) {
+      console.log("Personas loaded");
+      setPersonas(fetchedDataPersonas.json);
+      setPersonasLoading(false);
+    } else if (
+      fetchedDataPersonas &&
+      !fetchedDataPersonas.loading &&
+      fetchedDataPersonas.hasError
+    ) {
+      // logic for handling errors
     }
-  }, [responsePersonas]);
+  }, [fetchedDataPersonas]);
 
   useEffect(() => {
-    if (responseEmpresas) {
-      if (
-        !responseEmpresas.loading &&
-        !responseEmpresas.hasError &&
-        responseEmpresas.json
-      ) {
-        console.log("Empresas loaded");
-        setEmpresasLoading(false);
-      } else if (!responseEmpresas.loading && responseEmpresas.hasError) {
-        // logic for handling errors
-      }
+    if (
+      fetchedDataEmpresas &&
+      !fetchedDataEmpresas.hasError &&
+      !fetchedDataEmpresas.loading
+    ) {
+      setEmpresasLoading(false);
+      setEmpresas(fetchedDataEmpresas.json);
+      console.log("Empresas loaded");
+    } else if (
+      fetchedDataEmpresas &&
+      !fetchedDataEmpresas.loading &&
+      fetchedDataEmpresas.hasError
+    ) {
+      // logic for handling errors
     }
-  }, [responseEmpresas]);
+  }, [fetchedDataEmpresas]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -194,9 +224,20 @@ export default function AM_Clientes() {
     <Container className=" flex items-center justify-center h-screen mt-[-60px]">
       <div className="w-1/3">
         <p>Editando cliente {idToModify}</p>
-        <p>
-          Tipo original: {cliente?.empresa === null ? "Persona" : "Empresa"}
-        </p>
+        {cliente !== undefined &&
+          !personasLoading &&
+          !empresasLoading &&
+          !clientesLoading && (
+            <>
+              <p>
+                {`Persona original: ${cliente?.persona.nombre} ${cliente?.persona.apellido}`}
+              </p>
+              <p>
+                Tipo original:{" "}
+                {cliente?.empresa === null ? "Persona" : "Empresa"}
+              </p>
+            </>
+          )}
         <form
           className={
             clienteDTO.empresa_id
@@ -220,8 +261,8 @@ export default function AM_Clientes() {
                 name="persona_id"
                 id="countries"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                defaultValue={cliente?.persona.id}
                 onChange={handleSelectChange}
+                defaultValue={cliente?.persona.id}
               >
                 <option value={""}>---Seleccione Persona---</option>
 
@@ -242,8 +283,8 @@ export default function AM_Clientes() {
                 name="empresa_id"
                 id="countries"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                defaultValue={cliente?.empresa?.id}
                 onChange={handleSelectChange}
+                defaultValue={cliente?.empresa.id}
               >
                 <option value={""}>---Seleccione Empresa---</option>
                 {empresas.map((empresa, index) => (

@@ -25,21 +25,26 @@ export const useFetchClientes = (
     },
     shouldExecute
   );
-  resultDTO = result;
-  let json: any[] = [];
-  if (Array.isArray(result.json)) {
-    json = result.json.map((item) => ({
-      id: item.id, // Keeping the main id at the top level of each object
-      persona_id: item.persona ? item.persona.id : null, // Use logical AND to avoid null reference
-      empresa_id: item.empresa ? item.empresa.id : null, // Use logical AND to avoid null reference
-      eliminado: item.eliminado,
-    }));
+  console.log(result);
+  if (!id) {
+    resultDTO = result;
+    let json: any[] = [];
+    if (Array.isArray(result.json)) {
+      json = result.json.map((item) => ({
+        id: item.id, // Keeping the main id at the top level of each object
+        persona_id: item.persona ? item.persona.id : null, // Use logical AND to avoid null reference
+        empresa_id: item.empresa ? item.empresa.id : null, // Use logical AND to avoid null reference
+        eliminado: item.eliminado,
+      }));
+    } else {
+      // Handle the case where result.json is not an array or is null
+      json = []; // or any other appropriate default/fallback value
+    }
+    resultDTO.json = json;
+    return resultDTO;
   } else {
-    // Handle the case where result.json is not an array or is null
-    json = []; // or any other appropriate default/fallback value
+    return result;
   }
-  resultDTO.json = json;
-  return resultDTO;
 };
 
 export const useCreateCliente = (
