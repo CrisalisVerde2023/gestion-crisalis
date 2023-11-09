@@ -31,21 +31,21 @@ public class OrdenServiceImpl implements OrdenService {
     }
     @Override
     public Orden save(OrdenDTO ordenDTO) {
-        Cliente cliente = clienteRepository.findById(ordenDTO.getIdCliente()).orElseThrow(()->new ResourceNotFound("No se encontro el cliente: "+ ordenDTO.getIdCliente()));
-
+        Cliente cliente = clienteRepository.findById(ordenDTO.getIdCliente()).orElseThrow(()->new ResourceNotFound("No se encontró el cliente: "+ ordenDTO.getIdCliente()));
+        Usuario usuario = usuarioRepository.findById(ordenDTO.getIdUsuario()).orElseThrow(()->new ResourceNotFound("No se encontró el usuario: "+ ordenDTO.getIdUsuario()));
+        List<OrdenDetalleDTO> detallesDTO = ordenDTO.getOrdenDetalles();
         List<OrdenDetalle> detalles = new ArrayList<>();
-
-        Usuario usuario = usuarioRepository.findById(ordenDTO.getIdUsuario()).orElseThrow(()->new ResourceNotFound("No se encontro el usuario: "+ ordenDTO.getIdUsuario()));
 
         //Creamos una orden y una lista de detalles de orden
         Orden orden = new Orden(null, cliente, usuario, false, null, null);
 
+        System.out.println(cliente.getOrdenes().getOrd);
 
-        List<OrdenDetalleDTO> detallesDTO = ordenDTO.getOrdenDetalles();
+        // Motor (detallesDTO, Boolean tieneMembresia = )
 
         for(OrdenDetalleDTO item: detallesDTO) {
             //Traemos el producto correspondiente al detalle de orden
-            Producto producto = productRepository.findById(item.getIdProductService()).orElseThrow(()->new ResourceNotFound("No se encontro el producto: "+ item.getIdProductService()));
+            Producto producto = productRepository.findById(item.getIdProductService()).orElseThrow(()->new ResourceNotFound("No se encontró el producto: "+ item.getIdProductService()));
 
             //Seteamos el detalle de orden con el dto, mas los campos que debemos agregar
             detalles.add(new OrdenDetalle(
@@ -72,7 +72,7 @@ public class OrdenServiceImpl implements OrdenService {
 
     @Override
     public List<OrdenEncabezadoDTO> getAll() {
-        return this.ordenRepository.metodoPrueba();
+        return this.ordenRepository.getEncabezados();
     }
 
 

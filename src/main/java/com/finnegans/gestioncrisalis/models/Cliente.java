@@ -49,7 +49,7 @@ public class Cliente {
     private Empresa empresa;
     @OneToMany(
             fetch = FetchType.LAZY,
-            mappedBy = "usuario"
+            mappedBy = "cliente"
     )
     @JsonIgnore
     private List<Orden> ordenes;
