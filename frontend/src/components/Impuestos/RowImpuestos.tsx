@@ -9,6 +9,11 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
     setShowModalUpdate(!showModalUpdate);
   };
 
+  const handleInputChange = ({ target }) => {
+    const { name, value } = target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleEdit = (e) => {
     e.preventDefault();
     const dataId = e.target.getAttribute("data-id");
@@ -16,8 +21,8 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
     updateByIdData({ id: dataId, body }).then(handleModalEdit());
   };
 
-  const handleRemove = (e) => {
-    const dataId = e.target.getAttribute("data-id");
+  const handleRemove = ({ target }) => {
+    const dataId = target.getAttribute("data-id");
 
     Swal.fire({
       title: "Confirmar cambio de estado de usuario?",
@@ -177,12 +182,10 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                     </label>
                     <input
                       type="text"
-                      name="nombre-modal-update"
+                      name="nombre"
                       id="nombre-modal-update"
                       value={formData.nombre}
-                      onChange={(e) =>
-                        setFormData({ ...formData, nombre: e.target.value })
-                      }
+                      onChange={handleInputChange}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                       placeholder="IVA"
                     />
@@ -196,12 +199,10 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                     </label>
                     <input
                       type="text"
-                      name="porcentaje-modal-update"
+                      name="porcentaje"
                       id="porcentaje-modal-update"
                       value={formData.porcentaje}
-                      onChange={(e) =>
-                        setFormData({ ...formData, porcentaje: e.target.value })
-                      }
+                      onChange={handleInputChange}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                       placeholder="21.0"
                     />

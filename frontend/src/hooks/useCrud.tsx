@@ -22,44 +22,57 @@ export const useCrud = ({ url }) => {
   }, []);
 
   const getAllData = async () => {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: token,
-        "Content-Type": "application/json",
-      },
-    });
-    const json = await response.json();
-    console.log(json);
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      console.log(json);
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
-        setUserLogged(defaultUserLogState);
-        navigate("/login");
+      if (!response.ok) {
+        if (response.status === 401) {
+          Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
+          setUserLogged(defaultUserLogState);
+          navigate("/login");
+        }
+
+        if (
+          response.status === 400 ||
+          (response.status > 401 && response.status < 500)
+        ) {
+          throw new Error(
+            `Hubo un error con la petición: ${response.status}: ${response.statusText}`
+          );
+        }
+
+        if (response.status > 499) {
+          throw new Error(
+            `Hubo un error con el servidor: ${response.status}: ${response.statusText}`
+          );
+        }
+        Swal.fire("Atención!", "Error al consultar", "warning");
+
+        setEstado({ ...estado, hasError: true });
+        return;
       }
 
-      if (
-        response.status === 400 ||
-        (response.status > 401 && response.status < 500)
-      ) {
-        throw new Error(
-          `Hubo un error con la petición: ${response.status} : ${response.statusText}`
-        );
-      }
+      setEstado({
+        json: response.ok && response.status < 400 ? json : null,
+        loading: false,
+        hasError: response.ok ? false : true,
+        statusCode: response.status,
+      });
+    } catch (error) {
+      Swal.fire("Atención!", "Error al consultar", "warning");
+      setEstado({ ...estado, hasError: true });
 
-      if (response.status > 499) {
-        throw new Error(
-          `Hubo un error con el servidor: ${response.status} : ${response.statusText}`
-        );
-      }
+      throw new Error(
+        `Ocurrió un error: "${error.name}" con codigo: "${error.code}" y mensaje: "${error.message}" al hacer la peticion a "${error.config.url}"`
+      );
     }
-
-    setEstado({
-      json: response.ok && response.status < 400 ? json : null,
-      loading: false,
-      hasError: response.ok ? false : true,
-      statusCode: response.status,
-    });
   };
 
   const deleteByIdData = async ({ id }) => {
@@ -93,6 +106,7 @@ export const useCrud = ({ url }) => {
             `Hubo un error con el servidor: ${response.status}: ${response.statusText}`
           );
         }
+        Swal.fire("Atención!", "Error al eliminar", "warning");
 
         setEstado({ ...estado, hasError: true });
         return;
@@ -123,6 +137,7 @@ export const useCrud = ({ url }) => {
         statusCode: response.status,
       });
     } catch (error) {
+      Swal.fire("Atención!", "Error al eliminar", "warning");
       setEstado({ ...estado, hasError: true });
 
       throw new Error(
@@ -194,7 +209,6 @@ export const useCrud = ({ url }) => {
   };
 
   const updateByIdData = async ({ id, body }) => {
-    console.log("body", body);
     try {
       const response = await fetch(`${url}/${id}`, {
         method: "POST",
@@ -241,16 +255,10 @@ export const useCrud = ({ url }) => {
 
       const { json } = { ...estado };
       const impuestoIndex = json.findIndex((impuesto) => impuesto.id == id);
-
-      const keysBody = Object.keys(body)
-      keysBody.forEach(key => )
-      
       const newJson = [
         ...json.slice(0, impuestoIndex),
         {
-          ...json[impuestoIndex],
-          /* nombre: body.nombre,
-          porcentaje: body.porcentaje, */
+          ...body,
         },
         ...json.slice(impuestoIndex + 1),
       ];
