@@ -207,9 +207,10 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     if (createResponse && shouldCreate) {
       setShouldCreate(false);
       if (!createResponse.loading && !createResponse.hasError) {
-        Swal.fire("Perfecto!", "Creo cliente correctamente", "success");
         setShouldFetchEmpresas(true);
         setShouldFetchPersonas(true);
+        console.log("creado");
+        Swal.fire("Perfecto!", "Creo al cliente correctamente", "success");
       } else if (!deleteResponse.loading && deleteResponse.hasError) {
         if (deleteResponse.statusCode >= 400) {
           Swal.fire("Atención!", "Error al crear cliente", "warning");
@@ -309,10 +310,6 @@ export default function LB_Clientes(props: LB_ClientesProps) {
             className={`flex flex-column justify-content-center align-items-center rounded-lg p-2 ${
               clienteDTO?.empresa_id === null ? "bg-blue-200" : "bg-green-200"
             }`}
-            onSubmit={(e) => {
-              e.preventDefault();
-              setShouldCreate(true);
-            }}
           >
             <label
               htmlFor="persona_id"
@@ -370,8 +367,10 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               </div>
             </div>
             <button
-              type="submit"
               className="mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              onClick={(e) => {
+                setShouldCreate(true);
+              }}
             >
               {clienteDTO?.empresa_id === null
                 ? "CREAR CLIENTE PERSONA"
