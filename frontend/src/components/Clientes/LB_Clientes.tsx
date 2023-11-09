@@ -1,370 +1,513 @@
-
 import React, { useState, useEffect, useContext } from "react";
-import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import {
-    PencilFill,
-    XCircleFill,
-    CheckCircleFill,
-    PersonWorkspace,
-    Building,
+  PencilFill,
+  XCircleFill,
+  CheckCircleFill,
+  PersonWorkspace,
+  Building,
 } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
 
 //Fetch clientes
-import { createClient, fetchClientes, deleteClient } from "../../controller/ABMClientController";
+import {
+  useCreateCliente,
+  useDeleteCliente,
+  useFetchClientes,
+} from "../../controller/ABMClientController";
 
 //Fetch personas
-import { fetchPersonas } from "../../controller/ABMPersonController";
+import { useFetchPersonas } from "../../controller/ABMPersonController";
 //Fetch empresas
-import { fetchEnterprises } from "../../controller/ABMEnterpriseController";
+import { useFetchEmpresas } from "../../controller/ABMEnterpriseController";
 
-import { ClientesType } from "../types/clientType";
+import {
+  ClienteDTO,
+  ClientesType,
+  defaultClienteDTO,
+} from "../types/clientType";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
-import { PersonasType } from "../types/personType";
-import { EnterpriseType } from "../types/enterpriseType";
-import AM_Personas from "../Personas/AM_Personas";
-import AM_Empresa from "../Empresas/AM_Empresa";
+import { PersonasType, defaultPersonasType } from "../types/personType";
+import { EnterpriseType, defaultEnterpriseType } from "../types/enterpriseType";
 
 interface LB_ClientesProps {
-    seleccion: string;
+  seleccion: string;
 }
 
+type ClienteResponseDTO = {
+  id: number;
+  persona_id: number;
+  empresa_id: number | null;
+  eliminado: boolean;
+};
+
 export default function LB_Clientes(props: LB_ClientesProps) {
-    const [data, setData] = useState<ClientesType[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
-    const location = useLocation();
+  const [data, setData] = useState<ClientesType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const location = useLocation();
+  const [showingClients, setShowingClients] = useState<
+    ClienteResponseDTO[] | null
+  >([]);
+  //Pido personas y empresas
+  const [personas, setPersonas] = useState<PersonasType[] | null>([]);
+  const [empresas, setEmpresas] = useState<EnterpriseType[] | null>([]);
+  const [clientes, setClientes] = useState<ClienteResponseDTO[] | null>([]);
+  const [shouldDelete, setShouldDelete] = useState(false);
+  const [shouldCreate, setShouldCreate] = useState(false);
+  const [shouldFetchPersonas, setShouldFetchPersonas] = useState(true);
+  const [shouldFetchEmpresas, setShouldFetchEmpresas] = useState(true);
+  const [shouldFetchClientes, setShouldFetchClientes] = useState(false);
+  const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
+  const [clienteDTO, setClienteDTO] = useState<ClienteDTO>(defaultClienteDTO);
+  const [filterByPersona, setFilterByPersona] = useState(true);
+  const [filterByEmpresa, setFilterByEmpresa] = useState(true);
+  let fetchResponseEmpresa = useFetchEmpresas(undefined, shouldFetchEmpresas);
+  let fetchResponsePersonas = useFetchPersonas(undefined, shouldFetchEmpresas);
+  let fetchResponseClientes = useFetchClientes(undefined, shouldFetchClientes);
 
-    //Pido personas y empresas
-    const [personas, setPersonas] = useState<PersonasType[]>([]);
-    const [empresas, setEmpresas] = useState<EnterpriseType[]>([]);
+  let fetchResponse = useFetchClientes(undefined, shouldFetchClientes);
+  let deleteResponse = useDeleteCliente(idToDelete, shouldDelete);
+  let createResponse = useCreateCliente(clienteDTO, shouldCreate);
 
-    //El cliente que se envia para la creacion
-    const [clienteDTO, setClienteDTO] = useState<{ persona_id: number | null, empresa_id: number | null }>({ persona_id: null, empresa_id: null });
+  const { pedido, setPedido } = useContext(UserLoggedContext);
 
+  useEffect(() => {
+    if (fetchResponseEmpresa && shouldFetchEmpresas) {
+      if (
+        !fetchResponseEmpresa.loading &&
+        !fetchResponseEmpresa.hasError &&
+        fetchResponseEmpresa.json
+      ) {
+        setEmpresas(fetchResponseEmpresa.json);
+        setShouldFetchEmpresas(false);
+      } else if (
+        !fetchResponseEmpresa.loading &&
+        fetchResponseEmpresa.hasError
+      ) {
+        Swal.fire("Error!", "No se han podido obtener datos.", "error");
+        setEmpresas(null);
+      }
+    }
+  }, [fetchResponseEmpresa]);
 
-    //Manejo de modal de creacioón
-    const [showModal, setShowModal] = useState(false);
-    const [agregando, setAgregando] = useState('');
-    const [idPersonaCreada, setIdPersonaCreada] = useState(0);
+  useEffect(() => {
+    if (fetchResponsePersonas && shouldFetchPersonas) {
+      if (
+        !fetchResponsePersonas.loading &&
+        !fetchResponsePersonas.hasError &&
+        fetchResponsePersonas.json
+      ) {
+        setPersonas(fetchResponsePersonas.json);
+        setShouldFetchPersonas(false);
+      } else if (
+        !fetchResponsePersonas.loading &&
+        fetchResponsePersonas.hasError
+      ) {
+        Swal.fire("Error!", "No se han podido obtener datos.", "error");
+        setPersonas(null);
+      }
+    }
+  }, [fetchResponsePersonas]);
 
-    const { userLogged } = useContext(UserLoggedContext);
+  useEffect(() => {
+    if (
+      !shouldFetchPersonas &&
+      fetchResponsePersonas &&
+      fetchResponsePersonas.json &&
+      !shouldFetchEmpresas &&
+      fetchResponseEmpresa &&
+      fetchResponseEmpresa.json
+    ) {
+      console.log("Tiene personas y empresas, pedir clientes");
+      setShouldFetchClientes(true);
+    }
+  }, [shouldFetchEmpresas, shouldFetchPersonas]);
 
-    const { pedido, setPedido } = useContext(UserLoggedContext);
+  useEffect(() => {
+    if (fetchResponseClientes && shouldFetchClientes) {
+      if (
+        !fetchResponseClientes.loading &&
+        !fetchResponseClientes.hasError &&
+        fetchResponseClientes.json
+      ) {
+        console.log(fetchResponseClientes.json);
+        setClientes(fetchResponseClientes.json);
+        setShouldFetchClientes(false);
+      } else if (
+        !fetchResponseClientes.loading &&
+        fetchResponseClientes.hasError
+      ) {
+        Swal.fire("Error!", "No se han podido obtener datos.", "error");
+        setClientes(null);
+      }
+    }
+  }, [fetchResponseClientes]);
 
-    const fetchData = async () => {
-        try {
-            return await fetchClientes(0);
-        } catch (error) {
-            Swal.fire("Error!", "No se han podido obtener datos.", "error");
+  useEffect(() => {
+    if (deleteResponse && shouldDelete) {
+      setShouldDelete(false);
+      if (!deleteResponse.loading && !deleteResponse.hasError) {
+        Swal.fire(
+          "Perfecto!",
+          "Cambio el estado del cliente correctamente",
+          "success"
+        );
+        setShouldFetchClientes(true);
+      } else if (!deleteResponse.loading && deleteResponse.hasError) {
+        if (deleteResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al modificar cliente", "warning");
         }
-    };
+      }
+    }
+  }, [deleteResponse]);
 
-    //Fc para manejar el cambio de los select
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = e.target;
+  const handleSearch = (searchTerm: string) => {
+    let filteredClientes = clientes;
 
-        setIdPersonaCreada(0)
+    if (clientes && personas && empresas) {
+      if (searchTerm) {
+        filteredClientes = clientes.filter((cliente) => {
+          const persona = personas.find((p) => p.id === cliente.persona_id);
+          const empresa = empresas.find((e) => e.id === cliente.empresa_id);
 
-        if (value === '') {
-            setClienteDTO({
-                ...clienteDTO,
-                [name]: null,
-            });
-            return;
-        }
+          const personaMatches =
+            persona && filterByPersona
+              ? `${persona.nombre} ${persona.apellido}`
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              : false;
+          const empresaMatches =
+            empresa && filterByEmpresa
+              ? empresa.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+              : false;
 
-        setClienteDTO({
-            ...clienteDTO,
-            [name]: value,
+          return (
+            personaMatches ||
+            empresaMatches ||
+            cliente.id.toString().includes(searchTerm)
+          );
         });
-        //console.log(clienteDTO)
-    };
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        //console.log("se envio esto:", clienteDTO)
-        await createClient(clienteDTO).catch(() => {
-            Swal.fire(
-                "Error!",
-                "No se pudo crear el cliente.",
-                "error"
-            );
-        });
-        setIsLoading(true);
-        fetchData().then((resp) => {
-            //console.log(resp)
-            setData(resp);
-            setIsLoading(false);
-        });
+      }
     }
 
-    const onConfirm = (row: ClientesType) => {
-        if (row)
-            deleteClient(row.id)
-                .then(() => {
-                    fetchData().then((resp) => {
-                        setData(resp);
+    setShowingClients(filteredClientes);
+  };
 
-                    });
-                })
-                .catch(() => {
-                    Swal.fire("Error!", "No se ha podido cambiar el estado.", "error");
-                });
+  useEffect(() => {
+    handleSearch(searchTerm);
+  }, [searchTerm, filterByEmpresa, filterByPersona]);
+
+  useEffect(() => {
+    handleSearch("");
+  }, [clientes]);
+
+  useEffect(() => {
+    if (createResponse && shouldCreate) {
+      setShouldCreate(false);
+      if (!createResponse.loading && !createResponse.hasError) {
+        setShouldFetchEmpresas(true);
+        setShouldFetchPersonas(true);
+        console.log("creado");
+        Swal.fire("Perfecto!", "Creo al cliente correctamente", "success");
+      } else if (!deleteResponse.loading && deleteResponse.hasError) {
+        if (deleteResponse.statusCode >= 400) {
+          Swal.fire("Atención!", "Error al crear cliente", "warning");
+        }
+      }
+    }
+  }, [deleteResponse]);
+
+  useEffect(() => {
+    console.log(clienteDTO);
+  }, [clienteDTO]);
+
+  // Function to handle the change of the select
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    setClienteDTO((prevDTO) => ({
+      ...prevDTO,
+      [name]: value === "" ? null : parseInt(value),
+    }));
+  };
+
+  const createClient = () => {
+    setShouldCreate(true);
+  };
+
+  const onConfirm = async (cliente: ClienteResponseDTO) => {
+    if (cliente) {
+      console.log(`Id to delete is : ${cliente.id}`);
+      setIdToDelete(cliente.id);
+      setShouldDelete(true);
+    }
+  };
+
+  const addToPedido = (cliente: ClienteResponseDTO) => {
+    // Assuming that 'personas' and 'empresas' are accessible here and are not null
+    const persona = personas?.find((p) => p.id === cliente.persona_id);
+    const empresa = empresas?.find((e) => e.id === cliente.empresa_id);
+
+    // Creating the cliente object in the form that 'pedido' expects
+    const clienteForPedido = {
+      id: cliente.id,
+      persona: persona || defaultPersonasType,
+      empresa: empresa || defaultEnterpriseType,
+      eliminado: cliente.eliminado,
     };
 
-    const addToPedido = (cliente: ClientesType) => {
+    setPedido({ ...pedido, cliente: clienteForPedido });
+  };
 
-        setPedido({ ...pedido, cliente });
-    };
+  const handleClickedElement = (selected: ClienteResponseDTO) => {
+    // Find the full persona and empresa details
+    const persona = personas?.find((p) => p.id === selected.persona_id);
+    const empresa = selected.empresa_id
+      ? empresas?.find((e) => e.id === selected.empresa_id)
+      : null;
 
+    Swal.fire({
+      title: "Confirmar cambio de estado de una persona?",
+      text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${
+        persona ? persona.nombre : "una persona"
+      } ${empresa ? "de la empresa " + empresa.nombre : ""}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí! Estoy seguro.",
+      cancelButtonText: "Mejor no.",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        onConfirm(selected);
+      } else if (result.isDenied || result.isDismissed) {
+        // Handle the denial or dismissal of the alert if necessary
+      }
+    });
+  };
 
-    const actionButtons = (row: ClientesType) => (
-        <div className="d-flex flex-row align-items-center">
-            <Button
-                className="actionButton"
-                onClick={() => onConfirm(row)}
+  const actionButtons = (row: ClienteResponseDTO) => (
+    <div className="d-flex flex-row align-items-center">
+      <button
+        className="actionButton"
+        onClick={() => handleClickedElement(row)}
+      >
+        {row.eliminado ? <CheckCircleFill /> : <XCircleFill />}
+      </button>
+      <Link className="actionButton ml-8" to={`/clientes/AMClientes/${row.id}`}>
+        <PencilFill />
+      </Link>
+    </div>
+  );
+
+  return (
+    <>
+      <div className="relative">
+        <div className="flex flex-row justify-center items-center mt-4 mb-4">
+          <form
+            className={`flex flex-column justify-content-center align-items-center rounded-lg p-2 ${
+              clienteDTO?.empresa_id === null ? "bg-blue-200" : "bg-green-200"
+            }`}
+          >
+            <label
+              htmlFor="persona_id"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white pt-1"
             >
-                {row.eliminado ? <CheckCircleFill /> : <XCircleFill />}
-            </Button>
-            <Link className="actionButton ml-8" to={`/clientes/AMClientes/${row.id}`}>
-                <PencilFill />
-            </Link>
+              Persona:
+            </label>
+            <div className="flex items-center">
+              <select
+                name="persona_id"
+                id="persona_id"
+                className="border-2 border-blue-500 px-2 py-1 inputSearch"
+                onChange={handleSelectChange}
+              >
+                <option value="">---Seleccione Persona---</option>
+                {personas?.map((persona, index) => (
+                  <option key={index} value={persona.id}>
+                    ID: {persona.id} - {persona.nombre} {persona.apellido}
+                  </option>
+                ))}
+              </select>
+
+              <div
+                onClick={() => console.log("agregar persona")}
+                className="flex items-center ml-1 cursor-pointer px-2"
+              >
+                <PersonWorkspace /> +
+              </div>
+            </div>
+            <label
+              htmlFor="empresa_id"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white pt-3"
+            >
+              Empresa:
+            </label>
+            <div className="flex items-center">
+              <select
+                name="empresa_id"
+                id="empresa_id"
+                className="border-2 border-blue-500 px-2 py-1 inputSearch"
+                onChange={handleSelectChange}
+              >
+                <option value="">---Seleccione Empresa---</option>
+                {empresas?.map((empresa, index) => (
+                  <option key={index} value={empresa.id}>
+                    ID: {empresa.id} - {empresa.nombre}
+                  </option>
+                ))}
+              </select>
+              <div
+                onClick={() => console.log("agregar empresa")}
+                className="flex items-center ml-1 cursor-pointer px-2"
+              >
+                <Building /> +
+              </div>
+            </div>
+            <button
+              className="mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              onClick={(e) => {
+                setShouldCreate(true);
+              }}
+            >
+              {clienteDTO?.empresa_id === null
+                ? "CREAR CLIENTE PERSONA"
+                : "CREAR CLIENTE EMPRESA"}
+            </button>
+          </form>
         </div>
-    );
 
-    const handleAddPersona = () => {
+        <div className="flex flex-col justify-center items-center mb-4">
+          <div className="flex-auto flex justify-center mb-4">
+            <input
+              type="text"
+              placeholder="Buscar"
+              className="inputSearch border-2 border-blue-500 px-2 py-1"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                handleSearch(e.target.value);
+              }}
+            />
+            <div className="flex items-center ml-4">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filterByPersona}
+                  onChange={(e) => setFilterByPersona(e.target.checked)}
+                  className="mr-2"
+                />
+                <PersonWorkspace className="text-blue-400" />
+              </label>
+            </div>
+            <div className="flex items-center ml-4">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filterByEmpresa}
+                  onChange={(e) => setFilterByEmpresa(e.target.checked)}
+                  className="mr-2"
+                />
+                <Building className="text-green-400" />
+              </label>
+            </div>
+          </div>
+        </div>
 
-        setAgregando('persona');
-        setShowModal(true);
+        {/* Data Table */}
+        <div>
+          {isLoading ? (
+            <div className="flex justify-center">
+              <LoadingComponent />
+            </div>
+          ) : (
+            <div className="w-full">
+              <table className="min-w-full bg-white border border-gray-300">
+                <thead className="bg-blue-500 text-white">
+                  <tr>
+                    <th className="py-2 px-4 border-b border-gray-200">Id</th>
+                    <th className="py-2 px-4 border-b border-gray-200">
+                      Tipo de Cliente
+                    </th>
+                    <th className="py-2 px-4 border-b border-gray-200">
+                      Persona
+                    </th>
+                    <th className="py-2 px-4 border-b border-gray-200">
+                      Empresa
+                    </th>
+                    <th className="py-2 px-4 border-b border-gray-200">
+                      Estado
+                    </th>
+                    <th className="py-2 px-4 border-b border-gray-200">
+                      Acciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {showingClients &&
+                    showingClients
+                      .sort((a, b) => (a.id < b.id ? -1 : 1))
+                      .map((cliente, index) => {
+                        // Find the matching persona and empresa for each cliente
+                        const persona = personas?.find(
+                          (p) => p.id === cliente.persona_id
+                        );
+                        const empresa = cliente.empresa_id
+                          ? empresas?.find((e) => e.id === cliente.empresa_id)
+                          : null;
 
-    }
-    const handleAddEmpresa = () => {
-
-        setAgregando('empresa');
-        setShowModal(true);
-
-    }
-
-    const handleCloseModal = () => {
-        
-        setShowModal(false);
-        agregando === 'persona' ?
-            //fetch personas
-            fetchPersonas(0).then((resp) => {
-                setPersonas(resp);
-                console.log(resp)
-            })
-            :
-            //fetch empresas
-            fetchEnterprises(setIsLoading).then((resp) => {
-                setEmpresas(resp);
-                console.log(resp)
-            });
-
-
-        setAgregando('');
-    }
-
-    //Para controlar el ingreso del id de la persona creada
-    useEffect(() => {
-        console.log("el id de la persona es:", idPersonaCreada)
-        if (idPersonaCreada !== 0) {
-            setClienteDTO({
-                ...clienteDTO,
-                persona_id: idPersonaCreada,
-            });
-        }
-    },[idPersonaCreada])
-
-    useEffect(() => {
-        setIsLoading(true);
-        fetchData().then((resp) => {
-            //console.log(resp)
-            setData(resp);
-            setIsLoading(false);
-        });
-        //fetch personas
-        fetchPersonas(0).then((resp) => {
-            setPersonas(resp);
-            //console.log(resp)
-        });
-        //fetch empresas
-        fetchEnterprises(setIsLoading).then((resp) => {
-            setEmpresas(resp);
-            //console.log(resp)
-        });
-    }, [location]);
-
-    return (
-        <>
-            <Container className="relative min-h-[500px]">
-                {
-                    showModal &&
-                    <div className="bg-black bg-opacity-50 w-full h-full absolute left-0 top-0 flex flex-col items-center justify-center">
-                        <div className="bg-white w-[500px] rounded-2xl">
-
-                            {
-                                agregando === 'persona'
-                                    ?
-                                    <>
-                                        <AM_Personas callBackProp={handleCloseModal} cargarIdPersonaCreada={setIdPersonaCreada}/>
-                                    </>
-                                    :
-                                    <AM_Empresa/>
-
-                            }
-                        </div>
-                        <button className=" bg-red-500  px-5 py-2 text-white font-bold mt-2" onClick={handleCloseModal}>Cancelar</button>
-                    </div>
-                }
-
-                <Row className="d-flex flex-row justify-content-center align-items-center mt-4 mb-4">
-
-                    <form className={`w-1/3 rounded-lg p-2 ${clienteDTO.empresa_id === null ? 'bg-blue-200' : 'bg-green-200'}`} onSubmit={handleSubmit}>
-
-
-                        <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Persona:</label>
-                        <div className="flex items-center">
-                            <select name="persona_id"
-                                id="countries"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-2"
-                                onChange={handleSelectChange}
-
-                                {
-                                    ...idPersonaCreada && {value: idPersonaCreada}
-                                }
-                            >
-                                <option value={''}>---Seleccione Persona---</option>
-                                {
-                                    personas.map((persona, index) => (
-                                        <option key={index} value={persona.id}>ID: {persona.id} - {persona.nombre} {persona.apellido}</option>
-                                    ))
-                                }
-                            </select>
-
-                            <div onClick={() => handleAddPersona()} className="flex items-center ml-1 cursor-pointer">
-                                <PersonWorkspace /> +
-                            </div>
-                        </div>
-                        <label htmlFor="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Empresa:</label>
-                        <div className="flex items-center">
-                            <select name="empresa_id"
-                                id="countries"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-
-                                onChange={handleSelectChange}
-                            >
-                                <option value={''}>---Seleccione Empresa---</option>
-                                {
-                                    empresas.map((empresa, index) => (
-                                        <option key={index} value={empresa.id}>ID: {empresa.id} - {empresa.nombre}</option>
-                                    ))
-                                }
-                            </select>
-                            <div onClick={() => handleAddEmpresa()} className="flex items-center ml-1 cursor-pointer">
-                                <Building /> +
-                            </div>
-                        </div>
-                        <button type="submit" className="mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                            {
-                                clienteDTO.empresa_id === null ? 'CREAR CLIENTE PERSONA' : 'CREAR CLIENTE EMPRESA'
-                            }
-                        </button>
-                    </form>
-
-
-                </Row>
-                <Row
-                    className="d-flex flex-row justify-content-center align-items-center "
-                    style={{ marginBottom: "15px" }}
-                >
-                    <Col xs="auto" className=" w-full flex justify-start">
-                        <div className="flex items-center">
-                            <input type="checkbox" />
-                            <PersonWorkspace className="text-blue-400 ml-1 text-xl" />
-                        </div>
-                        <div className="flex items-center mx-2">
-                            <input type="checkbox" />
-                            <Building className="text-green-400 ml-1 text-xl" />
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Buscar Persona"
-                            className="inputSearch mr-2"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Buscar Empresa"
-                            className="inputSearch"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-
-                    </Col>
-
-                </Row>
-                {/* Data Table */}
-                <Row>
-                    {isLoading ? (
-                        <Col>
-                            <LoadingComponent />
-                        </Col>
-                    ) : (
-                        <Col>
-                            <Table striped bordered hover>
-                                <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Tipo de Cliente</th>
-                                        <th>Persona</th>
-                                        <th>Empresa</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.sort((a: ClientesType, b: ClientesType) =>
-                                        a.id < b.id
-                                            ? -1
-                                            : 1
-                                    )
-                                        .map((row, index) => (
-                                            <tr key={index}>
-                                                <td>{row.id}</td>
-                                                {
-                                                    row.empresa ?
-                                                        <td className="flex items-center justify-center "><Building className="text-green-400" /> </td>
-                                                        :
-                                                        <td className="flex items-center justify-center "><PersonWorkspace className="text-blue-400" /> </td>
-                                                }
-
-                                                <td>{row.persona.nombre} {row.persona.apellido}</td>
-                                                <td>{row.empresa ? row.empresa.nombre : "-"}</td>
-                                                <td>{row.eliminado ? <p className="text-red-600 font-bold">Inactivo</p> : <p className="text-green-600 font-bold">Activo</p>}</td>
-                                                <td className="flex justify-around">
-                                                    {actionButtons(row)}
-                                                    {
-                                                        props.seleccion === "simple" &&
-                                                        <button onClick={() => { addToPedido(row) }} type="button" className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-0.5  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                                                            Seleccionar Cliente
-                                                        </button>
-                                                    }
-
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
-                                </tbody>
-                            </Table>
-                        </Col>
-                    )}
-                </Row>
-            </Container>
-        </>
-    );
+                        return (
+                          <tr key={index}>
+                            <td>{cliente.id}</td>
+                            <td className="flex items-center justify-center ">
+                              {empresa ? (
+                                <Building className="text-green-400" />
+                              ) : (
+                                <PersonWorkspace className="text-blue-400" />
+                              )}
+                            </td>
+                            <td>
+                              {persona
+                                ? `${persona.nombre} ${persona.apellido}`
+                                : "-"}
+                            </td>
+                            <td>{empresa ? empresa.nombre : "-"}</td>
+                            <td>
+                              {cliente.eliminado ? (
+                                <p className="text-red-600 font-bold">
+                                  Inactivo
+                                </p>
+                              ) : (
+                                <p className="text-green-600 font-bold">
+                                  Activo
+                                </p>
+                              )}
+                            </td>
+                            <td className="flex justify-around">
+                              {actionButtons(cliente)}
+                              {props.seleccion === "simple" && (
+                                <button
+                                  onClick={() => {
+                                    addToPedido(cliente);
+                                  }}
+                                  type="button"
+                                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-0.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                >
+                                  Seleccionar Cliente
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }

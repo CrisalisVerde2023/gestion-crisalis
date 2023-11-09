@@ -26,10 +26,21 @@ export const TableImpuestos = () => {
     setShowModalCreate(!showModalCreate);
   };
 
+  const handleOnChange = ({ target }) => {
+    const { name, value } = target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   const handleCreate = (e) => {
     e.preventDefault();
     const body = { ...formData, porcentaje: Number(formData.porcentaje) };
-    create({ body }).then(handleModalCreate());
+    create({ body }).then(
+      handleModalCreate(),
+      setFormData({ nombre: "", porcentaje: "" })
+    );
   };
 
   const filteredImpuestos = () => {
@@ -626,11 +637,9 @@ export const TableImpuestos = () => {
                     </label>
                     <input
                       value={formData.nombre}
-                      onChange={(e) =>
-                        setFormData({ ...formData, nombre: e.target.value })
-                      }
+                      onChange={handleOnChange}
                       type="text"
-                      name="nombre-modal-create"
+                      name="nombre"
                       id="nombre-modal-create"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                       placeholder="IVA"
@@ -639,22 +648,17 @@ export const TableImpuestos = () => {
                   </div>
                   <div>
                     <label
-                      htmlFor="porcentaje-moda-create"
+                      htmlFor="porcentaje-modal-create"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
                       Porcentaje
                     </label>
                     <input
                       value={formData.porcentaje}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          porcentaje: e.target.value,
-                        })
-                      }
+                      onChange={handleOnChange}
                       type="text"
-                      name="porcentaje-moda-create"
-                      id="porcentaje-moda-create"
+                      name="porcentaje"
+                      id="porcentaje-modal-create"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                       placeholder="21.5"
                       required

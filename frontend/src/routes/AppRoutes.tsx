@@ -13,11 +13,11 @@ import AM_ProductService from "../components/Productos y Servicios/AM_ProductSer
 import NotFoundComponent from "../components/NotFoundComponent";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { AuthRoute } from "./AuthRoute";
-import ABMImpuestos from "../components/Impuestos/ABMImpuestos";
 import ABMClientesComponent from "../components/Clientes/ABMClientes";
 import AM_Clientes from "../components/Clientes/AM_Clientes";
-import AltaPedidoComponent from "../components/Pedidos/AltaPedidoComponent";
+import AM_Pedidos from "../components/Pedidos/AM_Pedidos";
 import ABMPedidos from "../components/Pedidos/ABMPedidos";
+import { TableImpuestos } from "../components/Impuestos/TableImpuestos";
 
 export const AppRoutes = () => {
   const { userLogged } = useContext(UserLoggedContext);
@@ -92,8 +92,8 @@ export const AppRoutes = () => {
           path="/productosyservicios/AMServicios/:idProdServ"
           element={<AM_ProductService />}
         />
-        <Route path="/impuestos" element={<ABMImpuestos />} />
-        <Route path="/altaPedido" element={<AltaPedidoComponent />} />
+        <Route path="/altaPedido" element={<AM_Pedidos />} />
+        <Route path="/impuestos" element={<TableImpuestos />} />
         <Route path="/pedidos" element={<ABMPedidos />} />
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />

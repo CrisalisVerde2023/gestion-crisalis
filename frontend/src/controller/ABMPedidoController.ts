@@ -1,62 +1,93 @@
+import { UserLogged } from "./../components/types/UserLogged";
 //@ts-nocheck
-import { PedidoType, UserLogged } from "../components/types/UserLogged";
+import { PedidoType } from "../components/types/UserLogged";
+import { useContext } from "react";
+import { EncabezadoPedidoType } from "../components/types/EncabezadoPedidoType";
+import { ProductServiceType } from "../components/types/productServiceType";
+import { UserLoggedContext } from "../contexts/UserLoggedContext";
+import { HTTPMethod, useFetch } from "../hooks/useFetch";
 
 const URL_API_ORDEN = "http://localhost:8080/api/orden";
 
-export async function createPedido(userLogged: UserLogged, pedido: Partial<PedidoType> = {}) {
-  try{
-    await fetch(URL_API_ORDEN, {
-      method: "POST",
-      body: JSON.stringify({
-        idCliente: pedido.cliente?.id,
-        idUsuario: userLogged.id,
-        detalleOrden: pedido.prods_servs?.map(({id, cantidad, garantia}) => ({idServicioProducto: id, cantidad, garantia})),
-      }),
-      headers: {
-        Authorization: userLogged.token,
-        "Content-Type": "application/json",
-      },
-    })
-    .then(resp => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    })
-  }
-  catch(error) {
-    console.error("Ocurrió un error al crear pedido:", error);
-    throw error;
-  }
-}
+export const useFetchPedidos = (
+  id?: number,
+  shouldExecute: boolean = false
+) => {
+  return useFetch(
+    {
+      method: HTTPMethod.GET,
+      url: `${URL_API_ORDEN}${id && id >= 0 ? `/${id}` : ""}`,
+      params: {},
+    },
+    shouldExecute
+  );
+};
 
-export async function deletePedido(userLogged: UserLogged, id: number) {
-  try{
-    await fetch(`${URL_API_ORDEN}/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: userLogged.token,
-        "Content-Type": "application/json",
-      }
-    })
-    .then(resp => {
-      if (resp.status >= 400) throw "El servidor respondió con error";
-    })
-  }
-  catch(error) {
-    console.error("Ocurrió un error al cambiar estado de pedido:", error);
-    throw error;
-  }
-}
+export const useCreatePedidos = (
+  overrides: Partial<EncabezadoPedidoType> = {},
+  shouldExecute = false
+) => {
+  /*const params = {
+    idCliente: overrides.persona?
+    //idUsuario: userLogged.id,
+    /*detalleOrden: overrides.prods_servs?.map(({ id, cantidad, garantia }) => ({
+      idServicioProducto: id,
+      cantidad,
+      garantia,
+    })),
+  };*/
+
+  return useFetch(
+    {
+      method: HTTPMethod.POST,
+      url: `${URL_API_ORDEN}`,
+      params: {}, //TODO: Arreglar esto
+    },
+    shouldExecute
+  );
+};
+
+export const useModifyPedidos = (
+  updatedData: Partial<EncabezadoPedidoType> = {},
+  shouldExecute = false
+) => {
+  const params = updatedData;
+
+  return useFetch(
+    {
+      method: HTTPMethod.POST,
+      url: `${URL_API_ORDEN}/${updatedData.id}`,
+      params: params,
+    },
+    shouldExecute
+  );
+};
+
+export const useDeletePedidos = (id?: number, shouldExecute = false) => {
+  return useFetch(
+    {
+      method: HTTPMethod.PATCH,
+      url: `${URL_API_ORDEN}/${id}`,
+      params: {},
+    },
+    shouldExecute
+  );
+};
 
 export const fetchPedidos = async (userLogged: UserLogged, id: number) => {
   try {
-    return await (await fetch(URL_API_ORDEN, {
-      headers: {
-        Authorization: userLogged.token,
-        "Content-Type": "application/json",
-      }
-    })).json() || [];
-  }
-  catch(error) {
+    return (
+      (await (
+        await fetch(URL_API_ORDEN, {
+          headers: {
+            Authorization: userLogged.token,
+            "Content-Type": "application/json",
+          },
+        })
+      ).json()) || []
+    );
+  } catch (error) {
     console.error("Ocurrió un error al obtener pedidos:", error);
     throw error;
   }
-}
+};
