@@ -70,10 +70,8 @@ export const useLogin = () => {
           });
           setPedido(defaultPedidoState);
 
-          setTimeout(() => {
-            setLoading(false);
-            navigate("/home", { replace: true });
-          }, 2000);
+          setLoading(false);
+          navigate("/home", { replace: true });
         }
       }
     } catch (error) {
