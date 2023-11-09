@@ -2,6 +2,7 @@ package com.finnegans.gestioncrisalis.services.impl;
 
 import com.finnegans.gestioncrisalis.dtos.ProductoDTO;
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
+import com.finnegans.gestioncrisalis.models.Impuesto;
 import com.finnegans.gestioncrisalis.models.Producto;
 import com.finnegans.gestioncrisalis.repositories.ImpuestoRepository;
 import com.finnegans.gestioncrisalis.repositories.ProductoRepository;
@@ -50,11 +51,12 @@ public class ProductoServiceImpl implements ProductoService {
             producto.setImpuestos(new ArrayList<>());//Instancio la lista de impuestos porque si es null no me deja agregarle elementos
             productoDTO.getIdImpuestos().forEach(
                 (idImpuesto) -> {
-
-                    producto.getImpuestos().add(this.impuestoRepository.findById(idImpuesto).orElseThrow(
-                        () -> new ResourceNotFound("Impuesto no encontrado con id: " + idImpuesto)
-                    ));
-
+                    Impuesto impuesto = this.impuestoRepository.findById(idImpuesto).orElseThrow(
+                            () -> new ResourceNotFound("Impuesto no encontrado con id: " + idImpuesto));
+                    //Si se llega a necesitar que no se carguen impuestos eliminados descomentar esta linea, por lo pronto para la lógica de desactivación
+                    //Que poseen los impuestos no parece necesario ya que se comprobará la vigencia del impuesto en el momento de la venta
+                    //if(impuesto.isEliminado()) throw new ResourceNotFound("El impuesto "+impuesto.getNombre()+" está eliminado");
+                    producto.getImpuestos().add(impuesto);
                 }
             );
         }

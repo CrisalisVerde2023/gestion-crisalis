@@ -47,6 +47,7 @@ public class Cliente {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "EMPRESA_ID")
     private Empresa empresa;
+
     @OneToMany(
             fetch = FetchType.LAZY,
             mappedBy = "usuario"
