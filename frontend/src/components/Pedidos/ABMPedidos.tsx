@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import LB_Pedido from "./LB_Pedido";
+import LB_Pedido from "./LB_Pedidos";
 
 export default function ABMPedidos() {
   const navigate = useNavigate();
@@ -25,11 +25,11 @@ export default function ABMPedidos() {
             Crear nuevo pedido
           </button>
           <button
-              onClick={() => navigate(-1)}
-              className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
-            >
-              Volver
-            </button>
+            onClick={() => navigate(-1)}
+            className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
+          >
+            Volver
+          </button>
         </div>
       </div>
     </div>

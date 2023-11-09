@@ -15,7 +15,7 @@ import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { AuthRoute } from "./AuthRoute";
 import ABMClientesComponent from "../components/Clientes/ABMClientes";
 import AM_Clientes from "../components/Clientes/AM_Clientes";
-import AltaPedidoComponent from "../components/Pedidos/AltaPedidoComponent";
+import AM_Pedidos from "../components/Pedidos/AM_Pedidos";
 import ABMPedidos from "../components/Pedidos/ABMPedidos";
 import { TableImpuestos } from "../components/Impuestos/TableImpuestos";
 
@@ -92,8 +92,8 @@ export const AppRoutes = () => {
           path="/productosyservicios/AMServicios/:idProdServ"
           element={<AM_ProductService />}
         />
+        <Route path="/altaPedido" element={<AM_Pedidos />} />
         <Route path="/impuestos" element={<TableImpuestos />} />
-        <Route path="/altaPedido" element={<AltaPedidoComponent />} />
         <Route path="/pedidos" element={<ABMPedidos />} />
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />

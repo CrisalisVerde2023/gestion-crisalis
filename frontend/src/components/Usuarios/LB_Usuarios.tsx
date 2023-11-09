@@ -4,7 +4,7 @@ import {
   XCircleFill,
   CheckCircleFill,
 } from "react-bootstrap-icons";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   useFetchUsuarios,
   useDeleteUsuario,
@@ -19,7 +19,6 @@ export default function LB_Users() {
   const navigate = useNavigate();
   const [data, setData] = useState<UsuariosType[] | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const location = useLocation();
   const { userLogged } = useContext(UserLoggedContext);
   const [shouldDelete, setShouldDelete] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(true);

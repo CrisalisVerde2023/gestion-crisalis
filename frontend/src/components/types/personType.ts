@@ -5,3 +5,11 @@ export type PersonasType = {
   dni: string;
   eliminado: boolean;
 };
+
+export const defaultPersonasType = {
+  id: -1,
+  nombre: "",
+  apellido: "",
+  dni: "",
+  eliminado: false,
+};
