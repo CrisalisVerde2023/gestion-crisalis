@@ -26,6 +26,7 @@ public class Cliente {
     @Column(name = "ID")
     private Long id;
 
+
     @Column(name = "ELIMINADO", nullable = false, columnDefinition = "boolean default false")
     private boolean eliminado;
 
@@ -53,6 +54,9 @@ public class Cliente {
     )
     @JsonIgnore
     private List<Orden> ordenes;
+
+
+
 
     @PrePersist
     protected void onCreate(){

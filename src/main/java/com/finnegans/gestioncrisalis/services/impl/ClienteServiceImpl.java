@@ -9,10 +9,13 @@ import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.Cliente;
 import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.models.Persona;
+import com.finnegans.gestioncrisalis.models.Producto;
 import com.finnegans.gestioncrisalis.repositories.ClienteRepository;
 import com.finnegans.gestioncrisalis.repositories.EmpresaRepository;
 import com.finnegans.gestioncrisalis.repositories.PersonaRepository;
+import com.finnegans.gestioncrisalis.repositories.ProductoRepository;
 import com.finnegans.gestioncrisalis.services.ClienteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +25,12 @@ import java.util.stream.Collectors;
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
+
     private final ClienteRepository clienteRepository;
 
+
     //SE IMPORTAN LOS REPOSITIORIOS PERO TENDRIAN QUE VENIR DEL SERVICE
+
     private final PersonaRepository personaRepository;
     private final EmpresaRepository empresaRepository;
 
@@ -128,4 +134,6 @@ public class ClienteServiceImpl implements ClienteService {
 
         return ClienteDTOMapper.builder().setCliente(cliente).build();
     }
+
+
 }

@@ -44,6 +44,7 @@ public class Orden {
     @OneToMany(mappedBy = "orden")
     private List<OrdenDetalle> ordenDetalles;
 
+
     @PrePersist
     public void prePersist() {
             this.fechaCreacion = LocalDateTime.now();

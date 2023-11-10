@@ -11,4 +11,6 @@ public interface ProductoService {
     Producto alternarEstado(Long id);
     Producto obtener(Long id);
     List<Producto> obtener();
+
+
 }

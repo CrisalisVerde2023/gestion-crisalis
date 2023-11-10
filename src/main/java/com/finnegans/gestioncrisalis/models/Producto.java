@@ -43,6 +43,7 @@ public class Producto {
     @Column(name = "SOPORTE")
     private Float soporte;
 
+
     @Column(name = "FECHA_CREACION", nullable = false)
     private LocalDateTime fechaCreacion;
 
