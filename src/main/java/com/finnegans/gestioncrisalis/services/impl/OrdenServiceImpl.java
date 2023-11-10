@@ -18,9 +18,7 @@ public class OrdenServiceImpl implements OrdenService {
     private final OrdenRepository ordenRepository;
     private final OrdenDetalleRepository ordenDetalleRepository;
     private final ProductoRepository productRepository;
-
     private final ClienteRepository clienteRepository;
-
     private final UsuarioRepository usuarioRepository;
 
     public OrdenServiceImpl(OrdenRepository ordenRepository, ProductoRepository productRepository, OrdenDetalleRepository ordenDetalleRepository,ClienteRepository clienteRepository, UsuarioRepository usuarioRepository){
@@ -34,17 +32,40 @@ public class OrdenServiceImpl implements OrdenService {
     public Orden generar(OrdenDTO ordenDTO, boolean provisorio) {
         Cliente cliente = clienteRepository.findById(ordenDTO.getIdCliente()).orElseThrow(()->new ResourceNotFound("No se encontró el cliente: "+ ordenDTO.getIdCliente()));
         Usuario usuario = usuarioRepository.findById(ordenDTO.getIdUsuario()).orElseThrow(()->new ResourceNotFound("No se encontró el usuario: "+ ordenDTO.getIdUsuario()));
-        List<OrdenDetalleDTO> detallesDTO = ordenDTO.getOrdenDetalles();
         List<OrdenDetalle> detalles = new ArrayList<>();
+
+        // Levantamos el listado de productos/servicios (OrdenDetalleDTO) solicitados desde el front
+        List<OrdenDetalleDTO> detallesDTO = ordenDTO.getOrdenDetalles();
 
         //Creamos una orden y una lista de detalles de orden
         Orden orden = new Orden(null, cliente, usuario, false, null, null);
 
-        // Motor (detallesDTO, List<Long> serviciosActivos)
-        // Cambiar la lógica: Buscar todos los productos por IDs e iterar sobre eso, luego iterar el detallesDTO para buscar los datos del item correspondiente (hacerlo modulado).
+        // Antes de correr el motor habría que obtener los Productos/servicios por id, definir los nuevos serviciosActivos totales y pasar el boolean de !serviciosActivos.isEmpty() al motor.
 
+        // Obtener serviciosActivos del Cliente
+        //servicioSuscripciones.getServiciosActivosPorCliente(cliente.)
+
+            /*
+            
+            cliente.getEmpresa() != null => Empresa;
+            cliente.getEmpresa() == null => Persona;
+
+            cliente.getEmpresa() != null => Empresa {
+                empresa = cliente.getEmpresa();
+                clientesTodos = empresa.getClientes();
+
+                for clientesTodos -> .getOrdenes();
+                    for ordenes -> .orderDetalles
+                        .filtra orderDetalles por tipo == "SERVICIO".
+                            .getSuscripcion() . filtrar por Activos
+                                .getOrderDetalle.productoServicio.getId()
+            }
+            */
+        
+        // Motor (List<Productos> productos, detallesDTO, boolean tieneServiciosActivos)
+        // Cambiar la lógica: Buscar todos los productos por IDs e iterar sobre eso, luego iterar el detallesDTO para buscar los datos del item correspondiente (hacerlo modulado).
         for(OrdenDetalleDTO item: detallesDTO) {
-            List<Long> serviciosActivos = Arrays.asList(1L, 2L, 3L);
+            boolean tieneServiciosActivos = false;
 
             //Traemos el producto correspondiente al detalle de orden
             Producto producto = productRepository.findById(item.getIdProductService()).orElseThrow(()->new ResourceNotFound("No se encontró el producto: "+ item.getIdProductService()));
@@ -58,7 +79,7 @@ public class OrdenServiceImpl implements OrdenService {
                 producto.getNombre(),
                 producto.getCosto(),
                 producto.getImpuestos().stream().mapToDouble(imp -> imp.getPorcentaje()).sum() * producto.getCosto(), // Provisorio hasta implementar la tabla de Impuestos de OrderDetail.
-                ((producto.getTipo().equals("PRODUCTO")) && (serviciosActivos.size() > 0)) ? (producto.getCosto() * .1) : 0, // Falta agregar si hay un servicio en detallesDTO, hay que cambiar la lógica para hacerlo bien.
+                ((producto.getTipo().equals("PRODUCTO")) && (tieneServiciosActivos)) ? (producto.getCosto() * .1) : 0,
                 producto.getSoporte() == null ? 0 : producto.getSoporte(), // En el caso de que sea un servicio se pasa esto, si no null
                 item.getGarantia(),
                 (item.getGarantia() != null) ? (item.getGarantia() * .02 * producto.getCosto()) : 0,
