@@ -6,7 +6,7 @@ import {
   PersonWorkspace,
   Building,
 } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 //Fetch clientes
 import {
@@ -30,6 +30,10 @@ import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 import { PersonasType, defaultPersonasType } from "../types/personType";
 import { EnterpriseType, defaultEnterpriseType } from "../types/enterpriseType";
+import BuscarBar from "../UI Elements/BuscarBar";
+import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
+import EditarBtn from "../UI Elements/EditarBtn";
+import SeleccionarBtn from "../UI Elements/SelectBtn";
 
 interface LB_ClientesProps {
   seleccion: string;
@@ -72,6 +76,8 @@ export default function LB_Clientes(props: LB_ClientesProps) {
   let createResponse = useCreateCliente(clienteDTO, shouldCreate);
 
   const { pedido, setPedido } = useContext(UserLoggedContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (fetchResponseEmpresa && shouldFetchEmpresas) {
@@ -254,7 +260,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     const clienteForPedido = {
       id: cliente.id,
       persona: persona || defaultPersonasType,
-      empresa: empresa || defaultEnterpriseType,
+      empresa: empresa || null,
       eliminado: cliente.eliminado,
     };
 
@@ -288,28 +294,27 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     });
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    handleSearch(event.target.value);
+  };
+
   const actionButtons = (row: ClienteResponseDTO) => (
-    <div className="d-flex flex-row align-items-center">
-      <button
-        className="actionButton"
-        onClick={() => handleClickedElement(row)}
-      >
-        {row.eliminado ? <CheckCircleFill /> : <XCircleFill />}
-      </button>
-      <Link className="actionButton ml-8" to={`/clientes/AMClientes/${row.id}`}>
-        <PencilFill />
-      </Link>
+    <div className="d-flex flex-row align-items-center justify-content-center spaceHorizontalChilds">
+      <ToggleEstadoBtn
+        fnOnClick={() => handleClickedElement(row)}
+        estado={row.eliminado}
+      />
+      <EditarBtn fnOnClick={() => navigate(`/usuarios/AMUsuarios/${row.id}`)} />
     </div>
   );
 
   return (
-    <>
-      <div className="relative">
-        <div className="flex flex-row justify-center items-center mt-4 mb-4">
+    <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
+      <div className="mx-auto max-w-screen-xl px-4 lg:px-12 bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
+        <div className="flex flex-row justify-center items-center mt-4 mb-4 ">
           <form
-            className={`flex flex-column justify-content-center align-items-center rounded-lg p-2 ${
-              clienteDTO?.empresa_id === null ? "bg-blue-200" : "bg-green-200"
-            }`}
+            className={`flex flex-column justify-content-center align-items-center px-4 text-sm text-left text-gray-500 dark:text-gray-400 bg-gray-200 shadow-md shadow-gray-300 rounded-lg`}
           >
             <label
               htmlFor="persona_id"
@@ -321,7 +326,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               <select
                 name="persona_id"
                 id="persona_id"
-                className="border-2 border-blue-500 px-2 py-1 inputSearch"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500"
                 onChange={handleSelectChange}
               >
                 <option value="">---Seleccione Persona---</option>
@@ -349,7 +354,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               <select
                 name="empresa_id"
                 id="empresa_id"
-                className="border-2 border-blue-500 px-2 py-1 inputSearch"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500"
                 onChange={handleSelectChange}
               >
                 <option value="">---Seleccione Empresa---</option>
@@ -381,16 +386,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
 
         <div className="flex flex-col justify-center items-center mb-4">
           <div className="flex-auto flex justify-center mb-4">
-            <input
-              type="text"
-              placeholder="Buscar"
-              className="inputSearch border-2 border-blue-500 px-2 py-1"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                handleSearch(e.target.value);
-              }}
-            />
+            <BuscarBar fnOnChange={handleSearchChange} value={searchTerm} />
             <div className="flex items-center ml-4">
               <label className="flex items-center cursor-pointer">
                 <input
@@ -423,91 +419,64 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               <LoadingComponent />
             </div>
           ) : (
-            <div className="w-full">
-              <table className="min-w-full bg-white border border-gray-300">
-                <thead className="bg-blue-500 text-white">
+            <div className="w-full overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th className="py-2 px-4 border-b border-gray-200">Id</th>
-                    <th className="py-2 px-4 border-b border-gray-200">
-                      Tipo de Cliente
-                    </th>
-                    <th className="py-2 px-4 border-b border-gray-200">
-                      Persona
-                    </th>
-                    <th className="py-2 px-4 border-b border-gray-200">
-                      Empresa
-                    </th>
-                    <th className="py-2 px-4 border-b border-gray-200">
-                      Estado
-                    </th>
-                    <th className="py-2 px-4 border-b border-gray-200">
-                      Acciones
-                    </th>
+                    <th className="px-4 py-3 text-center">Id</th>
+                    <th className="px-4 py-3 text-center">Tipo de Cliente</th>
+                    <th className="px-4 py-3 text-center">Persona</th>
+                    <th className="px-4 py-3 text-center">Empresa</th>
+                    <th className="px-4 py-3 text-center">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {showingClients &&
-                    showingClients
-                      .sort((a, b) => (a.id < b.id ? -1 : 1))
-                      .map((cliente, index) => {
-                        // Find the matching persona and empresa for each cliente
-                        const persona = personas?.find(
-                          (p) => p.id === cliente.persona_id
-                        );
-                        const empresa = cliente.empresa_id
-                          ? empresas?.find((e) => e.id === cliente.empresa_id)
-                          : null;
-
-                        return (
-                          <tr key={index}>
-                            <td>{cliente.id}</td>
-                            <td className="flex items-center justify-center ">
-                              {empresa ? (
-                                <Building className="text-green-400" />
-                              ) : (
-                                <PersonWorkspace className="text-blue-400" />
-                              )}
-                            </td>
-                            <td>
-                              {persona
-                                ? `${persona.nombre} ${persona.apellido}`
-                                : "-"}
-                            </td>
-                            <td>{empresa ? empresa.nombre : "-"}</td>
-                            <td>
-                              {cliente.eliminado ? (
-                                <p className="text-red-600 font-bold">
-                                  Inactivo
-                                </p>
-                              ) : (
-                                <p className="text-green-600 font-bold">
-                                  Activo
-                                </p>
-                              )}
-                            </td>
-                            <td className="flex justify-around">
-                              {actionButtons(cliente)}
-                              {props.seleccion === "simple" && (
-                                <button
-                                  onClick={() => {
-                                    addToPedido(cliente);
-                                  }}
-                                  type="button"
-                                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-0.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                                >
-                                  Seleccionar Cliente
-                                </button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
+                  {showingClients
+                    ?.sort((a, b) => (a.id < b.id ? -1 : 1))
+                    .map((cliente, index) => {
+                      const persona = personas?.find(
+                        (p) => p.id === cliente.persona_id
+                      );
+                      const empresa = cliente.empresa_id
+                        ? empresas?.find((e) => e.id === cliente.empresa_id)
+                        : null;
+                      return (
+                        <tr key={index} className="border-b text-center">
+                          <td className="py-2 px-4">{cliente.id}</td>
+                          <td className="py-2 px-4">
+                            {cliente.empresa_id ? "Empresa" : "Persona"}
+                          </td>
+                          <td className="py-2 px-4">
+                            {`${persona?.nombre} ${persona?.apellido}`}
+                          </td>
+                          <td className="py-2 px-4">{empresa?.nombre}</td>
+                          <td className="py-2 px-4 flex justify-content-center">
+                            {!props.seleccion && actionButtons(cliente)}
+                            {props.seleccion === "simple" && (
+                              <SeleccionarBtn
+                                fnOnClick={() => {
+                                  addToPedido(cliente);
+                                }}
+                                seleccionado={pedido.cliente.id === cliente.id}
+                              />
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  {showingClients?.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="py-2 px-4 text-center">
+                        No hay datos...
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           )}
         </div>
       </div>
-    </>
+    </section>
   );
 }

@@ -13,6 +13,10 @@ import { UsuariosType } from "../types/userType";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
+import BuscarBar from "../UI Elements/BuscarBar";
+import EditarBtn from "../UI Elements/EditarBtn";
+import BorrarBtn from "../UI Elements/BorrarBtn";
+import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
 
 export default function LB_Users() {
   const [isLoading, setIsLoading] = useState(false);
@@ -101,85 +105,91 @@ export default function LB_Users() {
       });
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
   const actionButtons = (row: UsuariosType) => {
     return (
-      <div className="flex justify-between items-center">
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => handleClickedElement(row)}
-        >
-          {row.eliminado ? <CheckCircleFill /> : <XCircleFill />}
-        </button>
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => navigate(`/usuarios/AMUsuarios/${row.id}`)}
-        >
-          <PencilFill />
-        </button>
+      <div className="flex justify-center space-x-4">
+        <ToggleEstadoBtn
+          fnOnClick={() => handleClickedElement(row)}
+          estado={row.eliminado}
+        />
+        <EditarBtn
+          fnOnClick={() => navigate(`/usuarios/AMUsuarios/${row.id}`)}
+        />
       </div>
     );
   };
 
   return (
-    <>
-      <div className="w-full flex flex-column justify-center items-center mb-4 mx-auto p-4">
-        <div className="flex justify-center items-center mb-4">
-          <input
-            type="text"
-            placeholder="Buscar"
-            className="inputSearch border-2 border-blue-500 px-2 py-1"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        {isLoading ? (
-          <div className="flex justify-center">
-            <LoadingComponent />
+    <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
+      <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4 bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
+        <div className="flex items-center justify-center w-full p-4 pb-0 mx-auto mb-2 flex-column">
+          <div className="w-full mx-auto max-w-screen-xl px-4 lg:px-12 flex items-center justify-center mb-3">
+            <div className="mr-4 w-full flex justify-content-center">
+              <BuscarBar fnOnChange={handleSearchChange} value={searchTerm} />
+            </div>
           </div>
-        ) : (
-          <div className="w-full">
-            <table className="min-w-full bg-white border border-gray-300 ">
-              <thead className="bg-denim-400 text-white">
-                <tr>
-                  <th className="py-2 px-4 border-b">Usuario</th>
-                  <th className="py-2 px-4 border-b">Estado</th>
-                  <th className="py-2 px-4 border-b">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data &&
-                (aux = !searchTerm.length
-                  ? data
-                  : data.filter((user: UsuariosType) =>
-                      user.usuario
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    )).length ? (
-                  aux
-                    .sort((a: UsuariosType, b: UsuariosType) =>
-                      a.usuario.toLowerCase() < b.usuario.toLowerCase() ? -1 : 1
-                    )
-                    .map((row, index) => (
-                      <tr key={index} className="border-b">
-                        <td className="py-2 px-4">{row.usuario}</td>
-                        <td className="py-2 px-4">
-                          {row.eliminado ? "Inactivo" : "Activo"}
-                        </td>
-                        <td className="py-2 px-4">{actionButtons(row)}</td>
-                      </tr>
-                    ))
-                ) : (
-                  <tr className="border-b">
-                    <td colSpan={3} className="py-2 px-4">
-                      No hay datos...
-                    </td>
+          {isLoading ? (
+            <div className="flex justify-center">
+              <LoadingComponent />
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                      Usuario
+                    </th>
+                    <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                      Acciones
+                    </th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {data &&
+                  (aux = !searchTerm.length
+                    ? data
+                    : data.filter((user: UsuariosType) =>
+                        user.usuario
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )).length ? (
+                    aux
+                      .sort((a: UsuariosType, b: UsuariosType) =>
+                        a.usuario.toLowerCase() < b.usuario.toLowerCase()
+                          ? -1
+                          : 1
+                      )
+                      .map((row, index) => (
+                        <tr
+                          key={index}
+                          className="border-b dark:border-gray-700"
+                        >
+                          <td className="px-4 py-3 text-center">
+                            {row.usuario}
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            {actionButtons(row)}
+                          </td>
+                        </tr>
+                      ))
+                  ) : (
+                    <tr className="border-b dark:border-gray-700">
+                      <td colSpan={3} className="px-4 py-3 text-center">
+                        No hay datos...
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </section>
   );
 }

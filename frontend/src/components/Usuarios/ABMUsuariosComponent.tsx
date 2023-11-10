@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import LB_Usuarios from "./LB_Usuarios";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function ABMUsuariosComponent() {
   const navigate = useNavigate();
@@ -27,12 +28,7 @@ export default function ABMUsuariosComponent() {
             >
               Crear nuevo usuario
             </button>
-            <button
-              onClick={goBack}
-              className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
-            >
-              Volver
-            </button>
+            <VolverBtn fnOnClick={goBack} />
           </div>
         </div>
       </div>

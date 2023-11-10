@@ -3,6 +3,14 @@ import { defaultUserLogState } from "../components/types/UserLogged";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import { ImpuestosType } from "../components/types/taxType";
+
+type useFetchReturnType = {
+  json: any;
+  loading: boolean;
+  hasError: boolean;
+  statusCode: number;
+};
 
 const defaultUseFetchValues = {
   json: null,
@@ -11,15 +19,26 @@ const defaultUseFetchValues = {
   statusCode: 0,
 };
 
-export const useCrud = ({ url }) => {
+export const useCrud = (url: string) => {
   const { userLogged, setUserLogged } = useContext(UserLoggedContext);
-  const [estado, setEstado] = useState(defaultUseFetchValues);
+  const [estado, setEstado] = useState<useFetchReturnType>(
+    defaultUseFetchValues
+  );
   const navigate = useNavigate();
   const token = userLogged.token;
 
   useEffect(() => {
     getAllData();
   }, []);
+
+  let error: any = {
+    name: "SomeError",
+    code: "SomeCode",
+    message: "Some message",
+    config: {
+      url: "http://example.com",
+    },
+  };
 
   const getAllData = async () => {
     try {
@@ -68,14 +87,14 @@ export const useCrud = ({ url }) => {
     } catch (error) {
       Swal.fire("Atención!", "Error al consultar", "warning");
       setEstado({ ...estado, hasError: true });
-
+      // When you need to throw the error
       throw new Error(
         `Ocurrió un error: "${error.name}" con codigo: "${error.code}" y mensaje: "${error.message}" al hacer la peticion a "${error.config.url}"`
       );
     }
   };
 
-  const deleteByIdData = async ({ id }) => {
+  const deleteByIdData = async (id: number) => {
     try {
       const response = await fetch(`${url}/${id}`, {
         method: "PATCH",
@@ -120,7 +139,9 @@ export const useCrud = ({ url }) => {
       });
 
       const { json } = { ...estado };
-      const impuestoIndex = json.findIndex((impuesto) => impuesto.id == id);
+      const impuestoIndex = json.findIndex(
+        (impuesto: ImpuestosType) => impuesto.id == id
+      );
       const newJson = [
         ...json.slice(0, impuestoIndex),
         {
@@ -140,13 +161,14 @@ export const useCrud = ({ url }) => {
       Swal.fire("Atención!", "Error al eliminar", "warning");
       setEstado({ ...estado, hasError: true });
 
+      // When you need to throw the error
       throw new Error(
         `Ocurrió un error: "${error.name}" con codigo: "${error.code}" y mensaje: "${error.message}" al hacer la peticion a "${error.config.url}"`
       );
     }
   };
 
-  const create = async ({ body }) => {
+  const create = async (body: Object) => {
     try {
       const response = await fetch(`${url}`, {
         method: "POST",
@@ -199,16 +221,19 @@ export const useCrud = ({ url }) => {
         statusCode: response.status,
       });
     } catch (error) {
+      s;
       setEstado({ ...estado, hasError: true });
       Swal.fire("Atención!", "Error al crear", "warning");
+      // Assuming 'error' is an object with the properties you mentioned
 
+      // When you need to throw the error
       throw new Error(
         `Ocurrió un error: "${error.name}" con codigo: "${error.code}" y mensaje: "${error.message}" al hacer la peticion a "${error.config.url}"`
       );
     }
   };
 
-  const updateByIdData = async ({ id, body }) => {
+  const updateByIdData = async (id: number, body: Object) => {
     try {
       const response = await fetch(`${url}/${id}`, {
         method: "POST",
@@ -254,7 +279,9 @@ export const useCrud = ({ url }) => {
       });
 
       const { json } = { ...estado };
-      const impuestoIndex = json.findIndex((impuesto) => impuesto.id == id);
+      const impuestoIndex = json.findIndex(
+        (impuesto: ImpuestosType) => impuesto.id == id
+      );
       const newJson = [
         ...json.slice(0, impuestoIndex),
         {
