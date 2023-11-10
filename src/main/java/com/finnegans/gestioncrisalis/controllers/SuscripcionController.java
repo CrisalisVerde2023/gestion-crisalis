@@ -1,6 +1,5 @@
 package com.finnegans.gestioncrisalis.controllers;
 
-
 import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.Cliente;
 import com.finnegans.gestioncrisalis.repositories.ClienteRepository;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/suscripciones")
 public class SuscripcionController {
     private SuscripcionService suscripcionService;
-
     private ClienteRepository clienteRepository;
 
     public SuscripcionController(SuscripcionService suscripcionService, ClienteRepository clienteRepository) {
@@ -25,7 +23,7 @@ public class SuscripcionController {
         this.clienteRepository = clienteRepository;
     }
 
-
+    // No hace falta tener un controller de esto
     @GetMapping("/cliente/{id}")
     public ResponseEntity<?> getServiciosActivos(@PathVariable Long id){
        Cliente cliente = this.clienteRepository.findById(id)
@@ -33,4 +31,7 @@ public class SuscripcionController {
 
         return new ResponseEntity<>(this.suscripcionService.getServiciosActivos(cliente), HttpStatus.OK);
     }
+
+    
 }
+

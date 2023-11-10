@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.finnegans.gestioncrisalis.dtos.OrdenDTO;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -42,6 +41,9 @@ public class OrdenServiceImpl implements OrdenService {
 
         // Antes de correr el motor habría que obtener los Productos/servicios por id, definir los nuevos serviciosActivos totales y pasar el boolean de !serviciosActivos.isEmpty() al motor.
 
+
+        // List<Long> serviciosActivos = this.suscripcionService.getServiciosActivos(cliente);
+        
         // Obtener serviciosActivos del Cliente
         //servicioSuscripciones.getServiciosActivosPorCliente(cliente.)
 
@@ -84,7 +86,8 @@ public class OrdenServiceImpl implements OrdenService {
                 item.getGarantia(),
                 (item.getGarantia() != null) ? (item.getGarantia() * .02 * producto.getCosto()) : 0,
                 false,
-                producto.getTipo()
+                producto.getTipo(),
+                null
             ));
         }
 

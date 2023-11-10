@@ -21,7 +21,6 @@ public class Suscripcion {
     @JoinColumn(name = "ORDEN_DETALLE_ID")
     private OrdenDetalle ordenDetalle;
 
-
     @Column(name = "ESTADO")
     private boolean estadoSuscripcion;
 }

@@ -69,4 +69,7 @@ public class OrdenDetalle {
 
     @Column(name = "TIPO", nullable = false)
     private String tipo;
+
+    @OneToOne(mappedBy = "ordenDetalle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Suscripcion suscripcion;
 }
