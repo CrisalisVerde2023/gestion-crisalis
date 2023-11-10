@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.finnegans.gestioncrisalis.dtos.OrdenDTO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -30,7 +31,7 @@ public class OrdenServiceImpl implements OrdenService {
         this.usuarioRepository = usuarioRepository;
     }
     @Override
-    public Orden save(OrdenDTO ordenDTO) {
+    public Orden generar(OrdenDTO ordenDTO, boolean provisorio) {
         Cliente cliente = clienteRepository.findById(ordenDTO.getIdCliente()).orElseThrow(()->new ResourceNotFound("No se encontró el cliente: "+ ordenDTO.getIdCliente()));
         Usuario usuario = usuarioRepository.findById(ordenDTO.getIdUsuario()).orElseThrow(()->new ResourceNotFound("No se encontró el usuario: "+ ordenDTO.getIdUsuario()));
         List<OrdenDetalleDTO> detallesDTO = ordenDTO.getOrdenDetalles();
@@ -39,34 +40,37 @@ public class OrdenServiceImpl implements OrdenService {
         //Creamos una orden y una lista de detalles de orden
         Orden orden = new Orden(null, cliente, usuario, false, null, null);
 
-        System.out.println(cliente.getOrdenes().getOrd);
-
-        // Motor (detallesDTO, Boolean tieneMembresia = )
+        // Motor (detallesDTO, List<Long> serviciosActivos)
+        // Cambiar la lógica: Buscar todos los productos por IDs e iterar sobre eso, luego iterar el detallesDTO para buscar los datos del item correspondiente (hacerlo modulado).
 
         for(OrdenDetalleDTO item: detallesDTO) {
+            List<Long> serviciosActivos = Arrays.asList(1L, 2L, 3L);
+
             //Traemos el producto correspondiente al detalle de orden
             Producto producto = productRepository.findById(item.getIdProductService()).orElseThrow(()->new ResourceNotFound("No se encontró el producto: "+ item.getIdProductService()));
 
             //Seteamos el detalle de orden con el dto, mas los campos que debemos agregar
             detalles.add(new OrdenDetalle(
-                    null,
-                    orden,
-                    producto,
-                    item.getCantidad(),
-                    producto.getNombre(),
-                    producto.getCosto(),
-                    producto.getCosto() * .21, // El tax deberia obtenerse en base al cost y los impuestos del Product. Algo así: product.sum(taxes) * product.getCost()
-                    0.0, // El discount deberia obtenerse en base a porcentaje de regla de negocio y si el cliente tiene servicios contratados o en este detalle hay algun servicio.
-                    producto.getSoporte() == null ? 0 : producto.getSoporte(), // En el caso de que sea un servicio se pasa esto, si no null
-                    item.getGarantia(),
-                    (item.getGarantia() != null) ? (item.getGarantia() * .02 * producto.getCosto()) : 0, // El cost de gtia. por regla de negocio, costo de producto y años de gtia.
-                    false,
-                    producto.getTipo()
+                null,
+                orden,
+                producto,
+                item.getCantidad(),
+                producto.getNombre(),
+                producto.getCosto(),
+                producto.getImpuestos().stream().mapToDouble(imp -> imp.getPorcentaje()).sum() * producto.getCosto(), // Provisorio hasta implementar la tabla de Impuestos de OrderDetail.
+                ((producto.getTipo().equals("PRODUCTO")) && (serviciosActivos.size() > 0)) ? (producto.getCosto() * .1) : 0, // Falta agregar si hay un servicio en detallesDTO, hay que cambiar la lógica para hacerlo bien.
+                producto.getSoporte() == null ? 0 : producto.getSoporte(), // En el caso de que sea un servicio se pasa esto, si no null
+                item.getGarantia(),
+                (item.getGarantia() != null) ? (item.getGarantia() * .02 * producto.getCosto()) : 0,
+                false,
+                producto.getTipo()
             ));
         }
 
+        // Fin motor
+
         orden.setOrdenDetalles(this.ordenDetalleRepository.saveAllAndFlush(detalles));
-        return this.ordenRepository.save(orden);
+        return orden; //this.ordenRepository.save(orden);
 
     }
 

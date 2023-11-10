@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrdenService {
 
-    public Orden save(OrdenDTO ordenDTO);
+    public Orden generar(OrdenDTO ordenDTO, boolean provisorio);
     public List<OrdenEncabezadoDTO> getAll();
     public Orden getById(Long id);
     public void anular(Long id);
