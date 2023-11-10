@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useCrud } from "../../hooks/useCrud";
 import { useNavigate } from "react-router-dom";
-import { RowImpuestos } from "./RowImpuestos";
+import { RowPersonas } from "./RowPersonas";
 
-const HOST_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
+const HOST_API_PERSONAS = "http://localhost:8080/api/personas";
 
-export const TableImpuestos = () => {
+export const TablePersonas = () => {
   const [search, setSearch] = useState("");
   const [showModalCreate, setShowModalCreate] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "",
-    porcentaje: "",
+    apellido: "",
+    dni: "",
   });
   const navigate = useNavigate();
   const {
@@ -19,7 +20,7 @@ export const TableImpuestos = () => {
     deleteByIdData,
     updateByIdData,
   } = useCrud({
-    url: HOST_API_IMPUESTOS,
+    url: HOST_API_PERSONAS,
   });
 
   const handleModalCreate = () => {
@@ -36,18 +37,30 @@ export const TableImpuestos = () => {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    const body = { ...formData, porcentaje: Number(formData.porcentaje) };
+    const body = {
+      ...formData,
+      nombre: formData.nombre,
+      apellido: formData.apellido,
+      dni: formData.dni,
+    };
     create({ body }).then(
       handleModalCreate(),
-      setFormData({ nombre: "", porcentaje: "" })
+      setFormData({
+        nombre: "",
+        apellido: "",
+        dni: "",
+      })
     );
   };
 
-  const filteredImpuestos = () => {
+  const filteredPersonas = () => {
     if (search.length === 0) return json;
 
-    return json.filter((impuesto) =>
-      impuesto.nombre.toLowerCase().includes(search.toLowerCase())
+    return json.filter(
+      (persona) =>
+        persona.nombre.toLowerCase().includes(search.toLowerCase()) ||
+        persona.apellido.toLowerCase().includes(search.toLowerCase()) ||
+        persona.dni.toLowerCase().includes(search.toLowerCase())
     );
   };
 
@@ -116,7 +129,7 @@ export const TableImpuestos = () => {
                     d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                   />
                 </svg>
-                Crear impuesto
+                Crear persona
               </button>
               <div className="flex items-center space-x-3 w-full md:w-auto">
                 {/* ACCIONES
@@ -397,10 +410,13 @@ export const TableImpuestos = () => {
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-4 py-3 text-center">
-                    Impuesto
+                    Nombre
                   </th>
                   <th scope="col" className="px-4 py-3 text-center">
-                    Porcentaje
+                    Apellido
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-center">
+                    Dni
                   </th>
                   <th
                     scope="col"
@@ -426,6 +442,12 @@ export const TableImpuestos = () => {
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
                     </tr>
                     <tr className="animate-pulse">
                       <td className="px-4 py-3">
@@ -437,8 +459,20 @@ export const TableImpuestos = () => {
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
                     </tr>
                     <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
@@ -451,10 +485,10 @@ export const TableImpuestos = () => {
                     </tr>
                   </>
                 ) : (
-                  filteredImpuestos().map((impuesto) => (
-                    <RowImpuestos
-                      impuesto={impuesto}
-                      key={impuesto.id}
+                  filteredPersonas().map((persona) => (
+                    <RowPersonas
+                      persona={persona}
+                      key={persona.id}
                       deleteByIdData={deleteByIdData}
                       updateByIdData={updateByIdData}
                     />
@@ -606,7 +640,7 @@ export const TableImpuestos = () => {
               {/* <!-- Modal header --> */}
               <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Crear impuesto
+                  Crear persona
                 </h3>
                 <button
                   type="button"
@@ -639,7 +673,7 @@ export const TableImpuestos = () => {
                       htmlFor="nombre-modal-create"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Impuesto
+                      Nombre
                     </label>
                     <input
                       value={formData.nombre}
@@ -648,25 +682,43 @@ export const TableImpuestos = () => {
                       name="nombre"
                       id="nombre-modal-create"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="IVA"
+                      placeholder="Juan"
                       required
                     />
                   </div>
                   <div>
                     <label
-                      htmlFor="porcentaje-modal-create"
+                      htmlFor="apellido-modal-create"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Porcentaje
+                      Apellido
                     </label>
                     <input
-                      value={formData.porcentaje}
+                      value={formData.apellido}
                       onChange={handleOnChange}
                       type="text"
-                      name="porcentaje"
-                      id="porcentaje-modal-create"
+                      name="apellido"
+                      id="apellido-modal-create"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="21.5"
+                      placeholder="Gonzalez"
+                      required
+                    />
+                  </div>
+                  <div className="col-span-2 px-32">
+                    <label
+                      htmlFor="dni-modal-create"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Dni
+                    </label>
+                    <input
+                      value={formData.dni}
+                      onChange={handleOnChange}
+                      type="text"
+                      name="dni"
+                      id="dni-modal-create"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="10123123"
                       required
                     />
                   </div>
@@ -736,7 +788,7 @@ export const TableImpuestos = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Agregar nuevo impuesto
+                  Agregar nueva persona
                 </button>
               </form>
             </div>

@@ -33,14 +33,14 @@ export const useCrud = ({ url }) => {
       console.log(json);
 
       if (!response.ok) {
-        if (response.status === 401) {
+        if (response.status == 401) {
           Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
           setUserLogged(defaultUserLogState);
           navigate("/login");
         }
 
         if (
-          response.status === 400 ||
+          response.status == 400 ||
           (response.status > 401 && response.status < 500)
         ) {
           throw new Error(
@@ -86,14 +86,14 @@ export const useCrud = ({ url }) => {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
+        if (response.status == 401) {
           Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
           setUserLogged(defaultUserLogState);
           navigate("/login");
         }
 
         if (
-          response.status === 400 ||
+          response.status == 400 ||
           (response.status > 401 && response.status < 500)
         ) {
           throw new Error(
@@ -158,14 +158,14 @@ export const useCrud = ({ url }) => {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
+        if (response.status == 401) {
           Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
           setUserLogged(defaultUserLogState);
           navigate("/login");
         }
 
         if (
-          response.status === 400 ||
+          response.status == 400 ||
           (response.status > 401 && response.status < 500)
         ) {
           throw new Error(
@@ -220,14 +220,14 @@ export const useCrud = ({ url }) => {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
+        if (response.status == 401) {
           Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
           setUserLogged(defaultUserLogState);
           navigate("/login");
         }
 
         if (
-          response.status === 400 ||
+          response.status == 400 ||
           (response.status > 401 && response.status < 500)
         ) {
           throw new Error(

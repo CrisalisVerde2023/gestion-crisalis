@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 
-export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
-  const [formData, setFormData] = useState({ ...impuesto });
+export const RowPersonas = ({ persona, deleteByIdData, updateByIdData }) => {
+  const [formData, setFormData] = useState({ ...persona });
   const [showModalUpdate, setShowModalUpdate] = useState(false);
 
   const handleModalEdit = () => {
@@ -17,7 +17,12 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
   const handleEdit = (e) => {
     e.preventDefault();
     const dataId = e.target.getAttribute("data-id");
-    const body = { ...formData, porcentaje: Number(formData.porcentaje) };
+    const body = {
+      ...formData,
+      nombre: formData.nombre,
+      apellido: formData.apellido,
+      dni: formData.dni,
+    };
     updateByIdData({ id: dataId, body }).then(handleModalEdit());
   };
 
@@ -26,9 +31,9 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
 
     Swal.fire({
       title: "Confirmar cambio de estado de usuario?",
-      text: `Esta por ${impuesto.eliminado ? "activar" : "desactivar"} a ${
-        impuesto.nombre
-      }`,
+      text: `Esta por ${persona.eliminado ? "activar" : "desactivar"} a ${
+        persona.nombre
+      } ${persona.apellido}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí! Estoy seguro.",
@@ -47,18 +52,19 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
           scope="row"
           className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center"
         >
-          {impuesto.nombre}
+          {persona.nombre}
         </th>
-        <td className="px-4 py-3 text-center">{impuesto.porcentaje}</td>
+        <td className="px-4 py-3 text-center">{persona.apellido}</td>
+        <td className="px-4 py-3 text-center">{persona.dni}</td>
         <td className="px-4 py-3">
           <span
             className={`${
-              impuesto.eliminado ? "bg-red-100" : "bg-atlantis-100"
+              persona.eliminado ? "bg-red-100" : "bg-atlantis-100"
             } ${
-              impuesto.eliminado ? "text-red-800" : "text-atlantis-800"
+              persona.eliminado ? "text-red-800" : "text-atlantis-800"
             } text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300`}
           >
-            {impuesto.eliminado ? "Inactivo" : "Activo"}
+            {persona.eliminado ? "Inactivo" : "Activo"}
           </span>
         </td>
         <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
@@ -87,10 +93,10 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
               </svg>
               Editar
             </button>
-            {impuesto.eliminado ? (
+            {persona.eliminado ? (
               <button
                 type="button"
-                data-id={impuesto.id}
+                data-id={persona.id}
                 data-modal-target="delete-modal"
                 data-modal-toggle="delete-modal"
                 className="flex items-center text-atlantis-700 hover:text-white border border-atlantis-700 hover:bg-atlantis-600 focus:ring-4 focus:outline-none focus:ring-atlantis-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-atlantis-500 dark:text-atlantis-500 dark:hover:text-white dark:hover:bg-atlantis-600 dark:focus:ring-atlantis-900"
@@ -116,7 +122,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
             ) : (
               <button
                 type="button"
-                data-id={impuesto.id}
+                data-id={persona.id}
                 data-modal-target="delete-modal"
                 data-modal-toggle="delete-modal"
                 className="flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
@@ -157,7 +163,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
               {/* <!-- Modal header -->  */}
               <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {`Editar impuesto ${impuesto.nombre}`}
+                  {`Editar persona ${persona.nombre} ${persona.apellido}`}
                 </h3>
                 <button
                   type="button"
@@ -189,7 +195,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                       htmlFor="nombre-modal-update"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Impuesto
+                      Nombre
                     </label>
                     <input
                       type="text"
@@ -198,24 +204,41 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                       value={formData.nombre}
                       onChange={handleInputChange}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="IVA"
+                      placeholder="Juan"
                     />
                   </div>
                   <div>
                     <label
-                      htmlFor="porcentaje-modal-update"
+                      htmlFor="apellido-modal-update"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Porcentaje
+                      Apellido
                     </label>
                     <input
                       type="text"
-                      name="porcentaje"
-                      id="porcentaje-modal-update"
-                      value={formData.porcentaje}
+                      name="apellido"
+                      id="apellido-modal-update"
+                      value={formData.apellido}
                       onChange={handleInputChange}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="21.0"
+                      placeholder="Gonzalez"
+                    />
+                  </div>
+                  <div className="col-span-2 px-32">
+                    <label
+                      htmlFor="dni-modal-update"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Dni
+                    </label>
+                    <input
+                      type="text"
+                      name="dni"
+                      id="dni-modal-update"
+                      value={formData.dni}
+                      onChange={handleInputChange}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="10123123"
                     />
                   </div>
                   {/* <div>
@@ -277,10 +300,10 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                   <button
                     type="submit"
                     className="text-white bg-denim hover:bg-denim-400 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                    data-id={impuesto.id}
+                    data-id={persona.id}
                     onClick={handleEdit}
                   >
-                    Actualizar impuesto
+                    Actualizar persona
                   </button>
                   {/* <button
                     type="button"

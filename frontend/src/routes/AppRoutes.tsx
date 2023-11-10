@@ -6,8 +6,6 @@ import ABMPersonasComponent from "../components/Personas/ABMPersonasComponent";
 import AM_Personas from "../components/Personas/AM_Personas";
 import ABMEmpresasComponent from "../components/Empresas/ABMEmpresas";
 import AM_Empresa from "../components/Empresas/AM_Empresa";
-import ABMUsuariosComponent from "../components/Usuarios/ABMUsuariosComponent";
-import AM_Usuarios from "../components/Usuarios/AM_Usuarios";
 import ABMProductServicesComponent from "../components/Productos y Servicios/ABMProductServicesComponent";
 import AM_ProductService from "../components/Productos y Servicios/AM_ProductServices";
 import NotFoundComponent from "../components/NotFoundComponent";
@@ -18,6 +16,8 @@ import AM_Clientes from "../components/Clientes/AM_Clientes";
 import AM_Pedidos from "../components/Pedidos/AM_Pedidos";
 import ABMPedidos from "../components/Pedidos/ABMPedidos";
 import { TableImpuestos } from "../components/Impuestos/TableImpuestos";
+import { TableUsuarios } from "../components/Usuarios/TableUsuarios";
+import { TablePersonas } from "../components/Personas/TablePersonas";
 
 export const AppRoutes = () => {
   const { userLogged } = useContext(UserLoggedContext);
@@ -35,12 +35,7 @@ export const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<Navigate to={"/home"} />} />
         <Route path="/home" element={<Dashboard />} />
-        <Route path="/personas" element={<ABMPersonasComponent />} />
-        <Route path="/personas/AMPersonas" element={<AM_Personas />} />
-        <Route
-          path="/personas/AMPersonas/:idPersona"
-          element={<AM_Personas />}
-        />
+        <Route path="/personas" element={<TablePersonas />} />
         <Route path="/clientes" element={<ABMClientesComponent />} />
         <Route
           path="/clientes/AMClientes/:idCliente"
@@ -54,12 +49,7 @@ export const AppRoutes = () => {
           element={<AM_Empresa />}
         />
 
-        <Route path="/usuarios" element={<ABMUsuariosComponent />} />
-        <Route path="/usuarios/AMUsuarios" element={<AM_Usuarios />} />
-        <Route
-          path="/usuarios/AMUsuarios/:idUsuario"
-          element={<AM_Usuarios />}
-        />
+        <Route path="/usuarios" element={<TableUsuarios />} />
         <Route
           path="/productosyservicios"
           element={<ABMProductServicesComponent />}
