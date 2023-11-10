@@ -26,6 +26,12 @@ import {
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 import { UserLoggedContext } from "../../contexts/UserLoggedContext";
+import AgregarBtn from "../UI Elements/AgregarBtn";
+import RemoverBtn from "../UI Elements/RemoverBtn";
+import EditarBtn from "../UI Elements/EditarBtn";
+import BorrarBtn from "../UI Elements/BorrarBtn";
+import BuscarBar from "../UI Elements/BuscarBar";
+import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
 
 interface LB_ProductServiceProps {
   seleccion: string;
@@ -177,24 +183,21 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
     nombre: "",
     tipo: ProductOrService.Producto || ProductOrService.Servicio,
     costo: 0,
-    
+
     soporte: null,
     cantidad: 1,
     garantia: null,
 
     idImpuestos: [],
+    eliminado: false,
   };
 
   const validColumnKeys: (keyof ProductServiceType)[] = Object.keys(
     exampleObject
   ) as (keyof ProductServiceType)[];
 
-  const handleSearch = () => {
-    if (!searchBoxRef.current) {
-      return;
-    }
-
-    const searchTerm = searchBoxRef.current.value.toLowerCase();
+  const handleSearch = (value: string) => {
+    const searchTerm = value.toLowerCase();
 
     // If there's no search term, reset data to the original filtered by 'filtrado'
     if (!searchTerm) {
@@ -264,51 +267,43 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
     });
   };
 
+  // Function to add an item to the pedido
   const addToPedido = (selected: ProductServiceType) => {
-    let updatedProdsServs;
+    // If the item doesn't exist, add it.
+    if (!pedido.prods_servs.some((item) => item.id === selected.id)) {
+      const updatedProdsServs = [...pedido.prods_servs, selected];
+      setPedido({ ...pedido, prods_servs: updatedProdsServs });
+    }
+  };
 
-    // Check if an object with the same 'id' already exists in the array
-    const itemExists = pedido.prods_servs.some(
-      (item) => item.id === selected.id
-    );
-
-    if (itemExists) {
-      // If the item already exists, filter it out to remove it.
-      updatedProdsServs = pedido.prods_servs.filter(
+  // Function to remove an item from the pedido
+  const removeFromPedido = (selected: ProductServiceType) => {
+    // If the item already exists, filter it out to remove it.
+    if (pedido.prods_servs.some((item) => item.id === selected.id)) {
+      const updatedProdsServs = pedido.prods_servs.filter(
         (item) => item.id !== selected.id
       );
-    } else {
-      // If the item doesn't exist, add it.
-      updatedProdsServs = [...pedido.prods_servs, selected];
+      setPedido({ ...pedido, prods_servs: updatedProdsServs });
     }
-
-    setPedido({ ...pedido, prods_servs: updatedProdsServs });
   };
 
   const handleSelectChange = (value: string) => {
     setFiltrado(value);
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleSearch(event.target.value);
+  };
+
   const actionButtons = (row: ProductServiceType) => {
     return (
-      <div className="flex items-center justify-between">
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => handleClickedElement(row)}
-        >
-          <XCircleFill />
-        </button>
-        {props.seleccion === "multiple" && (
-          <button
-            className="p-2 hover:bg-blue-600 hover:text-white"
-            onClick={() => addToPedido(row)}
-          >
-            <PlusCircleFill />
-          </button>
-        )}
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() =>
+      <div className="flex justify-content-center spaceHorizontalChilds">
+        <ToggleEstadoBtn
+          fnOnClick={() => handleClickedElement(row)}
+          estado={row.eliminado}
+        />
+        <EditarBtn
+          fnOnClick={() =>
             navigate(
               `${location.pathname}${
                 row.tipo === ProductOrService.Producto
@@ -317,73 +312,73 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
               }${row.id}`
             )
           }
-        >
-          <PencilFill />
-        </button>
+        />
       </div>
     );
   };
 
   return (
-    <>
-      <div className="flex items-center justify-center w-full p-4 pb-0 mx-auto mb-2 flex-column">
-        <div className="flex items-center justify-center mb-3">
-          <div className="mr-4">
-            <input
-              type="text"
-              placeholder="Buscar"
-              className="px-2 py-1 border-2 border-blue-500 inputSearch"
-              defaultValue={""}
-              ref={searchBoxRef}
-              onChange={() => {
-                handleSearch();
-              }}
-            />
+    <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
+      <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4 bg-white dark:bg-gray-800  shadow-md sm:rounded-lg overflow-hidden">
+        <div className="flex items-center justify-center w-full p-4 pb-0 mx-auto mb-2 flex-column">
+          <div className="w-full mx-auto max-w-screen-xl px-4 lg:px-12 flex items-center justify-center mb-3">
+            <div className="mr-4 w-full flex justify-content-between">
+              <BuscarBar fnOnChange={handleSearchChange} />
+              <select
+                name="productOrServiceType"
+                id="productOrServiceType"
+                className="px-4 py-2 font-medium text-white bg-blue-400 rounded hover:bg-blue-500"
+                defaultValue={""}
+                onChange={(e) => handleSelectChange(e.target.value.toString())}
+              >
+                <option value={``}>Sin filtrado</option>
+                <option value={`${ProductOrService.Producto}`}>Producto</option>
+                <option value={`${ProductOrService.Servicio}`}>Servicio</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <select
-              name="productOrServiceType"
-              id="productOrServiceType"
-              className="px-4 py-2 font-medium text-white bg-blue-400 rounded hover:bg-blue-500"
-              defaultValue={""}
-              onChange={(e) => handleSelectChange(e.target.value.toString())}
-            >
-              <option value={``}>Sin filtrado</option>
-              <option value={`${ProductOrService.Producto}`}>Producto</option>
-              <option value={`${ProductOrService.Servicio}`}>Servicio</option>
-            </select>
-          </div>
-        </div>
-        {isLoading ? (
-          <div>
-            <LoadingComponent />
-          </div>
-        ) : (
-          <div className="w-full">
-            <table className="min-w-full bg-white border border-gray-300 ">
-              <thead className="text-white bg-denim-400 ">
-                <tr>
-                  {Object.keys(defaultProductService).map((key) => (
-                    <th className="py-2 px-4 border-b" key={key}>
-                      {key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}
+          {isLoading ? (
+            <div>
+              <LoadingComponent />
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    {Object.keys(defaultProductService).map((key) => {
+                      if (key !== "eliminado") {
+                        return (
+                          <th
+                            scope="col"
+                            className="px-4 py-3 text-center"
+                            key={key}
+                          >
+                            {key.charAt(0).toUpperCase() +
+                              key.slice(1).toLowerCase()}
+                          </th>
+                        );
+                      } else {
+                        return;
+                      }
+                    })}
+                    <th scope="col" className="px-4 py-3 text-center">
+                      Acciones
                     </th>
-                  ))}
-                  <th className="py-2 px-4 border-b">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data && data.length ? (
-                  data
-                    .filter((row: any) => !row.eliminado)
-                    .map((row, index) => (
-                      <tr key={index} className="border-b">
+                  </tr>
+                </thead>
+                <tbody>
+                  {data && data.length ? (
+                    data.map((row, index) => (
+                      <tr key={index} className="border-b dark:border-gray-700">
                         {Object.keys(defaultProductService).map((key) => {
+                          const cellClass = "px-4 py-3 text-center";
                           if (
                             key === "costo" &&
                             row.tipo?.toString() === ProductOrService.Producto
                           ) {
                             return (
-                              <td key={key + "Column"} className="py-2">
+                              <td key={key + "Column"} className={cellClass}>
                                 {row[key]}
                               </td>
                             );
@@ -391,31 +386,52 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
                             key === "costo" &&
                             row.tipo?.toString() === ProductOrService.Servicio
                           ) {
-                            return <td className="py-2">{row[key]} </td>;
+                            return <td className={cellClass}>{row[key]} </td>;
+                          } else if (key === "eliminado") {
+                            return;
                           } else {
                             return (
-                              <td className="py-2">{(row as any)[key]}</td>
+                              <td className={cellClass}>{(row as any)[key]}</td>
                             );
                           }
                         })}
-                        <td className="py-2">{actionButtons(row)}</td>
+                        {!props.seleccion && (
+                          <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                            {actionButtons(row)}
+                          </td>
+                        )}
+                        {props.seleccion === "multiple" &&
+                          (!pedido.prods_servs.some(
+                            (item) => item.id === row.id
+                          ) ? (
+                            <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                              <AgregarBtn fnOnClick={() => addToPedido(row)} />
+                            </td>
+                          ) : (
+                            <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                              <RemoverBtn
+                                fnOnClick={() => removeFromPedido(row)}
+                              />
+                            </td>
+                          ))}
                       </tr>
                     ))
-                ) : (
-                  <tr className="border-b">
-                    <td
-                      colSpan={Object.keys(defaultProductService).length + 1}
-                      className="py-2 px-4"
-                    >
-                      No hay datos...
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
+                  ) : (
+                    <tr className="border-b dark:border-gray-700">
+                      <td
+                        colSpan={Object.keys(defaultProductService).length + 1}
+                        className="py-2 px-4"
+                      >
+                        No hay datos...
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </section>
   );
 }

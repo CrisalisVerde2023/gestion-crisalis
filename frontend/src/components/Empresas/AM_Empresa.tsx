@@ -13,6 +13,7 @@ import {
 import { formatDate, formatDateToInput } from "../../tools/formatDate";
 import { useFetchReturnType } from "../../hooks/useFetch";
 import Swal from "sweetalert2";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function AM_Empresa() {
   const { idEnterprise } = useParams<{ idEnterprise: string }>();
@@ -231,12 +232,7 @@ export default function AM_Empresa() {
                 </button>
 
                 {/* Add your logic to handle 'goBack' or provide a way for the user to navigate back */}
-                <button
-                  className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
-                  onClick={goBack} // Ensure 'goBack' is defined and works as expected
-                >
-                  Volver
-                </button>
+                <VolverBtn fnOnClick={goBack} />
               </div>
             </div>
           </div>

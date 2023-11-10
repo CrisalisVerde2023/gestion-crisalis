@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LB_Pedido from "./LB_Pedidos";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function ABMPedidos() {
   const navigate = useNavigate();
@@ -8,6 +9,10 @@ export default function ABMPedidos() {
   function goToAMPedido() {
     navigate("/altaPedido");
   }
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -24,12 +29,7 @@ export default function ABMPedidos() {
           >
             Crear nuevo pedido
           </button>
-          <button
-            onClick={() => navigate(-1)}
-            className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
-          >
-            Volver
-          </button>
+          <VolverBtn fnOnClick={goBack} />
         </div>
       </div>
     </div>

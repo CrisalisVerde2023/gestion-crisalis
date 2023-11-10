@@ -15,6 +15,7 @@ import { PersonasType } from "../types/personType";
 import { EnterpriseType } from "../types/enterpriseType";
 import { ClientesType, defaultClienteType } from "../types/clientType";
 import { useFetchReturnType } from "../../hooks/useFetch";
+import VolverBtn from "../UI Elements/VolverBtn";
 export default function AM_Clientes() {
   const { idCliente } = useParams<{ idCliente: string }>();
   const idToModify = idCliente ? parseInt(idCliente, 10) : undefined;
@@ -307,12 +308,7 @@ export default function AM_Clientes() {
         </form>
         <div className="flex justify-center items-center mb-4">
           <div className="flex justify-evenly mt-2 mx-2">
-            <button
-              onClick={() => goBack()}
-              className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
-            >
-              Volver
-            </button>
+            <VolverBtn fnOnClick={goBack} />
           </div>
         </div>
       </div>

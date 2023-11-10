@@ -3,6 +3,7 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import LB_Productos from "./LB_ProductService";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import SelectedProdsServs from "../SelectedProdsServs";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function ABMProductServiceComponent() {
   const navigate = useNavigate();
@@ -50,12 +51,7 @@ export default function ABMProductServiceComponent() {
             </button>
           </div>
           <div className="flex justify-evenly mt-2 mx-2">
-            <button
-              onClick={goBack}
-              className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
-            >
-              Volver
-            </button>
+            <VolverBtn fnOnClick={goBack} />
           </div>
         </div>
       </div>

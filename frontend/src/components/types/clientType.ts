@@ -4,7 +4,7 @@ import { PersonasType, defaultPersonasType } from "./personType";
 export type ClientesType = {
   id: number;
   persona: PersonasType;
-  empresa: EnterpriseType;
+  empresa: EnterpriseType | null;
   eliminado: boolean;
 };
 
@@ -22,6 +22,6 @@ export const defaultClienteType = {
   //Inicia con este valor por defecto
   id: -1,
   persona: defaultPersonasType,
-  empresa: defaultEnterpriseType,
+  empresa: null,
   eliminado: false,
 };

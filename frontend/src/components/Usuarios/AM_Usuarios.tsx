@@ -10,6 +10,7 @@ import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 import { useFetchReturnType } from "../../hooks/useFetch";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function AM_Usuario() {
   const { idUsuario } = useParams<{ idUsuario: string }>();
@@ -215,12 +216,7 @@ export default function AM_Usuario() {
                       {idToModify ? "Modificar" : "Crear"}
                     </button>
 
-                    <button
-                      className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
-                      onClick={goBack}
-                    >
-                      Volver
-                    </button>
+                    <VolverBtn fnOnClick={goBack} />
                   </div>
                 </>
               )}

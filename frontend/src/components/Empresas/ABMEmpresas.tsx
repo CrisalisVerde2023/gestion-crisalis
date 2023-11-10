@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import LB_Empresas from "./LB_Empresa";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function ABMEmpresasComponent() {
   const navigate = useNavigate();
@@ -9,6 +10,10 @@ export default function ABMEmpresasComponent() {
   function goToAMEmpresas() {
     navigate("/empresas/AMEmpresas");
   }
+
+  const goBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -25,6 +30,7 @@ export default function ABMEmpresasComponent() {
           >
             Crear nueva empresa
           </button>
+          <VolverBtn fnOnClick={goBack} />
         </div>
       </div>
     </div>

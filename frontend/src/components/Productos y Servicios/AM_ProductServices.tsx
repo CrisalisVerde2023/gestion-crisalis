@@ -15,18 +15,19 @@ import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 import { useFetchReturnType } from "../../hooks/useFetch";
 
-import {
-  Trash,
-  Plus,
-  Filter
-} from "react-bootstrap-icons";
+import { Trash, Plus, Filter } from "react-bootstrap-icons";
 
 import { ImpuestosType } from "../types/taxType";
 import { useCrud } from "../../hooks/useCrud";
+import VolverBtn from "../UI Elements/VolverBtn";
+
+const HOST_API_IMPUESTOS: string = "http://localhost:8080/api/impuestos";
 
 export default function AM_ProductService() {
-  const { getAllData, estado: { json, loading } } = useCrud({ url: "http://localhost:8080/api/impuestos" });
-
+  const {
+    getAllData,
+    estado: { json, loading },
+  } = useCrud(HOST_API_IMPUESTOS);
 
   const { idProdServ } = useParams<{ idProdServ: string }>();
   const idToModify =
@@ -56,31 +57,32 @@ export default function AM_ProductService() {
 
   //Le mando un useEffect que escuche los cambios de impuestos y me los guarde en un estado
   useEffect(() => {
-    !loading &&
-      setImpuestos(json);
+    !loading && setImpuestos(json);
   }, [loading]);
 
   const handleQuitarImpuesto = (item: number) => {
-
-      setFormData({
-        ...formData,
-        idImpuestos: (formData.idImpuestos || []).filter((el) => el !== item),//Con este filter lo que hago es que me devuelva un array con todos los elementos que no sean el que le paso por parametro
-      });
-    
+    setFormData({
+      ...formData,
+      idImpuestos: (formData.idImpuestos || []).filter((el) => el !== item), //Con este filter lo que hago es que me devuelva un array con todos los elementos que no sean el que le paso por parametro
+    });
   };
 
   const handleAgregarImpuesto = (item: number) => {
     if (formData.idImpuestos.filter((el) => el === item).length === 0) {
-      setFormData({ ...formData, idImpuestos: [...(formData.idImpuestos || []), item] });
+      setFormData({
+        ...formData,
+        idImpuestos: [...(formData.idImpuestos || []), item],
+      });
     }
-  }
+  };
 
   //-----------------------------------------------------------------------------------------------------------------------------
   const goBack = () => {
     navigate(-1);
   };
 
-  if (idToModify !== undefined) {//Aca se está fetcheando de la forma anterior, no la primera, la segunda. Hay que cambiarlo si pinta
+  if (idToModify !== undefined) {
+    //Aca se está fetcheando de la forma anterior, no la primera, la segunda. Hay que cambiarlo si pinta
     fetchedData = useFetchProds_Servs(idToModify, true);
     console.log("la data que viene en el fetch es: ", fetchedData);
   }
@@ -88,14 +90,16 @@ export default function AM_ProductService() {
   useEffect(() => {
     if (fetchedData && !fetchedData.hasError && fetchedData.json) {
       //Esto debe ser una funcion que mapee los id de los impuestos y los meta al que cambia
-      const idDeImpuestos = (fetchedData.json.impuestos || []).map((impuesto) => impuesto.id).filter((id) => id !== undefined);
+      const idDeImpuestos = (fetchedData.json.impuestos || [])
+        .map((impuesto: ImpuestosType) => impuesto.id)
+        .filter((id: number) => id !== undefined);
 
-
-      setFormData({ ...fetchedData.json, idImpuestos: idDeImpuestos, password: "" });//No entiendo de donde sale ese password, debe haber quedado default en el hook pero hay que volarlo
+      setFormData({
+        ...fetchedData.json,
+        idImpuestos: idDeImpuestos,
+        password: "",
+      }); //No entiendo de donde sale ese password, debe haber quedado default en el hook pero hay que volarlo
     }
-
-
-
   }, [fetchedData]);
 
   useEffect(() => {
@@ -113,10 +117,7 @@ export default function AM_ProductService() {
       return formData.nombre.length > 0 && formData.costo >= 0;
     } else if (location.pathname.includes("/AMServicios")) {
       // Explicitly allow formData.soporte to be 0
-      return (
-        formData.nombre.length > 0
-      
-      );
+      return formData.nombre.length > 0;
     } else {
       return false; // Or some other default logic
     }
@@ -131,7 +132,6 @@ export default function AM_ProductService() {
       errors.push("No olvides ingresar el precio");
     }
     // Allow formData.soporte to be 0 but not null or undefined
-   
 
     return errors;
   };
@@ -230,8 +230,8 @@ export default function AM_ProductService() {
                     {location.pathname.includes("/AMProductos")
                       ? "productos"
                       : location.pathname.includes("/AMServicios")
-                        ? "servicios"
-                        : null}
+                      ? "servicios"
+                      : null}
                   </h1>
                 </div>
                 {isLoading ? (
@@ -305,7 +305,7 @@ export default function AM_ProductService() {
                           }}
                           value={
                             formData.soporte !== null &&
-                              formData.soporte !== undefined
+                            formData.soporte !== undefined
                               ? Number(formData.soporte)
                               : ""
                           }
@@ -327,46 +327,78 @@ export default function AM_ProductService() {
 
                 <div>
                   Impuestos asociados al {formData.tipo}:
-                  {formData.idImpuestos?.length === 0 && <p>Este {formData.tipo} está libre de impuestos</p>}
+                  {formData.idImpuestos?.length === 0 && (
+                    <p>Este {formData.tipo} está libre de impuestos</p>
+                  )}
                   <ul>
-                    {
-                      formData.idImpuestos?.map((idImpuesto) => (
-                        <div className="bg-denim-50 min-h-[35px] rounded-xl bg-opacity-[0.5] mb-1 flex justify-between items-center px-2 cursor-pointer hover:bg-denim-50" key={idImpuesto} onClick={() => handleQuitarImpuesto(idImpuesto)}>
-                          <p>{impuestos?.find((obj) => obj.id === idImpuesto)?.nombre} {impuestos?.find((obj) => obj.id === idImpuesto)?.porcentaje}% {impuestos?.find((obj) => obj.id === idImpuesto)?.eliminado ? <span className="text-red-700 font-bold">- Suspendido</span> : ''}</p>
-                          <Trash />
-                        </div>
-                      ))
-                    }
+                    {formData.idImpuestos?.map((idImpuesto) => (
+                      <div
+                        className="bg-denim-50 min-h-[35px] rounded-xl bg-opacity-[0.5] mb-1 flex justify-between items-center px-2 cursor-pointer hover:bg-denim-50"
+                        key={idImpuesto}
+                        onClick={() => handleQuitarImpuesto(idImpuesto)}
+                      >
+                        <p>
+                          {
+                            impuestos?.find((obj) => obj.id === idImpuesto)
+                              ?.nombre
+                          }{" "}
+                          {
+                            impuestos?.find((obj) => obj.id === idImpuesto)
+                              ?.porcentaje
+                          }
+                          %{" "}
+                          {impuestos?.find((obj) => obj.id === idImpuesto)
+                            ?.eliminado ? (
+                            <span className="text-red-700 font-bold">
+                              - Suspendido
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </p>
+                        <Trash />
+                      </div>
+                    ))}
                   </ul>
                 </div>
-
 
                 <div className="w-full  bg-slate-300 p-1 rounded-lg">
                   <div className="flex justify-between mb-1 items-center">
                     <p className="font-bold text-sm ml-1">Agregar Impuestos</p>
                     <div className="flex items-center">
                       <Filter />
-                      <input type="text" placeholder="Filtrar Impuesto" className="pl-2 ml-1 rounded-sm" />
+                      <input
+                        type="text"
+                        placeholder="Filtrar Impuesto"
+                        className="pl-2 ml-1 rounded-sm"
+                      />
                     </div>
                   </div>
 
                   <div className="w-full min-h-[80px] bg-atlantis-100  p-1 rounded-lg ">
-                    {
-                      impuestos?.map((impuesto) => (
-
-                        <div key={impuesto.id} className={`border-2 p-[3px] f hover:bg-atlantis-600 cursor-pointer rounded-xl ${impuesto.eliminado ? 'bg-red-500 hover:bg-red-600' : 'bg-atlantis-500'} `}>
-
-                          <div key={impuesto.id}
-                            className="cursor-pointer pl-2 flex justify-between items-center"
-                            onClick={() => handleAgregarImpuesto(impuesto.id)}
-                          >
-
-                            <p>{impuesto.nombre} {impuesto.porcentaje}%</p> <span className="text-3xl"><Plus /></span>
-                          </div>
-
+                    {impuestos?.map((impuesto) => (
+                      <div
+                        key={impuesto.id}
+                        className={`border-2 p-[3px] f hover:bg-atlantis-600 cursor-pointer rounded-xl ${
+                          impuesto.eliminado
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-atlantis-500"
+                        } `}
+                      >
+                        <div
+                          key={impuesto.id}
+                          className="cursor-pointer pl-2 flex justify-between items-center"
+                          onClick={() => handleAgregarImpuesto(impuesto.id)}
+                        >
+                          <p>
+                            {impuesto.nombre} {impuesto.porcentaje}%
+                          </p>{" "}
+                          <span className="text-3xl">
+                            <Plus />
+                          </span>
                         </div>
-                      ))
-                    }
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
@@ -375,10 +407,11 @@ export default function AM_ProductService() {
                       ? { disabled: true }
                       : {})}
                     onClick={handleSubmit}
-                    className={`${!isFormComplete() || !!errorsForm().length
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-denim-400 hover:bg-denim-500"
-                      } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
+                    className={`${
+                      !isFormComplete() || !!errorsForm().length
+                        ? "bg-gray-300 cursor-not-allowed"
+                        : "bg-denim-400 hover:bg-denim-500"
+                    } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
                   >
                     {idToModify !== undefined && idToModify !== null
                       ? "Modificar"
@@ -386,18 +419,12 @@ export default function AM_ProductService() {
                     {location.pathname.includes("/AMProductos")
                       ? "producto"
                       : location.pathname.includes("/AMServicios")
-                        ? "servicio"
-                        : ""}
+                      ? "servicio"
+                      : ""}
                   </button>
 
-                  <button
-                    className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
-                    onClick={goBack}
-                  >
-                    Volver
-                  </button>
+                  <VolverBtn fnOnClick={goBack} />
                 </div>
-
               </div>
             </div>
           </div>

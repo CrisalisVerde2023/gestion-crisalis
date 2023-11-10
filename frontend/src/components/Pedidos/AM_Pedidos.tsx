@@ -14,6 +14,7 @@ import {
   EncabezadoPedidoType,
   defaultValuesPedidoType,
 } from "../types/EncabezadoPedidoType";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function AM_Pedidos() {
   const { pedido, setPedido, userLogged } = useContext(UserLoggedContext);
@@ -47,6 +48,10 @@ export default function AM_Pedidos() {
 
   const clean = () => {
     setPedido(defaultPedidoState);
+  };
+
+  const goBack = () => {
+    navigate(-1);
   };
 
   /*const handleSubmit = () => {
@@ -85,8 +90,6 @@ export default function AM_Pedidos() {
       </button>
       <SelectedClient />
 
-      <hr style={{ margin: "10px" }}></hr>
-
       <strong style={{ margin: "20px" }}>Productos / Servicios:</strong>
       <button
         onClick={() => navigate("/productosyservicios?seleccion=multiple")}
@@ -98,7 +101,7 @@ export default function AM_Pedidos() {
 
       <SelectedProdsServs />
 
-      <div className="flex justify-center items-center mb-4">
+      <div className="flex justify-center items-center my-3">
         <div className="flex justify-evenly mt-2 mx-2">
           <button
             disabled={pedido.cliente.id < 0 || !pedido.prods_servs.length}
@@ -126,12 +129,7 @@ export default function AM_Pedidos() {
           </button>
         </div>
         <div className="flex justify-evenly mt-2 mx-2">
-          <button
-            className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
-            onClick={() => navigate(-1)}
-          >
-            Volver
-          </button>
+          <VolverBtn fnOnClick={goBack} />
         </div>
       </div>
     </div>
