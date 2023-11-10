@@ -14,6 +14,10 @@ import {
 import { PersonasType } from "../types/personType";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
+import BuscarBar from "../UI Elements/BuscarBar";
+import BorrarBtn from "../UI Elements/BorrarBtn";
+import EditarBtn from "../UI Elements/EditarBtn";
+import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
 
 export default function LB_Personas() {
   const [data, setData] = useState<PersonasType[] | null>([]);
@@ -107,105 +111,106 @@ export default function LB_Personas() {
     });
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
   const actionButtons = (row: PersonasType) => {
     return (
-      <div className="flex justify-between items-center">
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => handleClickedElement(row)}
-        >
-          {row.eliminado ? <CheckCircleFill /> : <XCircleFill />}
-        </button>
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => navigate(`/personas/AMPersonas/${row.id}`)}
-        >
-          <PencilFill />
-        </button>
+      <div className="flex justify-center space-x-4">
+        <ToggleEstadoBtn
+          fnOnClick={() => handleClickedElement(row)}
+          estado={row.eliminado}
+        />
+        <EditarBtn
+          fnOnClick={() => navigate(`/personas/AMPersonas/${row.id}`)}
+        />
       </div>
     );
   };
 
   return (
     <>
-      <Container>
-        <Row
-          className="flex-row d-flex justify-content-center align-items-center "
-          style={{ marginBottom: "15px" }}
-        >
-          <Col xs="auto">
-            <input
-              type="text"
-              placeholder="Buscar"
-              className="inputSearch border-2 border-blue-500 px-2 py-1"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </Col>
-        </Row>
-        {/* Data Table */}
-        <Row>
-          {isLoading ? (
-            <Col>
-              <LoadingComponent />
-            </Col>
-          ) : (
-            <Col className="w-full">
-              <table className="min-w-full bg-white border-gray-300">
-                <thead className="text-white bg-denim-400 ">
-                  <tr>
-                    <th className="px-4 py-2 border-b">ID</th>
-                    <th className="px-4 py-2 border-b">Nombre</th>
-                    <th className="px-4 py-2 border-b">Apellido</th>
-                    <th className="px-4 py-2 border-b">DNI</th>
-                    <th className="px-4 py-2 border-b">Estado</th>
-                    <th className="px-4 py-2 border-b">Acciones</th>
+      <div className="flex flex-col items-center justify-between space-y-3 p-4 bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
+        <div className="flex items-center justify-center w-full mb-4">
+          <BuscarBar fnOnChange={handleSearchChange} value={searchTerm} />
+        </div>
+        {isLoading ? (
+          <div className="flex justify-center">
+            <LoadingComponent />
+          </div>
+        ) : (
+          <div className="w-full overflow-x-auto">
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                    ID
+                  </th>
+                  <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                    Nombre
+                  </th>
+                  <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                    Apellido
+                  </th>
+                  <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                    DNI
+                  </th>
+                  <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                    Estado
+                  </th>
+                  <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data && data.length ? (
+                  data
+                    .filter(
+                      (persona: PersonasType) =>
+                        persona.nombre
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        persona.apellido
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        persona.dni
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase()) ||
+                        persona.id.toString() === searchTerm
+                    )
+                    .sort((a: PersonasType, b: PersonasType) =>
+                      a.nombre.toLowerCase() < b.nombre.toLowerCase() ? -1 : 1
+                    )
+                    .map((row, index) => (
+                      <tr key={index} className="border-b dark:border-gray-700">
+                        <td className="px-4 py-3 text-center">{row.id}</td>
+                        <td className="px-4 py-3 text-center">{row.nombre}</td>
+                        <td className="px-4 py-3 text-center">
+                          {row.apellido}
+                        </td>
+                        <td className="px-4 py-3 text-center">{row.dni}</td>
+                        <td className="px-4 py-3 text-center">
+                          {row.eliminado ? "Inactivo" : "Activo"}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {actionButtons(row)}
+                        </td>
+                      </tr>
+                    ))
+                ) : (
+                  <tr className="border-b dark:border-gray-700">
+                    <td colSpan={6} className="px-4 py-3 text-center">
+                      No hay datos...
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {data &&
-                  (aux = !searchTerm.length
-                    ? data
-                    : data.filter(
-                        (persona: PersonasType) =>
-                          persona.nombre
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase()) ||
-                          persona.apellido
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase()) ||
-                          persona.dni
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase()) ||
-                          persona.id === parseInt(searchTerm)
-                      )).length ? (
-                    aux
-                      .sort((a: PersonasType, b: PersonasType) =>
-                        a.nombre.toLowerCase() < b.nombre.toLowerCase() ? -1 : 1
-                      )
-                      .map((row, index) => (
-                        <tr key={index} className="border-b">
-                          <td className="py-2">{row.id}</td>
-                          <td className="py-2">{row.nombre}</td>
-                          <td className="py-2">{row.apellido}</td>
-                          <td className="py-2">{row.dni}</td>
-                          <td className="py-2">
-                            {row.eliminado ? "Inactivo" : "Activo"}
-                          </td>
-                          <td className="py-2">{actionButtons(row)}</td>
-                        </tr>
-                      ))
-                  ) : (
-                    <tr>
-                      <td colSpan={3}>No hay datos...</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </Col>
-          )}
-        </Row>
-      </Container>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </>
   );
 }

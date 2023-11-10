@@ -4,7 +4,7 @@ import {
   XCircleFill,
   CheckCircleFill,
 } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useDeleteEmpresa,
   useFetchEmpresas,
@@ -13,6 +13,10 @@ import { EnterpriseType } from "../types/enterpriseType";
 import LoadingComponent from "../LoadingComponent";
 import { formatDate } from "../../tools/formatDate";
 import Swal from "sweetalert2";
+import BuscarBar from "../UI Elements/BuscarBar";
+import EditarBtn from "../UI Elements/EditarBtn";
+import BorrarBtn from "../UI Elements/BorrarBtn";
+import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
 
 export default function LB_Empresas() {
   const [data, setData] = useState<EnterpriseType[] | null>([]);
@@ -25,6 +29,7 @@ export default function LB_Empresas() {
   const [searchTerm, setSearchTerm] = useState("");
   const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
   let aux;
+  const navigate = useNavigate();
 
   let fetchResponse = useFetchEmpresas(undefined, shouldFetch);
   let deleteResponse = useDeleteEmpresa(idToDelete, shouldDelete);
@@ -118,52 +123,57 @@ export default function LB_Empresas() {
     });
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
   const actionButtons = (row: EnterpriseType) => {
     return (
-      <div className="flex justify-between items-center">
-        <button
-          className="p-2 hover:bg-blue-600 hover:text-white"
-          onClick={() => handleClickedElement(row)}
-        >
-          {row.eliminado ? <CheckCircleFill /> : <XCircleFill />}
-        </button>
-        <Link className="actionButton" to={`/empresas/AMEmpresas/${row.id}`}>
-          <PencilFill />
-        </Link>
+      <div className="flex justify-center space-x-4">
+        <ToggleEstadoBtn
+          fnOnClick={() => handleClickedElement(row)}
+          estado={row.eliminado}
+        />
+        <EditarBtn
+          fnOnClick={() => navigate(`/empresas/AMEmpresas/${row.id}`)}
+        />
       </div>
     );
   };
 
   return (
     <>
-      <div className="container mx-auto p-4">
-        <div className="flex justify-center items-center mb-4">
-          <div className="flex-auto">
-            <input
-              type="text"
-              placeholder="Buscar"
-              className="inputSearch border-2 border-blue-500 px-2 py-1"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+      <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4 bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
+        <div className="flex items-center justify-center w-full p-4 pb-0 mx-auto mb-2 flex-column">
+          <div className="w-full mx-auto max-w-screen-xl px-4 lg:px-12 flex items-center justify-center mb-3">
+            <div className="mr-4 w-full flex justify-between">
+              <BuscarBar fnOnChange={handleSearchChange} value={searchTerm} />
+            </div>
           </div>
-        </div>
-        <div>
           {isLoading ? (
-            <div>
+            <div className="flex justify-center">
               <LoadingComponent />
             </div>
           ) : (
-            <div>
-              <table className="min-w-full bg-white border border-gray-300 ">
-                <thead className="bg-denim-400 text-white">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th className="py-2 px-4 border-b">ID</th>
-                    <th className="py-2 px-4 border-b">Nombre</th>
-                    <th className="py-2 px-4 border-b">CUIT</th>
-                    <th className="py-2 px-4 border-b">Fecha de Inicio</th>
-                    <th className="py-2 px-4 border-b">Estado</th>
-                    <th className="py-2 px-4 border-b">Acciones</th>
+                    <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                      ID
+                    </th>
+                    <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                      Nombre
+                    </th>
+                    <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                      CUIT
+                    </th>
+                    <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                      Fecha de Inicio
+                    </th>
+                    <th className="px-4 py-3 text-center border-b dark:border-gray-700">
+                      Acciones
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -180,20 +190,26 @@ export default function LB_Empresas() {
                         a.nombre.toLowerCase() < b.nombre.toLowerCase() ? -1 : 1
                       )
                       .map((row, index) => (
-                        <tr key={index} className="border-b">
-                          <td className="py-2 px-4">{row.id}</td>
-                          <td className="py-2 px-4">{row.nombre}</td>
-                          <td className="py-2 px-4">{row.cuit}</td>
-                          <td className="py-2 px-4">{row.start_date}</td>
-                          <td className="py-2 px-4">
-                            {row.eliminado ? "Inactivo" : "Activo"}
+                        <tr
+                          key={index}
+                          className="border-b dark:border-gray-700"
+                        >
+                          <td className="px-4 py-3 text-center">{row.id}</td>
+                          <td className="px-4 py-3 text-center">
+                            {row.nombre}
                           </td>
-                          <td className="py-2 px-4">{actionButtons(row)}</td>
+                          <td className="px-4 py-3 text-center">{row.cuit}</td>
+                          <td className="px-4 py-3 text-center">
+                            {row.start_date}
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            {actionButtons(row)}
+                          </td>
                         </tr>
                       ))
                   ) : (
-                    <tr className="border-b">
-                      <td colSpan={5} className="py-2 px-4">
+                    <tr className="border-b dark:border-gray-700">
+                      <td colSpan={6} className="px-4 py-3 text-center">
                         No hay datos...
                       </td>
                     </tr>
