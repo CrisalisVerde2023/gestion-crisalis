@@ -54,11 +54,21 @@ export default function AM_ProductService() {
 
   //let fetchImpuestos = useFetchImpuestos(undefined, shouldFetch);
   const [impuestos, setImpuestos] = useState<ImpuestosType[] | null>(null);
+  const [impuestosFiltrados, setImpuestosFiltrados] = useState<ImpuestosType[] | null>(null)
+  const [searchTerm, setSearchTerm] = useState("");
 
   //Le mando un useEffect que escuche los cambios de impuestos y me los guarde en un estado
   useEffect(() => {
     !loading && setImpuestos(json);
   }, [loading]);
+
+  //Use Effect para el filtrado de impuestos
+  useEffect(() => {
+    const impuestosFiltrados = impuestos?.filter(impuesto =>
+      impuesto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setImpuestosFiltrados(impuestosFiltrados || []);
+  }, [searchTerm, impuestos]);
 
   const handleQuitarImpuesto = (item: number) => {
     setFormData({
@@ -230,8 +240,8 @@ export default function AM_ProductService() {
                     {location.pathname.includes("/AMProductos")
                       ? "productos"
                       : location.pathname.includes("/AMServicios")
-                      ? "servicios"
-                      : null}
+                        ? "servicios"
+                        : null}
                   </h1>
                 </div>
                 {isLoading ? (
@@ -305,7 +315,7 @@ export default function AM_ProductService() {
                           }}
                           value={
                             formData.soporte !== null &&
-                            formData.soporte !== undefined
+                              formData.soporte !== undefined
                               ? Number(formData.soporte)
                               : ""
                           }
@@ -325,41 +335,44 @@ export default function AM_ProductService() {
                   </div>
                 ) : null}
 
-                <div>
+                <div className=" bg-atlantis-100 rounded-lg p-1 h-[150px] flex flex-col">
                   Impuestos asociados al {formData.tipo}:
-                  {formData.idImpuestos?.length === 0 && (
-                    <p>Este {formData.tipo} está libre de impuestos</p>
-                  )}
-                  <ul>
-                    {formData.idImpuestos?.map((idImpuesto) => (
-                      <div
-                        className="bg-denim-50 min-h-[35px] rounded-xl bg-opacity-[0.5] mb-1 flex justify-between items-center px-2 cursor-pointer hover:bg-denim-50"
-                        key={idImpuesto}
-                        onClick={() => handleQuitarImpuesto(idImpuesto)}
-                      >
-                        <p>
-                          {
-                            impuestos?.find((obj) => obj.id === idImpuesto)
-                              ?.nombre
-                          }{" "}
-                          {
-                            impuestos?.find((obj) => obj.id === idImpuesto)
-                              ?.porcentaje
-                          }
-                          %{" "}
-                          {impuestos?.find((obj) => obj.id === idImpuesto)
-                            ?.eliminado ? (
-                            <span className="text-red-700 font-bold">
-                              - Suspendido
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </p>
-                        <Trash />
-                      </div>
-                    ))}
-                  </ul>
+                  <div className="overflow-y-auto flex-1 h-full">
+                    {formData.idImpuestos?.length === 0 && (
+                      <p>Este {formData.tipo} está libre de impuestos</p>
+                    )}
+                    <ul>
+                      {formData.idImpuestos?.map((idImpuesto) => (
+                        <div
+                          className="bg-denim-50 min-h-[35px] rounded-xl mb-1 flex justify-between items-center px-2 cursor-pointer hover:bg-denim-200"
+                          key={idImpuesto}
+                          onClick={() => handleQuitarImpuesto(idImpuesto)}
+                        >
+                          <p>
+                            {
+                              impuestos?.find((obj) => obj.id === idImpuesto)
+                                ?.nombre
+                            }{" "}
+                            {
+                              impuestos?.find((obj) => obj.id === idImpuesto)
+                                ?.porcentaje
+                            }
+                            %{" "}
+                            {impuestos?.find((obj) => obj.id === idImpuesto)
+                              ?.eliminado ? (
+                              <span className="text-red-700 font-bold">
+                                - Suspendido
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </p>
+                          <Trash />
+                        </div>
+                      ))}
+
+                    </ul>
+                  </div>
                 </div>
 
                 <div className="w-full  bg-slate-300 p-1 rounded-lg">
@@ -371,19 +384,19 @@ export default function AM_ProductService() {
                         type="text"
                         placeholder="Filtrar Impuesto"
                         className="pl-2 ml-1 rounded-sm"
+                        onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
                   </div>
 
-                  <div className="w-full min-h-[80px] bg-atlantis-100  p-1 rounded-lg ">
-                    {impuestos?.map((impuesto) => (
+                  <div className="w-full h-[200px] overflow-y-auto bg-atlantis-100  p-1 rounded-lg ">
+                    {impuestosFiltrados?.map((impuesto) => (
                       <div
                         key={impuesto.id}
-                        className={`border-2 p-[3px] f hover:bg-atlantis-600 cursor-pointer rounded-xl ${
-                          impuesto.eliminado
+                        className={`border-2 p-[3px] f hover:bg-atlantis-600 cursor-pointer rounded-xl ${impuesto.eliminado
                             ? "bg-red-500 hover:bg-red-600"
                             : "bg-atlantis-500"
-                        } `}
+                          } `}
                       >
                         <div
                           key={impuesto.id}
@@ -407,11 +420,10 @@ export default function AM_ProductService() {
                       ? { disabled: true }
                       : {})}
                     onClick={handleSubmit}
-                    className={`${
-                      !isFormComplete() || !!errorsForm().length
+                    className={`${!isFormComplete() || !!errorsForm().length
                         ? "bg-gray-300 cursor-not-allowed"
                         : "bg-denim-400 hover:bg-denim-500"
-                    } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
+                      } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
                   >
                     {idToModify !== undefined && idToModify !== null
                       ? "Modificar"
@@ -419,8 +431,8 @@ export default function AM_ProductService() {
                     {location.pathname.includes("/AMProductos")
                       ? "producto"
                       : location.pathname.includes("/AMServicios")
-                      ? "servicio"
-                      : ""}
+                        ? "servicio"
+                        : ""}
                   </button>
 
                   <VolverBtn fnOnClick={goBack} />
