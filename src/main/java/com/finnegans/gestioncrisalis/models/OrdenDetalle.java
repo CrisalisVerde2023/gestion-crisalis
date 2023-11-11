@@ -71,5 +71,6 @@ public class OrdenDetalle {
     private String tipo;
 
     @OneToOne(mappedBy = "ordenDetalle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Suscripcion suscripcion;
 }

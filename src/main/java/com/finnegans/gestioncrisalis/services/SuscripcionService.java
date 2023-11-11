@@ -8,9 +8,8 @@ import com.finnegans.gestioncrisalis.models.Suscripcion;
 import java.util.List;
 
 public interface SuscripcionService {
-
     public List<Long> getServiciosActivos(Cliente cliente);
     public List<Suscripcion> createSubByOds(List<OrdenDetalle> ordDetsServ);
     public List<SuscripcionResponseDTO> getAll();
-
+    public Suscripcion cambiarEstado(Long id);
 }

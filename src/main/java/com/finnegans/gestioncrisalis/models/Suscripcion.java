@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ORDEN_SUSCRIPCIONES")
+@Table(name = "SUSCRIPCIONES")
 public class Suscripcion {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

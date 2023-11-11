@@ -1,6 +1,7 @@
 package com.finnegans.gestioncrisalis.services.impl;
 
 import com.finnegans.gestioncrisalis.dtos.request.SuscripcionResponseDTO;
+import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.Cliente;
 import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.models.Orden;
@@ -67,7 +68,11 @@ public class SuscripcionServiceImpl implements SuscripcionService {
         return susEnc;
     }
 
-    
+    @Override
+    public Suscripcion cambiarEstado(Long id) {
+        Suscripcion suscripcion = this.suscripcionRepository.findById(id).orElseThrow(() -> new ResourceNotFound("Suscripción no encontrada con id: " + id));
+
+        suscripcion.setEstadoSuscripcion(!suscripcion.isEstadoSuscripcion());
+        return this.suscripcionRepository.save(suscripcion);
+    }
 }
-
-
