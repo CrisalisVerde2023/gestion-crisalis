@@ -54,11 +54,21 @@ export default function AM_ProductService() {
 
   //let fetchImpuestos = useFetchImpuestos(undefined, shouldFetch);
   const [impuestos, setImpuestos] = useState<ImpuestosType[] | null>(null);
+  const [impuestosFiltrados, setImpuestosFiltrados] = useState<ImpuestosType[] | null>(null)
+  const [searchTerm, setSearchTerm] = useState("");
 
   //Le mando un useEffect que escuche los cambios de impuestos y me los guarde en un estado
   useEffect(() => {
     !loading && setImpuestos(json);
   }, [loading]);
+
+  //Use Effect para el filtrado de impuestos
+  useEffect(() => {
+    const impuestosFiltrados = impuestos?.filter(impuesto =>
+      impuesto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setImpuestosFiltrados(impuestosFiltrados || []);
+  }, [searchTerm, impuestos]);
 
   const handleQuitarImpuesto = (item: number) => {
     setFormData({
@@ -371,12 +381,13 @@ export default function AM_ProductService() {
                         type="text"
                         placeholder="Filtrar Impuesto"
                         className="pl-2 ml-1 rounded-sm"
+                        onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
                   </div>
 
                   <div className="w-full min-h-[80px] bg-atlantis-100  p-1 rounded-lg ">
-                    {impuestos?.map((impuesto) => (
+                    {impuestosFiltrados?.map((impuesto) => (
                       <div
                         key={impuesto.id}
                         className={`border-2 p-[3px] f hover:bg-atlantis-600 cursor-pointer rounded-xl ${
