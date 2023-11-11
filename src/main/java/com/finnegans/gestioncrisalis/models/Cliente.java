@@ -50,7 +50,7 @@ public class Cliente {
 
     @OneToMany(
             fetch = FetchType.LAZY,
-            mappedBy = "usuario"
+            mappedBy = "cliente"
     )
     @JsonIgnore
     private List<Orden> ordenes;
