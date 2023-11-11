@@ -32,6 +32,9 @@ public class SuscripcionController {
         return new ResponseEntity<>(this.suscripcionService.getServiciosActivos(cliente), HttpStatus.OK);
     }
 
-    
+    @GetMapping
+    public ResponseEntity<?> getSuscripciones(){
+        return new ResponseEntity<>(suscripcionService.getAll(), HttpStatus.OK);
+    }
 }
 

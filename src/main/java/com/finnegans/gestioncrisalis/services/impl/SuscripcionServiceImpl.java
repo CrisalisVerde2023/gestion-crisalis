@@ -1,12 +1,15 @@
 package com.finnegans.gestioncrisalis.services.impl;
 
+import com.finnegans.gestioncrisalis.dtos.request.SuscripcionResponseDTO;
 import com.finnegans.gestioncrisalis.models.Cliente;
+import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.models.Orden;
 import com.finnegans.gestioncrisalis.models.OrdenDetalle;
+import com.finnegans.gestioncrisalis.models.Persona;
 import com.finnegans.gestioncrisalis.models.Suscripcion;
-import com.finnegans.gestioncrisalis.repositories.OrdenDetalleRepository;
 import com.finnegans.gestioncrisalis.repositories.SuscripcionRepository;
 import com.finnegans.gestioncrisalis.services.SuscripcionService;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,11 +19,9 @@ import java.util.List;
 @Service
 public class SuscripcionServiceImpl implements SuscripcionService {
     private final SuscripcionRepository suscripcionRepository;
-    private final OrdenDetalleRepository ordenDetalleRepository;
 
-    public SuscripcionServiceImpl(SuscripcionRepository suscripcionRepository, OrdenDetalleRepository ordenDetalleRepository) {
+    public SuscripcionServiceImpl(SuscripcionRepository suscripcionRepository) {
         this.suscripcionRepository = suscripcionRepository;
-        this.ordenDetalleRepository = ordenDetalleRepository;
     }
 
     @Override
@@ -36,17 +37,34 @@ public class SuscripcionServiceImpl implements SuscripcionService {
                         idsServiciosActivos.add(ordenSus.getOrdenDetalle().getProductoServicio().getId());
                 };
 
-        return idsServiciosActivos;
+        return idsServiciosActivos; // [IdServicio, idServicio]
     }
 
-    public void createSub(List<Long> idsOD) {
-        List<OrdenDetalle> detalles = this.ordenDetalleRepository.findAllById(idsOD);
-        Suscripcion sub = new Suscripcion();
+    @Override
+    public List<Suscripcion> createSubByOds(List<OrdenDetalle> ordDetsServ) {
+        List<Suscripcion> subs = new ArrayList<Suscripcion>();
 
-        sub.setOrdenDetalle(detalles.get(0));
-        sub.setEstadoSuscripcion(false);
+        ordDetsServ.forEach((ordDet) -> subs.add(new Suscripcion(null, ordDet, false)));
 
-        this.suscripcionRepository.save(sub);
+        return this.suscripcionRepository.saveAllAndFlush(subs);
+    }
+
+    @Override
+    public List<SuscripcionResponseDTO> getAll() {
+        List<Suscripcion> suscripciones = suscripcionRepository.findAll();
+        List<SuscripcionResponseDTO> susEnc = new ArrayList<SuscripcionResponseDTO>();
+
+        suscripciones.forEach((sus) -> {
+            OrdenDetalle detalle = sus.getOrdenDetalle();
+            Orden orden = detalle.getOrden();
+            Cliente cliente = orden.getCliente();
+            Persona persona = cliente.getPersona();
+            Empresa empresa = cliente.getEmpresa();
+
+            susEnc.add(new SuscripcionResponseDTO(sus.getId(), sus.isEstadoSuscripcion(), orden.getFechaCreacion(), persona.getNombre() + " " + persona.getApellido(), empresa.getNombre(), detalle.getProductoServicio().getNombre()));
+        });
+
+        return susEnc;
     }
 
     
