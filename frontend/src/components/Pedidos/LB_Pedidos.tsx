@@ -38,51 +38,7 @@ export default function LB_Pedido() {
         !fetchResponse.hasError &&
         fetchResponse.json
       ) {
-        const encabezados: EncabezadoPedidoType[] = fetchResponse.json.map(
-          (aux: any) => {
-            let cantProductos = 0;
-            let cantServicios = 0;
-            let total = 0;
-
-            const detallePedido = aux.ordenDetalles.map((el: any) => {
-              switch (el.productoServicio.tipo.toString()) {
-                case "SERVICIO":
-                  cantServicios++;
-                  break;
-                case "PRODUCTO":
-                  cantProductos++;
-                  break;
-              }
-
-              total +=
-                ((el.impuesto || 0) / 100 + 0.02 * (el.garantia || 0)) *
-                  el.costo *
-                  el.cantidad +
-                el.costo * el.cantidad;
-
-              return {
-                tipo: el.productoServicio.tipo,
-                cantidad: el.cantidad,
-                costo: el.costo,
-                impuesto: el.impuesto,
-                garantia: el.garantia,
-                total,
-              };
-            });
-
-            return {
-              id: aux.id,
-              persona:
-                aux.cliente.persona.nombre + " " + aux.cliente.persona.apellido,
-              empresa: aux.cliente.empresa?.nombre,
-              cantProductos,
-              cantServicios,
-              fechaCreacion: aux.fechaCreacion,
-              total,
-              anulado: aux.anulado,
-            };
-          }
-        );
+        console.log(fetchResponse.json);
         setData(fetchResponse.json);
         setShouldFetch(false);
       } else if (!fetchResponse.loading && fetchResponse.hasError) {

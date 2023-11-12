@@ -305,7 +305,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
         fnOnClick={() => handleClickedElement(row)}
         estado={row.eliminado}
       />
-      <EditarBtn fnOnClick={() => navigate(`/usuarios/AMUsuarios/${row.id}`)} />
+      <EditarBtn fnOnClick={() => navigate(`/clientes/AMClientes/${row.id}`)} />
     </div>
   );
 
