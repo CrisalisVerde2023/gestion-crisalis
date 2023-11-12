@@ -216,21 +216,21 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
       if (validColumnKeys.includes(columnKey as keyof ProductServiceType)) {
         filteredData = data
           ? data.filter((item) =>
-              String(item[columnKey as keyof ProductServiceType])
-                .toLowerCase()
-                .includes(columnValue)
-            )
+            String(item[columnKey as keyof ProductServiceType])
+              .toLowerCase()
+              .includes(columnValue)
+          )
           : [];
       }
     } else {
       filteredData = data
         ? data.filter((item) =>
-            Object.keys(item).some((key) =>
-              String(item[key as keyof ProductServiceType])
-                .toLowerCase()
-                .includes(searchTerm)
-            )
+          Object.keys(item).some((key) =>
+            String(item[key as keyof ProductServiceType])
+              .toLowerCase()
+              .includes(searchTerm)
           )
+        )
         : [];
     }
 
@@ -305,10 +305,9 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
         <EditarBtn
           fnOnClick={() =>
             navigate(
-              `${location.pathname}${
-                row.tipo === ProductOrService.Producto
-                  ? `/AMProductos/`
-                  : row.tipo === ProductOrService.Servicio && `/AMServicios/`
+              `${location.pathname}${row.tipo === ProductOrService.Producto
+                ? `/AMProductos/`
+                : row.tipo === ProductOrService.Servicio && `/AMServicios/`
               }${row.id}`
             )
           }
@@ -346,7 +345,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    {Object.keys(defaultProductService).map((key) => {
+                    {/* {Object.keys(defaultProductService).map((key) => {
                       if (key !== "eliminado") {
                         return (
                           <th
@@ -361,17 +360,23 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
                       } else {
                         return;
                       }
-                    })}
-                    <th scope="col" className="px-4 py-3 text-center">
-                      Acciones
-                    </th>
+                    })} */}
+
+                    <th scope="col" className="px-4 py-3 text-center">ID</th>
+                    <th scope="col" className="px-4 py-3 text-center">Nombre</th>
+                    <th scope="col" className="px-4 py-3 text-center">Tipo</th>
+                    <th scope="col" className="px-4 py-3 text-center">Costo</th>
+                    <th scope="col" className="px-4 py-3 text-center">Soporte</th>
+                    <th scope="col" className="px-4 py-3 text-center">Impuestos</th>
+                    <th scope="col" className="px-4 py-3 text-center">Acciones</th>
+
                   </tr>
                 </thead>
                 <tbody>
                   {data && data.length ? (
                     data.map((row, index) => (
                       <tr key={index} className="border-b dark:border-gray-700">
-                        {Object.keys(defaultProductService).map((key) => {
+                        {/* {Object.keys(defaultProductService).map((key) => {
                           const cellClass = "px-4 py-3 text-center";
                           if (
                             key === "costo" &&
@@ -394,7 +399,43 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
                               <td className={cellClass}>{(row as any)[key]}</td>
                             );
                           }
-                        })}
+                        })} */}
+                        <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                          {row.id}
+                        </td>
+                        <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                          {row.nombre}
+                        </td>
+                        <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                          {row.tipo}
+                        </td>
+                        <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                          $ {row.costo}
+                        </td>
+                        <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                          {
+                            row.soporte ?
+                              <span>$ {row.soporte}</span> :
+                              <span className="text-red-600">-</span>
+                          }
+                        </td>
+                        <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+                          <div className=" w-[200px] h-[50px] flex justify-start items-start flex-wrap p-[2px] overflow-auto">
+                            {
+                              row.impuestos.length ?
+                              row.impuestos.map((impuesto) => {
+                                return (
+                                  <span key={impuesto.id} className="border-1 mr-[1px] border-denim-200 px-[5px] rounded-xl text-[10px] bg-denim-600 text-white">
+                                    {impuesto.nombre}
+                                  </span>
+                                );
+                              })
+                              :
+                              <span className="text-denim-400 w-full h-full flex justify-center items-center">Sin impuestos asociados</span>
+                            }
+                          </div>
+
+                        </td>
                         {!props.seleccion && (
                           <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
                             {actionButtons(row)}
