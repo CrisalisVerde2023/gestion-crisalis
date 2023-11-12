@@ -425,13 +425,13 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
                               row.impuestos.length ?
                               row.impuestos.map((impuesto) => {
                                 return (
-                                  <span key={impuesto.id} className="border-1 mr-[1px] border-denim-200 px-[5px] rounded-xl text-[10px] bg-denim-600 text-white">
+                                  <span key={impuesto.id} className={`border-1 mr-[1px] border-denim-200 px-[5px] rounded-xl text-[10px] bg-denim-600 ${impuesto.eliminado ? 'text-red-400' : 'text-white' }`}>
                                     {impuesto.nombre}
                                   </span>
                                 );
                               })
                               :
-                              <span className="text-denim-400 w-full h-full flex justify-center items-center">Sin impuestos asociados</span>
+                              <span className="text-gray-400 w-full h-full flex justify-center items-center">Sin impuestos asociados</span>
                             }
                           </div>
 
