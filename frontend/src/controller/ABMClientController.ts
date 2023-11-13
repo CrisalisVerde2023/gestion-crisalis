@@ -25,7 +25,6 @@ export const useFetchClientes = (
     },
     shouldExecute
   );
-  console.log(result);
   if (!id) {
     resultDTO = result;
     let json: any[] = [];

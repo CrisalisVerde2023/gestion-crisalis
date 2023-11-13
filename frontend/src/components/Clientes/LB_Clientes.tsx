@@ -22,6 +22,7 @@ import { useFetchEmpresas } from "../../controller/ABMEnterpriseController";
 
 import {
   ClienteDTO,
+  ClienteResponseDTO,
   ClientesType,
   defaultClienteDTO,
 } from "../types/clientType";
@@ -38,13 +39,6 @@ import SeleccionarBtn from "../UI Elements/SelectBtn";
 interface LB_ClientesProps {
   seleccion: string;
 }
-
-type ClienteResponseDTO = {
-  id: number;
-  persona_id: number;
-  empresa_id: number | null;
-  eliminado: boolean;
-};
 
 export default function LB_Clientes(props: LB_ClientesProps) {
   const [data, setData] = useState<ClientesType[]>([]);

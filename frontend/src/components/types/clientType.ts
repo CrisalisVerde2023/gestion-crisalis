@@ -8,6 +8,13 @@ export type ClientesType = {
   eliminado: boolean;
 };
 
+export type ClienteResponseDTO = {
+  id: number;
+  persona_id: number;
+  empresa_id: number | null;
+  eliminado: boolean;
+};
+
 export type ClienteDTO = {
   persona_id: string | null | undefined;
   empresa_id: string | null | undefined;
