@@ -222,7 +222,7 @@ export default function AM_Clientes() {
           Swal.fire("Atención!", "Error al modificar cliente", "warning");
         }
       }
-      //setShouldModify(false);
+      setShouldModify(false);
     }
   }, [createResponse, modifyResponse]);
 

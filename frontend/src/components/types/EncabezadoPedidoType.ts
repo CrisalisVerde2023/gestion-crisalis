@@ -4,6 +4,7 @@ export type EncabezadoPedidoType = {
   empresa: string;
   cantProds: number;
   cantServs: number;
+  prods_servs: number[];
   fechaCreacion: string;
   total: number;
   anulado: boolean;
@@ -15,6 +16,7 @@ export const defaultValuesPedidoType = {
   empresa: "",
   cantProds: 0,
   cantServs: 0,
+  prods_servs: [],
   fechaCreacion: "",
   total: 0,
   anulado: false,
