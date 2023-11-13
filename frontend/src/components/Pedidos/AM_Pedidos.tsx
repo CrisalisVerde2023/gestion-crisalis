@@ -8,7 +8,12 @@ import {
   useCreatePedidos,
   useModifyPedidos,
 } from "../../controller/ABMPedidoController";
-import { defaultPedidoState } from "../types/UserLogged";
+import {
+  PedidoType,
+  SendPedidoType,
+  defaultPedidoState,
+  defaultSendPedidoType,
+} from "../types/UserLogged";
 import { useFetchReturnType } from "../../hooks/useFetch";
 import {
   EncabezadoPedidoType,
@@ -19,6 +24,9 @@ import VolverBtn from "../UI Elements/VolverBtn";
 export default function AM_Pedidos() {
   const { pedido, setPedido, userLogged } = useContext(UserLoggedContext);
   const navigate = useNavigate();
+  const [pedidoObject, setPedidoObject] = useState<SendPedidoType>(
+    defaultSendPedidoType
+  );
   const [shouldCreate, setShouldCreate] = useState(false);
   const [shouldModify, setShouldModify] = useState(false);
   const [response, setResponse] = useState<useFetchReturnType | null>(null);
@@ -27,7 +35,7 @@ export default function AM_Pedidos() {
   );
   let fetchedData: useFetchReturnType | null = null;
 
-  const createResponse = useCreatePedidos(formData, shouldCreate);
+  const createResponse = useCreatePedidos(pedidoObject, shouldCreate);
   const modifyResponse = useModifyPedidos(formData, shouldModify);
 
   useEffect(() => {
@@ -46,6 +54,57 @@ export default function AM_Pedidos() {
     }
   }, [response]);
 
+  const handleCreatePedido = () => {
+    // Show loading alert
+    Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
+
+    // Create the new pedidoObject from the current state
+    const newPedidoObject = createPedidoObject();
+
+    // Update the pedidoObject state
+    setPedidoObject(newPedidoObject);
+  };
+
+  // useEffect to trigger shouldCreate after pedidoObject is updated
+  useEffect(() => {
+    // If the pedidoObject is different from the initial state, proceed to create pedido
+    if (pedidoObject !== defaultSendPedidoType) {
+      setShouldCreate(true);
+    }
+  }, [pedidoObject]); // Depend on pedidoObject
+
+  // useEffect to handle createResponse changes
+  useEffect(() => {
+    if (createResponse && !createResponse.loading) {
+      Swal.close();
+      if (!createResponse.hasError) {
+        Swal.fire("Perfecto!", "Pedido creado correctamente", "success");
+        setPedido(defaultPedidoState);
+        goBack();
+      } else {
+        Swal.fire("Atención!", "Error al crear pedido", "warning");
+      }
+      // Reset shouldCreate here to ensure reusability of the creation process
+      setShouldCreate(false);
+    }
+  }, [createResponse]);
+
+  function createPedidoObject(): SendPedidoType {
+    console.log("createPedidoObject");
+    const pedidoObject = {
+      idCliente: pedido.cliente.id,
+      idUsuario: userLogged.id,
+      detalleOrden:
+        pedido.prods_servs?.map(({ id, cantidad, garantia }) => ({
+          idServicioProducto: id,
+          cantidad,
+          garantia: garantia ?? null, // Using nullish coalescing to handle cases where garantia is not present.
+        })) || [], // Ensure we default to an empty array if prods_servs is undefined
+    };
+    console.log(pedidoObject);
+    return pedidoObject;
+  }
+
   const clean = () => {
     setPedido(defaultPedidoState);
   };
@@ -53,30 +112,6 @@ export default function AM_Pedidos() {
   const goBack = () => {
     navigate(-1);
   };
-
-  /*const handleSubmit = () => {
-    if (pedido.cliente.id < 0 || !pedido.prods_servs.length)
-      Swal.fire(
-        "Atención!",
-        "Debe seleccionar un Cliente y al menos un Producto o Servicio.",
-        "warning"
-      );
-    else {
-      Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
-      createPedido(userLogged, pedido)
-        .then(() => {
-          Swal.fire({
-            title: "Realizado!",
-            text: `Se ha creado el pedido correctamente.`,
-            icon: "success",
-            timer: 2000,
-          }).then(() => navigate(-1));
-        })
-        .catch(() => {
-          Swal.fire("Error!", `No se ha podido crear el pedido.`, "error");
-        });
-    }
-  };*/
 
   return (
     <div>
@@ -105,7 +140,7 @@ export default function AM_Pedidos() {
         <div className="flex justify-evenly mt-2 mx-2">
           <button
             disabled={pedido.cliente.id < 0 || !pedido.prods_servs.length}
-            //onClick={handleSubmit}
+            onClick={handleCreatePedido}
             className={`${
               pedido.cliente.id < 0 || !pedido.prods_servs.length
                 ? "bg-gray-300 cursor-not-allowed"
