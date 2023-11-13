@@ -1,11 +1,9 @@
 package com.finnegans.gestioncrisalis.models;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,9 +17,8 @@ import java.util.List;
 @Table(name = "ORDENES")
 public class Orden {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(strategy = "native", name = "native")
-    @Column(name = "ID", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER,
@@ -47,6 +44,5 @@ public class Orden {
     @PrePersist
     public void prePersist() {
             this.fechaCreacion = LocalDateTime.now();
-
     }
 }
