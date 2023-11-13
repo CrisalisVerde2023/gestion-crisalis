@@ -11,7 +11,6 @@ import com.finnegans.gestioncrisalis.services.SuscripcionService;
 import org.springframework.stereotype.Service;
 import com.finnegans.gestioncrisalis.dtos.OrdenDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +48,7 @@ public class OrdenServiceImpl implements OrdenService {
 
         // Obtengo los productos y servicios:
         List<Producto> productosServicios = productRepository.findAllById(detallesDTO.stream().map(OrdenDetalleDTO::getIdProductService).collect(Collectors.toList()));
+        if (productosServicios.isEmpty()) throw new ResourceNotFound("No se encontraron productos/servicios que procesar");
 
         boolean tieneServiciosPedidos = productosServicios.stream().anyMatch(producto -> producto.getTipo().equals("SERVICIO"));
         boolean aplicaDescuento = (tieneServiciosPedidos || suscripcionService.tieneServiciosActivos(cliente));
