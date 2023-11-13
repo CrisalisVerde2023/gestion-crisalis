@@ -109,11 +109,11 @@ export default function AM_Empresa() {
     if (createResponse && shouldCreate) {
       setShouldCreate(false);
       if (!createResponse.loading && !createResponse.hasError) {
-        Swal.fire("Perfecto!", "Usuario creado correctamente", "success");
+        Swal.fire("Perfecto!", "Empresa creada correctamente", "success");
         goBack();
       } else if (!createResponse.loading && createResponse.hasError) {
         if (createResponse.statusCode >= 400) {
-          Swal.fire("Atención!", "Error al crear usuario", "warning");
+          Swal.fire("Atención!", "Error al crear empresa", "warning");
         }
       }
     }
@@ -121,11 +121,11 @@ export default function AM_Empresa() {
       setShouldModify(false);
       console.log(modifyResponse);
       if (!modifyResponse.loading && !modifyResponse.hasError) {
-        Swal.fire("Perfecto!", "Usuario modificado correctamente", "success");
+        Swal.fire("Perfecto!", "Empresa modificada correctamente", "success");
         goBack();
       } else if (!modifyResponse.loading && modifyResponse.hasError) {
         if (modifyResponse.statusCode >= 400) {
-          Swal.fire("Atención!", "Error al modificar usuario", "warning");
+          Swal.fire("Atención!", "Error al modificar empresa", "warning");
         }
       }
     }

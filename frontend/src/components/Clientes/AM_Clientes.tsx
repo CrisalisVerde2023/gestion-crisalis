@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFetchPersonas } from "../../controller/ABMPersonController";
 import { useFetchEmpresas } from "../../controller/ABMEnterpriseController";
 import {
@@ -75,10 +74,20 @@ export default function AM_Clientes() {
       !fetchedDataClientes.loading
     ) {
       console.log(fetchedDataClientes.json);
-      setCliente(fetchedDataClientes.json);
+      const fetchedCliente = fetchedDataClientes.json;
+
+      // Assuming the fetchedCliente has 'empresa' and 'persona' properties
+      // that you want to map to 'empresa_id' and 'persona_id' in the DTO
+      setCliente(fetchedCliente);
       setClientesLoading(false);
+
+      // Update the clienteDTO state with the fetched client details
+      setClienteDTO({
+        persona_id: fetchedCliente?.persona?.id || null,
+        empresa_id: fetchedCliente?.empresa?.id || null,
+      });
     }
-  }, [fetchedDataClientes]);
+  }, [fetchedDataClientes, clientesLoading]);
 
   useEffect(() => {
     if (
@@ -136,21 +145,15 @@ export default function AM_Clientes() {
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    if (value === "") {
-      setClienteDTO({
-        ...clienteDTO,
-        [name]: null,
-      });
-      console.log(clienteDTO);
-      return;
-    }
-
-    setClienteDTO({
-      ...clienteDTO,
-      [name]: value,
-    });
-    console.log(clienteDTO);
+    setClienteDTO((prevDTO) => ({
+      ...prevDTO,
+      [name]: Number(value) || null, // This will set to null if the value is an empty string (no selection)
+    }));
   };
+
+  useEffect(() => {
+    console.log(clienteDTO);
+  }, [clienteDTO]);
 
   const isFormComplete = () => {
     const errors = [];
@@ -174,9 +177,10 @@ export default function AM_Clientes() {
   const createResponse = useCreateCliente(clienteDTO, shouldCreate);
   const modifyResponse = useModifyCliente(idToModify, clienteDTO, shouldModify);
 
-  const handleSubmit = () => {
-    const complete = isFormComplete();
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault(); // This will prevent the default form submission behavior.
 
+    const complete = isFormComplete();
     if (complete) {
       console.log("ok");
       Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
@@ -195,9 +199,8 @@ export default function AM_Clientes() {
   };
 
   useEffect(() => {
-    Swal.close();
     if (createResponse && shouldCreate) {
-      setShouldCreate(false);
+      Swal.close();
       if (!createResponse.loading && !createResponse.hasError) {
         Swal.fire("Perfecto!", "Cliente creado correctamente", "success");
         goBack();
@@ -206,10 +209,11 @@ export default function AM_Clientes() {
           Swal.fire("Atención!", "Error al crear cliente", "warning");
         }
       }
+      setShouldCreate(false);
     }
     if (modifyResponse && shouldModify) {
-      setShouldModify(false);
       console.log(modifyResponse);
+      Swal.close();
       if (!modifyResponse.loading && !modifyResponse.hasError) {
         Swal.fire("Perfecto!", "Cliente modificado correctamente", "success");
         goBack();
@@ -218,11 +222,12 @@ export default function AM_Clientes() {
           Swal.fire("Atención!", "Error al modificar cliente", "warning");
         }
       }
+      //setShouldModify(false);
     }
   }, [createResponse, modifyResponse]);
 
   return (
-    <Container className=" flex items-center justify-center h-screen mt-[-60px]">
+    <div className=" flex items-center justify-center h-screen mt-[-60px]">
       <div className="w-1/3">
         <p>Editando cliente {idToModify}</p>
         {cliente !== undefined &&
@@ -245,7 +250,6 @@ export default function AM_Clientes() {
               ? "w-full rounded-lg p-3 bg-green-200"
               : "w-full rounded-lg p-3 bg-blue-200"
           }
-          onSubmit={handleSubmit}
         >
           {personasLoading || empresasLoading || clientesLoading ? (
             <p>Cargando...</p>
@@ -285,7 +289,9 @@ export default function AM_Clientes() {
                 id="countries"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onChange={handleSelectChange}
-                defaultValue={cliente?.empresa.id}
+                defaultValue={
+                  cliente?.empresa !== null ? cliente?.empresa.id : 0
+                }
               >
                 <option value={""}>---Seleccione Empresa---</option>
                 {empresas.map((empresa, index) => (
@@ -296,14 +302,12 @@ export default function AM_Clientes() {
               </select>
             </>
           )}
-
           <button
-            type="submit"
+            type="button"
             className="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            onClick={handleSubmit}
           >
-            {clienteDTO.empresa_id
-              ? "GUARDAR COMO EMPRESA"
-              : "GUARDAR COMO PERSONA"}
+            GUARDAR
           </button>
         </form>
         <div className="flex justify-center items-center mb-4">
@@ -312,6 +316,6 @@ export default function AM_Clientes() {
           </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 }

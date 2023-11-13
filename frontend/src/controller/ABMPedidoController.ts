@@ -1,4 +1,4 @@
-import { UserLogged } from "./../components/types/UserLogged";
+import { SendPedidoType, UserLogged } from "./../components/types/UserLogged";
 //@ts-nocheck
 import { PedidoType } from "../components/types/UserLogged";
 import { useContext } from "react";
@@ -24,24 +24,15 @@ export const useFetchPedidos = (
 };
 
 export const useCreatePedidos = (
-  overrides: Partial<EncabezadoPedidoType> = {},
+  overrides: SendPedidoType,
   shouldExecute = false
 ) => {
-  /*const params = {
-    idCliente: overrides.persona?
-    //idUsuario: userLogged.id,
-    /*detalleOrden: overrides.prods_servs?.map(({ id, cantidad, garantia }) => ({
-      idServicioProducto: id,
-      cantidad,
-      garantia,
-    })),
-  };*/
-
+  console.log(overrides);
   return useFetch(
     {
       method: HTTPMethod.POST,
       url: `${URL_API_ORDEN}`,
-      params: {}, //TODO: Arreglar esto
+      params: overrides,
     },
     shouldExecute
   );
