@@ -441,7 +441,12 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                         ? empresas?.find((e) => e.id === cliente.empresa_id)
                         : null;
                       return (
-                        <tr key={index} className="border-b text-center">
+                        <tr
+                          key={index}
+                          className={`border-b text-center ${
+                            cliente.eliminado && "bg-gray-300"
+                          }`}
+                        >
                           <td className="py-2 px-4">{cliente.id}</td>
                           <td className="py-2 px-4">
                             {cliente.empresa_id ? "Empresa" : "Persona"}
@@ -452,14 +457,17 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                           <td className="py-2 px-4">{empresa?.nombre}</td>
                           <td className="py-2 px-4 flex justify-content-center">
                             {!props.seleccion && actionButtons(cliente)}
-                            {props.seleccion === "simple" && (
-                              <SeleccionarBtn
-                                fnOnClick={() => {
-                                  addToPedido(cliente);
-                                }}
-                                seleccionado={pedido.cliente.id === cliente.id}
-                              />
-                            )}
+                            {props.seleccion === "simple" &&
+                              !cliente.eliminado && (
+                                <SeleccionarBtn
+                                  fnOnClick={() => {
+                                    addToPedido(cliente);
+                                  }}
+                                  seleccionado={
+                                    pedido.cliente.id === cliente.id
+                                  }
+                                />
+                              )}
                           </td>
                         </tr>
                       );
