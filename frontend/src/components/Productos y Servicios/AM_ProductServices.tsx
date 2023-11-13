@@ -335,9 +335,10 @@ export default function AM_ProductService() {
                   </div>
                 ) : null}
 
-                <div className=" bg-atlantis-100 rounded-lg p-1 h-[150px] flex flex-col">
-                  Impuestos asociados al {formData.tipo}:
-                  <div className="overflow-y-auto flex-1 h-full">
+                <div className=" bg-denim-700 rounded-lg p-1 h-[150px] flex flex-col">
+                  <span className="text-white font-bold">Impuestos asociados al {formData.tipo.toLocaleLowerCase()}</span>
+                  
+                  <div className="overflow-y-auto flex-1 h-full rounded-lg bg-white p-1">
                     {formData.idImpuestos?.length === 0 && (
                       <p>Este {formData.tipo} está libre de impuestos</p>
                     )}
@@ -375,11 +376,14 @@ export default function AM_ProductService() {
                   </div>
                 </div>
 
-                <div className="w-full  bg-slate-300 p-1 rounded-lg">
+                <div className="w-full  bg-denim-700 p-1 rounded-lg">
                   <div className="flex justify-between mb-1 items-center">
-                    <p className="font-bold text-sm ml-1">Agregar Impuestos</p>
+                    <p className="font-bold text-sm ml-1 text-white">Agregar Impuestos</p>
                     <div className="flex items-center">
-                      <Filter />
+                      <span className="text-white">
+
+                        <Filter />
+                      </span>
                       <input
                         type="text"
                         placeholder="Filtrar Impuesto"
@@ -389,13 +393,13 @@ export default function AM_ProductService() {
                     </div>
                   </div>
 
-                  <div className="w-full h-[200px] overflow-y-auto bg-atlantis-100  p-1 rounded-lg ">
+                  <div className="w-full h-[200px] overflow-y-auto bg-white p-1 rounded-lg ">
                     {impuestosFiltrados?.map((impuesto) => (
                       <div
                         key={impuesto.id}
                         className={`border-2 p-[3px] f hover:bg-atlantis-600 cursor-pointer rounded-xl ${impuesto.eliminado
-                            ? "bg-red-500 hover:bg-red-600"
-                            : "bg-atlantis-500"
+                          ? "bg-red-500 hover:bg-red-600"
+                          : "bg-atlantis-500"
                           } `}
                       >
                         <div
@@ -421,8 +425,8 @@ export default function AM_ProductService() {
                       : {})}
                     onClick={handleSubmit}
                     className={`${!isFormComplete() || !!errorsForm().length
-                        ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-denim-400 hover:bg-denim-500"
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-denim-400 hover:bg-denim-500"
                       } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
                   >
                     {idToModify !== undefined && idToModify !== null
