@@ -205,19 +205,20 @@ export default function LB_Clientes(props: LB_ClientesProps) {
 
   useEffect(() => {
     if (createResponse && shouldCreate) {
-      setShouldCreate(false);
+      
       if (!createResponse.loading && !createResponse.hasError) {
+        setShouldCreate(false);
         setShouldFetchEmpresas(true);
         setShouldFetchPersonas(true);
         console.log("creado");
         Swal.fire("Perfecto!", "Creo al cliente correctamente", "success");
-      } else if (!deleteResponse.loading && deleteResponse.hasError) {
-        if (deleteResponse.statusCode >= 400) {
+      } else if (!createResponse.loading && createResponse.hasError) {
+        if (createResponse.statusCode >= 400) {
           Swal.fire("Atención!", "Error al crear cliente", "warning");
         }
       }
     }
-  }, [deleteResponse]);
+  }, [createResponse]);
 
   useEffect(() => {
     console.log(clienteDTO);
@@ -307,7 +308,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12 bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
         <div className="flex flex-row justify-center items-center mt-4 mb-4 ">
-          <form
+          <div
             className={`flex flex-column justify-content-center align-items-center px-4 text-sm text-left text-gray-500 dark:text-gray-400 bg-gray-200 shadow-md shadow-gray-300 rounded-lg`}
           >
             <label
@@ -366,6 +367,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               </div>
             </div>
             <button
+              type="button"
               className="mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               onClick={(e) => {
                 setShouldCreate(true);
@@ -375,7 +377,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                 ? "CREAR CLIENTE PERSONA"
                 : "CREAR CLIENTE EMPRESA"}
             </button>
-          </form>
+          </div>
         </div>
 
         <div className="flex flex-col justify-center items-center mb-4">
