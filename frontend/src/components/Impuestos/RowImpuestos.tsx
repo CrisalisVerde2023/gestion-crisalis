@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import EditarBtn from "../UI Elements/EditarBtn";
-import { ToggleButton } from "react-bootstrap";
 import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
-import { ImpuestosType } from "../types/taxType";
 
 export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
   const [formData, setFormData] = useState({ ...impuesto });
@@ -25,7 +23,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
     updateByIdData({ id: dataId, body }).then(handleModalEdit());
   };
 
-  const handleRemove = (selected: ImpuestosType) => {
+  const handleRemove = (selected) => {
     Swal.fire({
       title: "Confirmar cambio de estado de usuario?",
       text: `Esta por ${impuesto.eliminado ? "activar" : "desactivar"} a ${
@@ -54,11 +52,11 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
         <td className="px-4 py-3 text-center">{impuesto.porcentaje}</td>
         <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
           <div className="flex items-center space-x-4">
+            <EditarBtn fnOnClick={handleModalEdit} />
             <ToggleEstadoBtn
               fnOnClick={() => handleRemove(impuesto)}
               estado={impuesto.eliminado}
             />
-            <EditarBtn fnOnClick={handleModalEdit} />
           </div>
         </td>
       </tr>

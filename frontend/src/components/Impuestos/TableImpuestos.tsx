@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { RowImpuestos } from "./RowImpuestos";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
-import { ImpuestosType } from "../types/taxType";
 
 const HOST_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
 
@@ -23,7 +22,7 @@ export const TableImpuestos = () => {
     updateByIdData,
   } = useCrud(HOST_API_IMPUESTOS);
 
-  const handleOnChange = (target: any) => {
+  const handleOnChange = ({ target }) => {
     const { name, value } = target;
     setFormData({
       ...formData,
@@ -31,7 +30,7 @@ export const TableImpuestos = () => {
     });
   };
 
-  const handleCreate = (e: any) => {
+  const handleCreate = (e) => {
     e.preventDefault();
     const body = { ...formData, porcentaje: Number(formData.porcentaje) };
     create({ body }).then(
@@ -46,7 +45,7 @@ export const TableImpuestos = () => {
     } else if (!json) {
       return;
     } else {
-      return json.filter((impuesto: ImpuestosType) =>
+      return json.filter((impuesto) =>
         impuesto.nombre.toLowerCase().includes(search.toLowerCase())
       );
     }
@@ -56,8 +55,8 @@ export const TableImpuestos = () => {
     navigate(-1);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
   };
 
   return (
@@ -419,7 +418,7 @@ export const TableImpuestos = () => {
                     </tr>
                   </>
                 ) : (
-                  filteredImpuestos().map((impuesto: ImpuestosType) => (
+                  filteredImpuestos().map((impuesto) => (
                     <RowImpuestos
                       impuesto={impuesto}
                       key={impuesto.id}
@@ -571,9 +570,9 @@ export const TableImpuestos = () => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
                   <span className="sr-only">Close modal</span>
@@ -679,9 +678,9 @@ export const TableImpuestos = () => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
                   Agregar nuevo impuesto
