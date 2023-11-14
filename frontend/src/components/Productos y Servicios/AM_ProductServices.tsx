@@ -135,7 +135,7 @@ export default function AM_ProductService() {
 
   const errorsForm = () => {
     const errors = [];
-    if (!formData.nombre.length) {
+    if (formData.nombre.length === 0) {
       errors.push("El nombre es obligatorio");
     }
     if (formData.tipo === ProductOrService.Producto && formData.costo == null) {

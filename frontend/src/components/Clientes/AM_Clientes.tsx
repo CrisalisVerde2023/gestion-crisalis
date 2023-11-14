@@ -41,6 +41,7 @@ export default function AM_Clientes() {
 
   fetchedDataPersonas = useFetchPersonas(undefined, true);
   fetchedDataEmpresas = useFetchEmpresas(undefined, true);
+  
   if (idToModify !== undefined) {
     fetchedDataClientes = useFetchClientes(idToModify, clientesLoading);
   } else fetchedDataClientes = useFetchClientes(idToModify, clientesLoading);
@@ -187,6 +188,7 @@ export default function AM_Clientes() {
       if (!idToModify) {
         setShouldCreate(true);
       } else {
+        console.log("modificando....");
         setShouldModify(true);
       }
     } else {
@@ -212,19 +214,21 @@ export default function AM_Clientes() {
       setShouldCreate(false);
     }
     if (modifyResponse && shouldModify) {
-      console.log(modifyResponse);
+      console.log("modiresponse", modifyResponse);
       Swal.close();
+      
       if (!modifyResponse.loading && !modifyResponse.hasError) {
         Swal.fire("Perfecto!", "Cliente modificado correctamente", "success");
         goBack();
-      } else if (!modifyResponse.loading && modifyResponse.hasError) {
-        if (modifyResponse.statusCode >= 400) {
+      } else {
+        
           Swal.fire("Atención!", "Error al modificar cliente", "warning");
-        }
+          
+        
       }
       setShouldModify(false);
     }
-  }, [createResponse, modifyResponse]);
+  }, [createResponse, modifyResponse, shouldCreate, shouldModify]);
 
   return (
     <div className=" flex items-center justify-center h-screen mt-[-60px]">
