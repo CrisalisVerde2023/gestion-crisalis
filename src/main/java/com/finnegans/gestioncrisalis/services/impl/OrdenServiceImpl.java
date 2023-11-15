@@ -6,11 +6,13 @@ import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.*;
 import com.finnegans.gestioncrisalis.repositories.*;
 import com.finnegans.gestioncrisalis.services.OrdenService;
+import com.finnegans.gestioncrisalis.services.SuscripcionService;
+
 import org.springframework.stereotype.Service;
 import com.finnegans.gestioncrisalis.dtos.OrdenDTO;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrdenServiceImpl implements OrdenService {
@@ -19,90 +21,55 @@ public class OrdenServiceImpl implements OrdenService {
     private final ProductoRepository productRepository;
     private final ClienteRepository clienteRepository;
     private final UsuarioRepository usuarioRepository;
+    private final SuscripcionService suscripcionService;
 
-    public OrdenServiceImpl(OrdenRepository ordenRepository, ProductoRepository productRepository, OrdenDetalleRepository ordenDetalleRepository,ClienteRepository clienteRepository, UsuarioRepository usuarioRepository){
+    public OrdenServiceImpl(OrdenRepository ordenRepository, ProductoRepository productRepository, OrdenDetalleRepository ordenDetalleRepository,ClienteRepository clienteRepository, UsuarioRepository usuarioRepository, SuscripcionService suscripcionService){
         this.ordenDetalleRepository = ordenDetalleRepository;
         this.productRepository = productRepository;
         this.ordenRepository = ordenRepository;
         this.clienteRepository = clienteRepository;
         this.usuarioRepository = usuarioRepository;
+        this.suscripcionService = suscripcionService;
     }
+
     @Override
     public Orden generar(OrdenDTO ordenDTO, boolean provisorio) {
-        Cliente cliente = clienteRepository.findById(ordenDTO.getIdCliente()).orElseThrow(()->new ResourceNotFound("No se encontró el cliente: "+ ordenDTO.getIdCliente()));
-        Usuario usuario = usuarioRepository.findById(ordenDTO.getIdUsuario()).orElseThrow(()->new ResourceNotFound("No se encontró el usuario: "+ ordenDTO.getIdUsuario()));
-        List<OrdenDetalle> detalles = new ArrayList<>();
+        Cliente cliente = (ordenDTO.getIdCliente() == null)
+            ? null
+            : clienteRepository.findById(ordenDTO.getIdCliente()).orElseThrow(()->new ResourceNotFound("No se encontró el cliente: " + ordenDTO.getIdCliente()));
+        Usuario usuario = usuarioRepository.findById(ordenDTO.getIdUsuario()).orElseThrow(()->new ResourceNotFound("No se encontró el usuario: " + ordenDTO.getIdUsuario()));
+        List<OrdenDetalle> detalles;
+
+        //Creamos una orden en blanco
+        Orden orden = new Orden(null, cliente, usuario, false, null, null);
 
         // Levantamos el listado de productos/servicios (OrdenDetalleDTO) solicitados desde el front
         List<OrdenDetalleDTO> detallesDTO = ordenDTO.getOrdenDetalles();
 
-        //Creamos una orden y una lista de detalles de orden
-        Orden orden = new Orden(null, cliente, usuario, false, null, null);
+        // Obtengo los productos y servicios:
+        List<Producto> productosServicios = productRepository.findAllById(detallesDTO.stream().map(OrdenDetalleDTO::getIdProductService).collect(Collectors.toList()));
+        if (productosServicios.isEmpty()) throw new ResourceNotFound("No se encontraron productos/servicios que procesar");
 
-        // Antes de correr el motor habría que obtener los Productos/servicios por id, definir los nuevos serviciosActivos totales y pasar el boolean de !serviciosActivos.isEmpty() al motor.
+        boolean tieneServiciosPedidos = productosServicios.stream().anyMatch(producto -> producto.getTipo().equals("SERVICIO"));
+        boolean aplicaDescuento = (tieneServiciosPedidos || suscripcionService.tieneServiciosActivos(cliente));
 
+        // Llamada al motor
+        detalles = calculin(productosServicios, detallesDTO, aplicaDescuento, orden);
 
-        // List<Long> serviciosActivos = this.suscripcionService.getServiciosActivos(cliente);
-        
-        // Obtener serviciosActivos del Cliente
-        //servicioSuscripciones.getServiciosActivosPorCliente(cliente.)
+        // Provisorio indica si es solo cálculo (true) o si también hay que guardar el pedido calculado (false)
+        orden.setOrdenDetalles(provisorio ? detalles : this.ordenDetalleRepository.saveAllAndFlush(detalles));
 
-            /*
-            
-            cliente.getEmpresa() != null => Empresa;
-            cliente.getEmpresa() == null => Persona;
+        // Si no es provisorio y hay servicios pedidos creo las suscripciones
+        if ((!provisorio) && (tieneServiciosPedidos)) 
+            suscripcionService.createSubByOds(detalles.stream().filter(detalle -> detalle.getTipo().equals("SERVICIO")).collect(Collectors.toList()));
 
-            cliente.getEmpresa() != null => Empresa {
-                empresa = cliente.getEmpresa();
-                clientesTodos = empresa.getClientes();
-
-                for clientesTodos -> .getOrdenes();
-                    for ordenes -> .orderDetalles
-                        .filtra orderDetalles por tipo == "SERVICIO".
-                            .getSuscripcion() . filtrar por Activos
-                                .getOrderDetalle.productoServicio.getId()
-            }
-            */
-        
-        // Motor (List<Productos> productos, detallesDTO, boolean tieneServiciosActivos)
-        // Cambiar la lógica: Buscar todos los productos por IDs e iterar sobre eso, luego iterar el detallesDTO para buscar los datos del item correspondiente (hacerlo modulado).
-        for(OrdenDetalleDTO item: detallesDTO) {
-            boolean tieneServiciosActivos = false;
-
-            //Traemos el producto correspondiente al detalle de orden
-            Producto producto = productRepository.findById(item.getIdProductService()).orElseThrow(()->new ResourceNotFound("No se encontró el producto: "+ item.getIdProductService()));
-
-            //Seteamos el detalle de orden con el dto, mas los campos que debemos agregar
-            detalles.add(new OrdenDetalle(
-                null,
-                orden,
-                producto,
-                item.getCantidad(),
-                producto.getNombre(),
-                producto.getCosto(),
-                producto.getImpuestos().stream().mapToDouble(imp -> imp.getPorcentaje()).sum() * producto.getCosto(), // Provisorio hasta implementar la tabla de Impuestos de OrderDetail.
-                ((producto.getTipo().equals("PRODUCTO")) && (tieneServiciosActivos)) ? (producto.getCosto() * .1) : 0,
-                producto.getSoporte() == null ? 0 : producto.getSoporte(), // En el caso de que sea un servicio se pasa esto, si no null
-                item.getGarantia(),
-                (item.getGarantia() != null) ? (item.getGarantia() * .02 * producto.getCosto()) : 0,
-                false,
-                producto.getTipo(),
-                null
-            ));
-        }
-
-        // Fin motor
-
-        orden.setOrdenDetalles(this.ordenDetalleRepository.saveAllAndFlush(detalles));
-        return orden; //this.ordenRepository.save(orden);
-
+        return provisorio ? orden : this.ordenRepository.saveAndFlush(orden);
     }
 
     @Override
     public List<OrdenEncabezadoDTO> getAll() {
         return this.ordenRepository.getEncabezados();
     }
-
 
     public Orden getById(Long id) {
         Orden orden = this.ordenRepository.findById(id)
@@ -117,5 +84,29 @@ public class OrdenServiceImpl implements OrdenService {
 
         orden.setAnulado(!orden.isAnulado());
         this.ordenRepository.save(orden);
+    }
+
+    // Motor de cálculo
+    private List<OrdenDetalle> calculin(List<Producto> productosServicios, List<OrdenDetalleDTO> detallesDTO, boolean aplicaDescuento, Orden orden) {
+        return productosServicios.stream().map(producto -> {
+            OrdenDetalleDTO item = detallesDTO.stream().filter(detalleDTO -> detalleDTO.getIdProductService() == producto.getId()).findFirst().get();
+
+            return new OrdenDetalle(
+                null,
+                orden,
+                producto,
+                producto.getTipo().equals("PRODUCTO") ? item.getCantidad() : 1,
+                producto.getNombre(),
+                producto.getCosto(),
+                producto.getImpuestos().stream().mapToDouble(Impuesto::getPorcentaje).sum() * producto.getCosto(), // Provisorio hasta implementar la tabla de Impuestos de OrderDetail.
+                (producto.getTipo().equals("SERVICIO")) ? null : (aplicaDescuento) ? Math.round(producto.getCosto() * .1 * 100.0) / 100.0 : 0,
+                producto.getSoporte() == null ? null : producto.getSoporte(),
+                item.getGarantia(),
+                (item.getGarantia() != null) ? (item.getGarantia() * .02 * producto.getCosto()) : null,
+                false,
+                producto.getTipo(),
+                null
+            );
+        }).collect(Collectors.toList());
     }
 }

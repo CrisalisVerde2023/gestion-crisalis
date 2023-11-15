@@ -94,7 +94,7 @@ export const useCrud = (url: string) => {
     }
   };
 
-  const deleteByIdData = async (id: number) => {
+  const deleteByIdData = async ({ id }) => {
     try {
       const response = await fetch(`${url}/${id}`, {
         method: "PATCH",
@@ -168,7 +168,7 @@ export const useCrud = (url: string) => {
     }
   };
 
-  const create = async (body: Object) => {
+  const create = async ({ body }) => {
     try {
       const response = await fetch(`${url}`, {
         method: "POST",
@@ -221,7 +221,6 @@ export const useCrud = (url: string) => {
         statusCode: response.status,
       });
     } catch (error) {
-      s;
       setEstado({ ...estado, hasError: true });
       Swal.fire("Atención!", "Error al crear", "warning");
       // Assuming 'error' is an object with the properties you mentioned
@@ -233,7 +232,7 @@ export const useCrud = (url: string) => {
     }
   };
 
-  const updateByIdData = async (id: number, body: Object) => {
+  const updateByIdData = async ({ id, body }) => {
     try {
       const response = await fetch(`${url}/${id}`, {
         method: "POST",

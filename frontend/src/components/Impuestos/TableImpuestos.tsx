@@ -23,7 +23,7 @@ export const TableImpuestos = () => {
     updateByIdData,
   } = useCrud(HOST_API_IMPUESTOS);
 
-  const handleOnChange = (target: any) => {
+  const handleOnChange = ({ target }) => {
     const { name, value } = target;
     setFormData({
       ...formData,

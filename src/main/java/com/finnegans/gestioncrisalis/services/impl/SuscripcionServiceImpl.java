@@ -25,9 +25,10 @@ public class SuscripcionServiceImpl implements SuscripcionService {
         this.suscripcionRepository = suscripcionRepository;
     }
 
+    // El método siguiente no es necesario, se deja a modo de guía/ejemplo
     @Override
-    public List<Long> getServiciosActivos(Cliente cliente) {
-        List<Long> idsServiciosActivos = new ArrayList<Long>();
+    public List<Suscripcion> getServiciosActivos(Cliente cliente) {
+        List<Suscripcion> serviciosActivos = new ArrayList<Suscripcion>();
 
         for (Cliente cli: (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
             for (Orden ord: cli.getOrdenes())
@@ -35,10 +36,24 @@ public class SuscripcionServiceImpl implements SuscripcionService {
                     Suscripcion ordenSus = ordDet.getSuscripcion();
 
                     if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion()))
-                        idsServiciosActivos.add(ordenSus.getOrdenDetalle().getProductoServicio().getId());
+                        serviciosActivos.add(ordenSus);
                 };
 
-        return idsServiciosActivos; // [IdServicio, idServicio]
+        return serviciosActivos;
+    }
+
+    @Override
+    public boolean tieneServiciosActivos(Cliente cliente) {
+        for (Cliente cli: (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
+            for (Orden ord: cli.getOrdenes())
+                for (OrdenDetalle ordDet: ord.getOrdenDetalles()) {
+                    Suscripcion ordenSus = ordDet.getSuscripcion();
+
+                    if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion()))
+                        return true;
+                };
+
+        return false;
     }
 
     @Override
