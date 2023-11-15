@@ -507,7 +507,7 @@ export default function Dashboard() {
                 <ul className="text-gray-500 dark:text-gray-400 space-y-3">
                   <li className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
                     <Link
-                      to={`/home`}
+                      to={`/asignacionservicios`}
                       className="flex p-3 w-full justify-between"
                     >
                       <span>{`Asignar Servicios a Cliente`}</span>
