@@ -20,7 +20,7 @@ export const TableImpuestos = () => {
     create,
     deleteByIdData,
     updateByIdData,
-  } = useCrud(HOST_API_IMPUESTOS);
+  } = useCrud({ url: HOST_API_IMPUESTOS });
 
   const handleOnChange = ({ target }) => {
     const { name, value } = target;
@@ -40,15 +40,11 @@ export const TableImpuestos = () => {
   };
 
   const filteredImpuestos = () => {
-    if (search.length === 0) {
-      return json;
-    } else if (!json) {
-      return;
-    } else {
-      return json.filter((impuesto) =>
-        impuesto.nombre.toLowerCase().includes(search.toLowerCase())
-      );
-    }
+    if (search.length === 0) return json;
+
+    return json.filter((impuesto) =>
+      impuesto.nombre.toLowerCase().includes(search.toLowerCase())
+    );
   };
 
   const goBack = () => {
@@ -67,7 +63,7 @@ export const TableImpuestos = () => {
             {/* Buscar */}
             <BuscarBar fnOnChange={handleSearchChange} value={search} />
             {/* Botones */}
-            <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+            <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0 mx-0">
               <button
                 type="button"
                 id="createProductModalButton"
@@ -91,8 +87,8 @@ export const TableImpuestos = () => {
                 </svg>
                 Crear impuesto
               </button>
-              <div className="flex items-center space-x-3 w-full md:w-auto">
-                {/* ACCIONES
+              {/* <div className="flex items-center space-x-3 w-full md:w-auto"> */}
+              {/* ACCIONES
                 <button
                   id="actionsDropdownButton"
                   data-dropdown-toggle="actionsDropdown"
@@ -140,7 +136,7 @@ export const TableImpuestos = () => {
                     </a>
                   </div>
                 </div> */}
-                {/* FILTROS
+              {/* FILTROS
                 <button
                   id="filterDropdownButton"
                   data-dropdown-toggle="filterDropdown"
@@ -361,7 +357,7 @@ export const TableImpuestos = () => {
                     </li>
                   </ul>
                 </div> */}
-              </div>
+              {/* </div> */}
             </div>
           </div>
           {/* Tabla */}
@@ -374,6 +370,9 @@ export const TableImpuestos = () => {
                   </th>
                   <th scope="col" className="px-4 py-3 text-center">
                     Porcentaje
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-center">
+                    Estado
                   </th>
                   <th scope="col" className="px-4 py-3 text-center">
                     Acciones
@@ -393,19 +392,28 @@ export const TableImpuestos = () => {
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
-                    </tr>
-                    <tr className="animate-pulse">
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
                     </tr>
                     <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                    </tr>
+                    <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
@@ -417,6 +425,12 @@ export const TableImpuestos = () => {
                       </td>
                     </tr>
                   </>
+                ) : !Boolean(json.length) ? (
+                  <tr className="p-4">
+                    <td colSpan={3} className="text-center p-4">
+                      NO HAY DATOS
+                    </td>
+                  </tr>
                 ) : (
                   filteredImpuestos().map((impuesto) => (
                     <RowImpuestos
@@ -430,6 +444,7 @@ export const TableImpuestos = () => {
               </tbody>
             </table>
           </div>
+
           {/* Tabla footer paginacion */}
           {/* <nav
             className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
@@ -584,7 +599,7 @@ export const TableImpuestos = () => {
                   <div>
                     <label
                       htmlFor="nombre-modal-create"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
                       Impuesto
                     </label>
@@ -602,7 +617,7 @@ export const TableImpuestos = () => {
                   <div>
                     <label
                       htmlFor="porcentaje-modal-create"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
                       Porcentaje
                     </label>

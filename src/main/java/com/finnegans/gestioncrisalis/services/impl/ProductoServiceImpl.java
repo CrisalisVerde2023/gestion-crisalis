@@ -47,7 +47,6 @@ public class ProductoServiceImpl implements ProductoService {
         );
 
         if (productoDTO.getIdImpuestos() != null) {
-            System.out.println("Impuestos: ");
             producto.setImpuestos(new ArrayList<>());//Instancio la lista de impuestos porque si es null no me deja agregarle elementos
             productoDTO.getIdImpuestos().forEach(
                 (idImpuesto) -> {

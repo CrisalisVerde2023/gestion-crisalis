@@ -38,7 +38,8 @@ public class Empresa {
 
     @Column(name = "START_DATE", nullable = false)
     private Date start_date;
-
+    @Column(name = "ELIMINADO", nullable = false, columnDefinition = "boolean default false")
+    private boolean eliminado;
     @Column(updatable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
