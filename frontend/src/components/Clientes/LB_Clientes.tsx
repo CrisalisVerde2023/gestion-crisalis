@@ -431,8 +431,8 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                     ?.sort((a, b) => (a.id < b.id ? -1 : 1))
                     .map((cliente, index) => {
                       const persona = personas?.find(
-                        (p) => p.id === cliente.persona_id
-                      );
+                        (p) => p.id === cliente.persona_id //Esto no tiene sentido porque la respuesta del back trae el cliente con la persona y la empresa (ambos con todos los atributos)
+                      );                                   //La entidad cliente que solo tiene ids tanto para empresa y persona es el DTO que se usa para enviar la información al back, la respuesta viene completa con toda la info que necesito, no con los id.
                       const empresa = cliente.empresa_id
                         ? empresas?.find((e) => e.id === cliente.empresa_id)
                         : null;
