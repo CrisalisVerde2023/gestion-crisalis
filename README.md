@@ -38,3 +38,4 @@
 
 # Estrategia de branching propuesta
 ![estrategia de branching](https://i.ibb.co/nnbx1YF/estrategia-branching.png)
+
