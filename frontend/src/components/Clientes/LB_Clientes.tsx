@@ -8,6 +8,23 @@ import {
 } from "react-bootstrap-icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+
+import SelectSearch from 'react-select-search';// El select magico
+
+const options = [
+  { name: 'Swedish', value: 'sv' },
+  { name: 'English', value: 'en' },
+  {
+    type: 'group',
+    name: 'Group name',
+    items: [
+      { name: 'Spanish', value: 'es' },
+    ]
+  },
+];
+
+import 'react-select-search/style.css'
+
 //Fetch clientes
 import {
   useCreateCliente,
@@ -50,6 +67,9 @@ export default function LB_Clientes(props: LB_ClientesProps) {
   >([]);
   //Pido personas y empresas
   const [personas, setPersonas] = useState<PersonasType[] | null>([]);
+  const [personasOption, setPersonasOption] = useState<any[]>([]);
+  const [empresasOption, setEmpresasOption] = useState<any[]>([]);
+
   const [empresas, setEmpresas] = useState<EnterpriseType[] | null>([]);
   const [clientes, setClientes] = useState<ClienteResponseDTO[] | null>([]);
   const [shouldDelete, setShouldDelete] = useState(false);
@@ -58,7 +78,9 @@ export default function LB_Clientes(props: LB_ClientesProps) {
   const [shouldFetchEmpresas, setShouldFetchEmpresas] = useState(true);
   const [shouldFetchClientes, setShouldFetchClientes] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | undefined>(undefined);
+
   const [clienteDTO, setClienteDTO] = useState<ClienteDTO>(defaultClienteDTO);
+
   const [filterByPersona, setFilterByPersona] = useState(true);
   const [filterByEmpresa, setFilterByEmpresa] = useState(true);
   let fetchResponseEmpresa = useFetchEmpresas(undefined, shouldFetchEmpresas);
@@ -122,6 +144,26 @@ export default function LB_Clientes(props: LB_ClientesProps) {
     ) {
       console.log("Tiene personas y empresas, pedir clientes");
       setShouldFetchClientes(true);
+
+      //Aca voy a generar las opciones de personas y empresas para el select
+      const opcionesPersonas = personas?.map((persona) => {
+        return {
+          name: `${persona.nombre} ${persona.apellido}`,
+          value: persona.id,
+        };
+      });
+      opcionesPersonas?.unshift({ name: "--SIN SELECCIÓN--", value: 0 });
+      setPersonasOption(opcionesPersonas || []);
+
+      //Aca voy a generar las opciones de empresas para el select
+      const opcionesEmpresas = empresas?.map((empresa) => {
+        return {
+          name: empresa.nombre,
+          value: empresa.id,
+        };
+      });
+      opcionesEmpresas?.unshift({ name: "--SIN SELECCIÓN--", value: 0 });
+      setEmpresasOption(opcionesEmpresas || []);
     }
   }, [shouldFetchEmpresas, shouldFetchPersonas]);
 
@@ -175,8 +217,8 @@ export default function LB_Clientes(props: LB_ClientesProps) {
           const personaMatches =
             persona && filterByPersona
               ? `${persona.nombre} ${persona.apellido}`
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
               : false;
           const empresaMatches =
             empresa && filterByEmpresa
@@ -205,7 +247,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
 
   useEffect(() => {
     if (createResponse && shouldCreate) {
-      
+      console.log(createResponse, "createResponse")
       if (!createResponse.loading && !createResponse.hasError) {
         setShouldCreate(false);
         setShouldFetchEmpresas(true);
@@ -214,7 +256,8 @@ export default function LB_Clientes(props: LB_ClientesProps) {
         Swal.fire("Perfecto!", "Creo al cliente correctamente", "success");
       } else if (!createResponse.loading && createResponse.hasError) {
         if (createResponse.statusCode >= 400) {
-          Swal.fire("Atención!", "Error al crear cliente", "warning");
+          Swal.fire("Error", "No se pudo crear el cliente, o ya existe o el servidor no está funcionando", "error");
+          setShouldCreate(false);
         }
       }
     }
@@ -233,6 +276,22 @@ export default function LB_Clientes(props: LB_ClientesProps) {
       [name]: value === "" ? null : parseInt(value),
     }));
   };
+
+  //Esta es la funcion para el nuevo select
+  const handleSelectChangePersona = (selectedValue) => {
+    setClienteDTO((prevDTO) => ({
+      ...prevDTO,
+      persona_id: selectedValue,
+    }));
+  };
+
+  const handleSelectChangeEmpresa = (selectedValue) => {
+    setClienteDTO((prevDTO) => ({
+      ...prevDTO,
+      empresa_id: selectedValue,
+    }));
+  };
+
 
   const createClient = () => {
     setShouldCreate(true);
@@ -271,9 +330,8 @@ export default function LB_Clientes(props: LB_ClientesProps) {
 
     Swal.fire({
       title: "Confirmar cambio de estado de una persona?",
-      text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${
-        persona ? persona.nombre : "una persona"
-      } ${empresa ? "de la empresa " + empresa.nombre : ""}`,
+      text: `Esta por ${selected.eliminado ? "activar" : "desactivar"} a ${persona ? persona.nombre : "una persona"
+        } ${empresa ? "de la empresa " + empresa.nombre : ""}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí! Estoy seguro.",
@@ -309,7 +367,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12 bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
         <div className="flex flex-row justify-center items-center mt-4 mb-4 ">
           <div
-            className={`flex flex-column justify-content-center align-items-center px-4 text-sm text-left text-gray-500 dark:text-gray-400 bg-gray-200 shadow-md shadow-gray-300 rounded-lg`}
+            className={` bg-white flex flex-column justify-content-center align-items-center px-4 text-sm text-left text-gray-500 dark:text-gray-400 shadow-md shadow-gray-300 rounded-lg`}
           >
             <label
               htmlFor="persona_id"
@@ -318,25 +376,13 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               Persona:
             </label>
             <div className="flex items-center">
-              <select
-                name="persona_id"
-                id="persona_id"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500"
-                onChange={handleSelectChange}
-              >
-                <option value="">---Seleccione Persona---</option>
-                {personas?.map((persona, index) => (
-                  <option key={index} value={persona.id}>
-                    ID: {persona.id} - {persona.nombre} {persona.apellido}
-                  </option>
-                ))}
-              </select>
+              <SelectSearch options={personasOption} search name="persona_id" id="persona_id" placeholder="Seleccione persona" onChange={handleSelectChangePersona} />
 
               <div
-                onClick={() => console.log("agregar persona")}
-                className="flex items-center ml-1 cursor-pointer px-2"
+                onClick={() => navigate("/personas/AMPersonas")}
+                className="flex items-center ml-1 cursor-pointer px-2 text-blue-400"
               >
-                <PersonWorkspace /> +
+                <PersonWorkspace className="text-2xl"/> +
               </div>
             </div>
             <label
@@ -346,36 +392,31 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               Empresa:
             </label>
             <div className="flex items-center">
-              <select
-                name="empresa_id"
-                id="empresa_id"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full px-4 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500"
-                onChange={handleSelectChange}
-              >
-                <option value="">---Seleccione Empresa---</option>
-                {empresas?.map((empresa, index) => (
-                  <option key={index} value={empresa.id}>
-                    ID: {empresa.id} - {empresa.nombre}
-                  </option>
-                ))}
-              </select>
+              <SelectSearch options={empresasOption} search name="pempresa_id" id="empresa_id" placeholder="Seleccione empresa" onChange={handleSelectChangeEmpresa} />
+
               <div
-                onClick={() => console.log("agregar empresa")}
-                className="flex items-center ml-1 cursor-pointer px-2"
+                onClick={() => navigate("/empresas/AMEmpresas")}
+                className="flex items-center ml-1 cursor-pointer px-2 text-green-400"
               >
-                <Building /> +
+                <Building className="text-2xl"/> +
               </div>
             </div>
             <button
               type="button"
-              className="mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              className={` ${clienteDTO?.persona_id === null && "opacity-[0.2] pointer-events-none"} 
+               mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4
+                focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2
+                 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 
+                 ${clienteDTO?.empresa_id !== null && "bg-green-600 hover:bg-green-700"}`}
+
               onClick={(e) => {
                 setShouldCreate(true);
               }}
+              disabled={clienteDTO?.persona_id === null ? true : false}
             >
               {clienteDTO?.empresa_id === null
-                ? "CREAR CLIENTE PERSONA"
-                : "CREAR CLIENTE EMPRESA"}
+                ? <p>CREAR CLIENTE PERSONA <PersonWorkspace className="text-blue-400 inline text-2xl ml-1" /></p>
+                : <p>CREAR CLIENTE EMPRESA <Building className="text-green-400 inline text-2xl ml-1" /></p>}
             </button>
           </div>
         </div>
@@ -409,7 +450,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
         </div>
 
         {/* Data Table */}
-        <div>
+        <div className="max-h-[400px] overflow-y-auto mb-3">
           {isLoading ? (
             <div className="flex justify-center">
               <LoadingComponent />
@@ -439,9 +480,8 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                       return (
                         <tr
                           key={index}
-                          className={`border-b text-center ${
-                            cliente.eliminado && "bg-gray-300"
-                          }`}
+                          className={`border-b text-center ${cliente.eliminado && "bg-gray-300"
+                            }`}
                         >
                           <td className="py-2 px-4">{cliente.id}</td>
                           <td className="py-2 px-4">
