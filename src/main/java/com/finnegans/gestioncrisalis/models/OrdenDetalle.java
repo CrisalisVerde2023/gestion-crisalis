@@ -78,4 +78,7 @@ public class OrdenDetalle {
         inverseJoinColumns = @JoinColumn(name = "IMPUESTO_ID")
     )
     private List<Impuesto> impuestos;
+
+    @Transient
+    private Float impuesto;
 }
