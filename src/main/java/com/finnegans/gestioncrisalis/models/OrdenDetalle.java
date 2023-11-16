@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 @Data
@@ -47,9 +49,6 @@ public class OrdenDetalle {
     @Column(name = "COSTO", nullable = false)
     private Float costo;
 
-    @Column(name = "IMPUESTO")
-    private Double impuesto;
-
     @Column(name = "DESCUENTO")
     private Double descuento;
 
@@ -71,4 +70,12 @@ public class OrdenDetalle {
     @OneToOne(mappedBy = "ordenDetalle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Suscripcion suscripcion;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "ORDEN_DETALLES_IMPUESTOS",
+        joinColumns = @JoinColumn(name = "ORDEN_DETALLE_ID"),
+        inverseJoinColumns = @JoinColumn(name = "IMPUESTO_ID")
+    )
+    private List<Impuesto> impuestos;
 }
