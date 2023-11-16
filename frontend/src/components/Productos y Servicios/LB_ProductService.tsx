@@ -271,7 +271,7 @@ export default function LB_ProductService(props: LB_ProductServiceProps) {
   const addToPedido = (selected: ProductServiceType) => {
     // If the item doesn't exist, add it.
     if (!pedido.prods_servs.some((item) => item.id === selected.id)) {
-      const updatedProdsServs = [...pedido.prods_servs, selected];
+      const updatedProdsServs = [...pedido.prods_servs, {... selected, cantidad: 1, garantia: (selected.tipo === "PRODUCTO") ? 0 : null}];
       setPedido({ ...pedido, prods_servs: updatedProdsServs });
     }
   };
