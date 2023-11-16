@@ -6,7 +6,7 @@
 - [Miguel Ángel Maisares](https://github.com/MigueMaisares)
 - [Lucas Sarfati](https://github.com/Lucassarfati1)
 - [Javier Huebra](https://github.com/javierhuebra)
-- [Matias Stewart Usher](https://github.com/matiStewartDev)
+- [Matias Stewart Usher](https://github.com/stewartUsherDev)
 - [Facundo Oliva](https://github.com/FakuGemDa)
 - [Koba Chajchir](https://github.com/kobachajchir)
 - [Yamil Leotta](https://github.com/YamilLeotta)
@@ -38,3 +38,4 @@
 
 # Estrategia de branching propuesta
 ![estrategia de branching](https://i.ibb.co/nnbx1YF/estrategia-branching.png)
+
