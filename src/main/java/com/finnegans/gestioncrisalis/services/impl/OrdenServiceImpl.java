@@ -13,7 +13,6 @@ import com.finnegans.gestioncrisalis.dtos.OrdenDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class OrdenServiceImpl implements OrdenService {
@@ -94,7 +93,7 @@ public class OrdenServiceImpl implements OrdenService {
     private List<OrdenDetalle> calculin(List<Producto> productosServicios, List<OrdenDetalleDTO> detallesDTO, boolean aplicaDescuento, Orden orden) {
         return productosServicios.stream().map(producto -> {
             OrdenDetalleDTO item = detallesDTO.stream().filter(detalleDTO -> detalleDTO.getIdProductService() == producto.getId()).findFirst().get();
-            Stream<Impuesto> impuestosActivos = producto.getImpuestos().stream().filter(el -> !el.isEliminado());
+            List<Impuesto> impuestosActivos = producto.getImpuestos().stream().filter(el -> !el.isEliminado()).collect(Collectors.toList());
 
             return new OrdenDetalle(
                 null,
@@ -110,8 +109,8 @@ public class OrdenServiceImpl implements OrdenService {
                 false,
                 producto.getTipo(),
                 null,
-                impuestosActivos.collect(Collectors.toList()),
-                impuestosActivos.map(el -> el.getPorcentaje()).reduce(0F, (a, b) -> a + b) * producto.getCosto() * item.getCantidad()
+                impuestosActivos,
+                impuestosActivos.stream().map(el -> el.getPorcentaje()).reduce(0F, (a, b) -> a + b) * producto.getCosto() * item.getCantidad()
             );
         }).collect(Collectors.toList());
     }
