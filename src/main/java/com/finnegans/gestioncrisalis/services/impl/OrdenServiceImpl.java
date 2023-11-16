@@ -110,7 +110,7 @@ public class OrdenServiceImpl implements OrdenService {
                 producto.getTipo(),
                 null,
                 impuestosActivos,
-                impuestosActivos.stream().map(el -> el.getPorcentaje()).reduce(0F, (a, b) -> a + b) * producto.getCosto() * item.getCantidad()
+                impuestosActivos.stream().map(el -> el.getPorcentaje()).reduce(0F, (a, b) -> a + b) * producto.getCosto() / 100
             );
         }).collect(Collectors.toList());
     }
