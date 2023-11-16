@@ -448,10 +448,15 @@ export default function Dashboard() {
                 <h3 className="my-3 text-xl font-bold dark:text-white text-start">
                   Pedidos
                 </h3>
-
-                <ul className="space-y-3 text-gray-500 dark:text-gray-400">
-                  <li key="Listado y anulación de pedidos" className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
-                    <Link to={`/pedidos`} className="flex justify-between w-full p-3">
+                <ul className="text-gray-500 dark:text-gray-400 space-y-3">
+                  <li
+                    key="Listado y anulación de pedidos"
+                    className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md"
+                  >
+                    <Link
+                      to={`/pedidos`}
+                      className="flex p-3 w-full justify-between"
+                    >
                       <span>Listado y anulación de Pedidos</span>
                       <svg
                         className="self-center w-4 h-4 text-denim dark:text-white"
@@ -507,8 +512,8 @@ export default function Dashboard() {
                 <ul className="space-y-3 text-gray-500 dark:text-gray-400">
                   <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
                     <Link
-                      to={`/home`}
-                      className="flex justify-between w-full p-3"
+                      to={`/suscripciones`}
+                      className="flex p-3 w-full justify-between"
                     >
                       <span>{`Asignar Servicios a Cliente`}</span>
                       <svg
