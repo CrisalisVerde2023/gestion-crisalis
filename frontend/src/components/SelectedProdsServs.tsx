@@ -50,10 +50,8 @@ export default function SelectedProdsServs() {
   // Calculate total with taxes, support, and warranty
   function rowTotal(row: ProductServiceType) {
     return (
-      row.costo * row.cantidad +
-      taxTotal(row) + // Call the taxTotal function with the row argument
-      (row.soporte || 0) * row.cantidad +
-      (row.garantia || 0) * row.costo * row.cantidad * 0.2
+      (row.costo + (row.soporte || 0) + (row.garantia || 0) * row.costo * 0.02) * row.cantidad
+      //taxTotal(row) + // Call the taxTotal function with the row argument
     );
   }
 
@@ -132,26 +130,11 @@ export default function SelectedProdsServs() {
                       <td className="px-2 py-1">{row.costo}</td>
                       <td className="px-2 py-1">{row.idImpuestos}</td>
                       <td className="px-2 py-1">
-                        {row.soporte || row.soporte === 0 ? 0 : "-"}
+                        {(row.soporte === null) ? "-" : row.soporte}
                       </td>
                       <td className="px-2 py-1">
-                        <input
-                          style={{
-                            width: "60px",
-                            backgroundColor: "lightgrey",
-                            padding: "5px",
-                            borderRadius: "10%",
-                          }}
-                          type="number"
-                          max={1000}
-                          min={1}
-                          name="cantidad"
-                          value={row.cantidad}
-                          onChange={({ target }) => handleChange(target, row)}
-                        ></input>
-                      </td>
-                      <td className="px-2 py-1">
-                        {row.tipo === "PRODUCTO" && (
+                        {row.tipo === "PRODUCTO"
+                        ?
                           <input
                             style={{
                               width: "60px",
@@ -160,15 +143,36 @@ export default function SelectedProdsServs() {
                               borderRadius: "10%",
                             }}
                             type="number"
-                            max={5}
-                            min={0}
-                            name="garantia"
-                            value={row.garantia || 0}
+                            max={1000}
+                            min={1}
+                            name="cantidad"
+                            value={row.cantidad}
                             onChange={({ target }) => handleChange(target, row)}
                           ></input>
-                        )}
+                        : row.cantidad
+                          }
                       </td>
-                      <td className="px-2 py-1">{rowTotal(row)}</td>
+                      <td className="px-2 py-1">
+                        {row.tipo === "PRODUCTO"
+                          ?
+                            <input
+                              style={{
+                                width: "60px",
+                                backgroundColor: "lightgrey",
+                                padding: "5px",
+                                borderRadius: "10%",
+                              }}
+                              type="number"
+                              max={5}
+                              min={0}
+                              name="garantia"
+                              value={row.garantia || 0}
+                              onChange={({ target }) => handleChange(target, row)}
+                            ></input>
+                          : "-"
+                        }
+                      </td>
+                      <td className="px-2 py-1">{-total + (total += rowTotal(row))}</td>
                       <td className="px-2 py-1 flex justify-content-center">
                         <BorrarBtn fnOnClick={() => removeFromPedido(row)} />
                       </td>
