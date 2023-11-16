@@ -82,9 +82,7 @@ export const useFetch = (
       }
 
       if (response.status === 400 || response.status > 401) {
-        throw new Error(
-          `El servidor respondió con error Status: ${response.status} : ${response.statusText}`
-        );
+        console.log("error")//Saque el throw porque cortaba la ejecución del programay se pudria todo y no mostraba las alertas
       }
     }
     setEstado({
