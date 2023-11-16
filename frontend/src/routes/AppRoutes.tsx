@@ -18,7 +18,7 @@ import AM_Clientes from "../components/Clientes/AM_Clientes";
 import AM_Pedidos from "../components/Pedidos/AM_Pedidos";
 import ABMPedidos from "../components/Pedidos/ABMPedidos";
 import { TableImpuestos } from "../components/Impuestos/TableImpuestos";
-import ListaServicios from "../components/AsignacionServicios/ListaServicios";
+import { TableSuscripciones } from "../components/Suscripciones/TableSuscripciones";
 
 export const AppRoutes = () => {
   const { userLogged } = useContext(UserLoggedContext);
@@ -98,7 +98,7 @@ export const AppRoutes = () => {
         <Route path="/pedidos" element={<ABMPedidos />} />
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
-        <Route path="/asignacionservicios" element={<ListaServicios />} />
+        <Route path="/suscripciones" element={<TableSuscripciones />} />
       </Routes>
     </>
   );

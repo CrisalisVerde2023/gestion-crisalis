@@ -450,8 +450,14 @@ export default function Dashboard() {
                 </h3>
 
                 <ul className="text-gray-500 dark:text-gray-400 space-y-3">
-                  <li key="Listado y anulación de pedidos" className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
-                    <Link to={`/pedidos`} className="flex p-3 w-full justify-between">
+                  <li
+                    key="Listado y anulación de pedidos"
+                    className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md"
+                  >
+                    <Link
+                      to={`/pedidos`}
+                      className="flex p-3 w-full justify-between"
+                    >
                       <span>Listado y anulación de Pedidos</span>
                       <svg
                         className="w-4 h-4 text-denim dark:text-white self-center"
@@ -507,7 +513,7 @@ export default function Dashboard() {
                 <ul className="text-gray-500 dark:text-gray-400 space-y-3">
                   <li className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
                     <Link
-                      to={`/asignacionservicios`}
+                      to={`/suscripciones`}
                       className="flex p-3 w-full justify-between"
                     >
                       <span>{`Asignar Servicios a Cliente`}</span>
