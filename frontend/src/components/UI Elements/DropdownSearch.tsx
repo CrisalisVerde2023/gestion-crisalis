@@ -6,7 +6,6 @@ export const DropdownSearch = ({ url }) => {
   const {
     estado: { json, loading },
   } = useCrud(url);
-  console.log(json);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
