@@ -96,7 +96,7 @@ export default function SelectedProdsServs() {
       ...pedido,
       prods_servs: pedido.prods_servs,
     });
-  }, [pedido.prods_servs.length]);
+  }, [pedido.prods_servs.length, pedido.cliente.id]);
 
   // Refactorear hasta aca
 
