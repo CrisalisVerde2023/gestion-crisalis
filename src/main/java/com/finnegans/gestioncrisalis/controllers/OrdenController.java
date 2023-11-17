@@ -26,7 +26,7 @@ public class OrdenController {
             HttpStatus.CREATED);
     }
 
-    @GetMapping("/calcular")
+    @PostMapping("/calcular")
     public ResponseEntity<?> calcular( @RequestBody OrdenDTO ordenDTO){
         return new ResponseEntity<>(
             this.ordenService.generar(ordenDTO, true).getOrdenDetalles(),
