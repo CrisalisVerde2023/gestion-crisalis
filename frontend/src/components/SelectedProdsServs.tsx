@@ -27,7 +27,7 @@ export default function SelectedProdsServs() {
 
   // Calculate total with taxes, support, and warranty
   function rowTotal(row: ProductServiceType) {
-    return Math.round(((row.costo + (row.soporte || 0) + (row.garantia || 0) * row.costo * 0.02 + taxTotal(row)) * row.cantidad) * 100) / 100;
+    return Math.round(((row.costo + (row.soporte || 0) - (row.descuento || 0) + (row.garantia || 0) * row.costo * 0.02 + taxTotal(row)) * row.cantidad) * 100) / 100;
   }
 
   const removeFromPedido = (row: ProductServiceType) => {
@@ -235,7 +235,7 @@ export default function SelectedProdsServs() {
         {pedido.prods_servs.length > 0 && (
           <div className="w-full text-sm text-left text-gray-500 dark:text-gray-400 my-3">
             <p className="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 text-center">
-              <strong>Total del pedido: {total}</strong>
+              <strong>Total del pedido: {total.toFixed(2)}</strong>
             </p>
           </div>
         )}
