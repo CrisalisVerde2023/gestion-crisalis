@@ -28,33 +28,12 @@ export default function SelectedProdsServs() {
   };
 
   function taxTotal(row: ProductServiceType) {
-    // Check if idImpuestos is defined and is an array before calling reduce
-    if (!Array.isArray(row.idImpuestos)) {
-      // Handle the case where idImpuestos is not an array (e.g., return 0 or throw an error)
-      console.error("idImpuestos is undefined or not an array");
-      return 0;
-    }
-
-    return row.idImpuestos.reduce((acc, impuestoId) => {
-      const impuesto = filteredImpuestos().find(
-        (item: ImpuestosType) => impuestoId === item.id
-      );
-      return (
-        acc + (row.costo * row.cantidad * (impuesto?.porcentaje || 0)) / 100
-      );
-    }, 0);
+    return row.costo * row.impuestos.reduce((acc, el) => acc + el.porcentaje, 0) / 100;
   }
-
-  // Make sure to handle similar cases where properties may be undefined in the rest of your code
 
   // Calculate total with taxes, support, and warranty
   function rowTotal(row: ProductServiceType) {
-    return (
-      row.costo * row.cantidad +
-      taxTotal(row) + // Call the taxTotal function with the row argument
-      (row.soporte || 0) * row.cantidad +
-      (row.garantia || 0) * row.costo * row.cantidad * 0.2
-    );
+    return Math.round(((row.costo + (row.soporte || 0) + (row.garantia || 0) * row.costo * 0.02 + taxTotal(row)) * row.cantidad) * 100) / 100;
   }
 
   const removeFromPedido = (row: ProductServiceType) => {
@@ -130,28 +109,13 @@ export default function SelectedProdsServs() {
                       <td className="px-2 py-1">{row.nombre}</td>
                       <td className="px-2 py-1">{row.tipo}</td>
                       <td className="px-2 py-1">{row.costo}</td>
-                      <td className="px-2 py-1">{row.idImpuestos}</td>
+                      <td className="px-2 py-1">{taxTotal(row)}</td>
                       <td className="px-2 py-1">
-                        {row.soporte || row.soporte === 0 ? 0 : "-"}
+                        {(row.soporte === null) ? "-" : row.soporte}
                       </td>
                       <td className="px-2 py-1">
-                        <input
-                          style={{
-                            width: "60px",
-                            backgroundColor: "lightgrey",
-                            padding: "5px",
-                            borderRadius: "10%",
-                          }}
-                          type="number"
-                          max={1000}
-                          min={1}
-                          name="cantidad"
-                          value={row.cantidad}
-                          onChange={({ target }) => handleChange(target, row)}
-                        ></input>
-                      </td>
-                      <td className="px-2 py-1">
-                        {row.tipo === "PRODUCTO" && (
+                        {row.tipo === "PRODUCTO"
+                        ?
                           <input
                             style={{
                               width: "60px",
@@ -160,15 +124,36 @@ export default function SelectedProdsServs() {
                               borderRadius: "10%",
                             }}
                             type="number"
-                            max={5}
-                            min={0}
-                            name="garantia"
-                            value={row.garantia || 0}
+                            max={1000}
+                            min={1}
+                            name="cantidad"
+                            value={row.cantidad}
                             onChange={({ target }) => handleChange(target, row)}
                           ></input>
-                        )}
+                        : row.cantidad
+                          }
                       </td>
-                      <td className="px-2 py-1">{rowTotal(row)}</td>
+                      <td className="px-2 py-1">
+                        {row.tipo === "PRODUCTO"
+                          ?
+                            <input
+                              style={{
+                                width: "60px",
+                                backgroundColor: "lightgrey",
+                                padding: "5px",
+                                borderRadius: "10%",
+                              }}
+                              type="number"
+                              max={5}
+                              min={0}
+                              name="garantia"
+                              value={row.garantia || 0}
+                              onChange={({ target }) => handleChange(target, row)}
+                            ></input>
+                          : "-"
+                        }
+                      </td>
+                      <td className="px-2 py-1">{-total + (total += rowTotal(row))}</td>
                       <td className="px-2 py-1 flex justify-content-center">
                         <BorrarBtn fnOnClick={() => removeFromPedido(row)} />
                       </td>

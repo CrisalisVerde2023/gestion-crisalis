@@ -175,22 +175,19 @@ export default function AM_Clientes() {
     return true; //!MODIFICAR ESTO
   };
 
-  const createResponse = useCreateCliente(clienteDTO, shouldCreate);
   const modifyResponse = useModifyCliente(idToModify, clienteDTO, shouldModify);
 
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault(); // This will prevent the default form submission behavior.
 
-    const complete = isFormComplete();
+    const complete = true;
     if (complete) {
       console.log("ok");
       Swal.fire({ text: "Espere por favor...", showConfirmButton: false });
-      if (!idToModify) {
-        setShouldCreate(true);
-      } else {
-        console.log("modificando....");
-        setShouldModify(true);
-      }
+
+      console.log("modificando....");
+      setShouldModify(true);
+      
     } else {
       Swal.fire(
         "Atención!",
@@ -201,34 +198,21 @@ export default function AM_Clientes() {
   };
 
   useEffect(() => {
-    if (createResponse && shouldCreate) {
-      Swal.close();
-      if (!createResponse.loading && !createResponse.hasError) {
-        Swal.fire("Perfecto!", "Cliente creado correctamente", "success");
-        goBack();
-      } else if (!createResponse.loading && createResponse.hasError) {
-        if (createResponse.statusCode >= 400) {
-          Swal.fire("Atención!", "Error al crear cliente", "warning");
-        }
-      }
-      setShouldCreate(false);
-    }
+    
     if (modifyResponse && shouldModify) {
       console.log("modiresponse", modifyResponse);
       Swal.close();
-      
       if (!modifyResponse.loading && !modifyResponse.hasError) {
         Swal.fire("Perfecto!", "Cliente modificado correctamente", "success");
         goBack();
       } else {
-        
-          Swal.fire("Atención!", "Error al modificar cliente", "warning");
-          
-        
+        console.log("datosss, ", idCliente, idToModify, clienteDTO, shouldModify);
+        Swal.fire("Atención!", "Error al modificar cliente", "warning");
+           
       }
       setShouldModify(false);
     }
-  }, [createResponse, modifyResponse, shouldCreate, shouldModify]);
+  }, [ modifyResponse, shouldModify]);
 
   return (
     <div className=" flex items-center justify-center h-screen mt-[-60px]">

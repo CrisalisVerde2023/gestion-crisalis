@@ -37,4 +37,12 @@ public class Impuesto {
             joinColumns = @JoinColumn( name = "IMPUESTO_ID"),
             inverseJoinColumns = @JoinColumn( name = "PRODUCTO_ID"))
     private List<Producto> productos;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinTable(
+            name = "ORDEN_DETALLES_IMPUESTOS",
+            joinColumns = @JoinColumn( name = "IMPUESTO_ID"),
+            inverseJoinColumns = @JoinColumn( name = "ORDEN_DETALLE_ID"))
+    private List<OrdenDetalle> ordenDetalle;
 }

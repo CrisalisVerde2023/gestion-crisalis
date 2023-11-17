@@ -11,6 +11,7 @@ import com.finnegans.gestioncrisalis.models.Suscripcion;
 import com.finnegans.gestioncrisalis.repositories.SuscripcionRepository;
 import com.finnegans.gestioncrisalis.services.SuscripcionService;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,28 +31,28 @@ public class SuscripcionServiceImpl implements SuscripcionService {
     public List<Suscripcion> getServiciosActivos(Cliente cliente) {
         List<Suscripcion> serviciosActivos = new ArrayList<Suscripcion>();
 
-        for (Cliente cli: (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
-            for (Orden ord: cli.getOrdenes())
-                for (OrdenDetalle ordDet: ord.getOrdenDetalles()) {
+        for (Cliente cli : (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
+            for (Orden ord : cli.getOrdenes())
+                for (OrdenDetalle ordDet : ord.getOrdenDetalles()) {
                     Suscripcion ordenSus = ordDet.getSuscripcion();
 
-                    if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion()))
-                        serviciosActivos.add(ordenSus);
-                };
+                    if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion())) serviciosActivos.add(ordenSus);
+                }
+        ;
 
         return serviciosActivos;
     }
 
     @Override
     public boolean tieneServiciosActivos(Cliente cliente) {
-        for (Cliente cli: (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
-            for (Orden ord: cli.getOrdenes())
-                for (OrdenDetalle ordDet: ord.getOrdenDetalles()) {
+        for (Cliente cli : (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
+            for (Orden ord : cli.getOrdenes())
+                for (OrdenDetalle ordDet : ord.getOrdenDetalles()) {
                     Suscripcion ordenSus = ordDet.getSuscripcion();
 
-                    if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion()))
-                        return true;
-                };
+                    if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion())) return true;
+                }
+        ;
 
         return false;
     }
@@ -75,9 +76,15 @@ public class SuscripcionServiceImpl implements SuscripcionService {
             Orden orden = detalle.getOrden();
             Cliente cliente = orden.getCliente();
             Persona persona = cliente.getPersona();
-            Empresa empresa = cliente.getEmpresa();
+            Empresa empresa = ObjectUtils.defaultIfNull(cliente.getEmpresa(), null);
 
-            susEnc.add(new SuscripcionResponseDTO(sus.getId(), sus.isEstadoSuscripcion(), orden.getFechaCreacion(), persona.getNombre() + " " + persona.getApellido(), empresa.getNombre(), detalle.getProductoServicio().getNombre()));
+            susEnc.add(
+                new SuscripcionResponseDTO(
+                    sus.getId(), sus.isEstadoSuscripcion(), orden.getFechaCreacion(),
+                    persona.getNombre() + " " + persona.getApellido(),
+                    empresa == null ? "" : empresa.getNombre(), detalle.getProductoServicio().getNombre()
+                )
+            );
         });
 
         return susEnc;

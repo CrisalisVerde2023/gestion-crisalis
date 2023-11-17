@@ -59,9 +59,12 @@ public class OrdenServiceImpl implements OrdenService {
         // Provisorio indica si es solo cálculo (true) o si también hay que guardar el pedido calculado (false)
         orden.setOrdenDetalles(provisorio ? detalles : this.ordenDetalleRepository.saveAllAndFlush(detalles));
 
-        // Si no es provisorio y hay servicios pedidos creo las suscripciones
-        if ((!provisorio) && (tieneServiciosPedidos)) 
-            suscripcionService.createSubByOds(detalles.stream().filter(detalle -> detalle.getTipo().equals("SERVICIO")).collect(Collectors.toList()));
+        if (!provisorio) { // Si no es provisorio completo los impuestos del detalle
+            this.ordenRepository.fillOrdenDetalleImpuesto();
+            
+            if (tieneServiciosPedidos) // ... y hay servicios pedidos creo las suscripciones
+                suscripcionService.createSubByOds(detalles.stream().filter(detalle -> detalle.getTipo().equals("SERVICIO")).collect(Collectors.toList()));
+        }
 
         return provisorio ? orden : this.ordenRepository.saveAndFlush(orden);
     }
@@ -90,6 +93,7 @@ public class OrdenServiceImpl implements OrdenService {
     private List<OrdenDetalle> calculin(List<Producto> productosServicios, List<OrdenDetalleDTO> detallesDTO, boolean aplicaDescuento, Orden orden) {
         return productosServicios.stream().map(producto -> {
             OrdenDetalleDTO item = detallesDTO.stream().filter(detalleDTO -> detalleDTO.getIdProductService() == producto.getId()).findFirst().get();
+            List<Impuesto> impuestosActivos = producto.getImpuestos().stream().filter(el -> !el.isEliminado()).collect(Collectors.toList());
 
             return new OrdenDetalle(
                 null,
@@ -98,14 +102,15 @@ public class OrdenServiceImpl implements OrdenService {
                 producto.getTipo().equals("PRODUCTO") ? item.getCantidad() : 1,
                 producto.getNombre(),
                 producto.getCosto(),
-                producto.getImpuestos().stream().mapToDouble(Impuesto::getPorcentaje).sum() * producto.getCosto(), // Provisorio hasta implementar la tabla de Impuestos de OrderDetail.
                 (producto.getTipo().equals("SERVICIO")) ? null : (aplicaDescuento) ? Math.round(producto.getCosto() * .1 * 100.0) / 100.0 : 0,
                 producto.getSoporte() == null ? null : producto.getSoporte(),
                 item.getGarantia(),
                 (item.getGarantia() != null) ? (item.getGarantia() * .02 * producto.getCosto()) : null,
                 false,
                 producto.getTipo(),
-                null
+                null,
+                impuestosActivos,
+                impuestosActivos.stream().map(el -> el.getPorcentaje()).reduce(0F, (a, b) -> a + b) * producto.getCosto() / 100
             );
         }).collect(Collectors.toList());
     }
