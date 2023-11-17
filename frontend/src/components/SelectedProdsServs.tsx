@@ -55,7 +55,6 @@ export default function SelectedProdsServs() {
 
   async function getEngine(pedido: PedidoType) {
     try{
-      console.log("pide el get");
       const prods_servs:ProductServiceType[] = (await (await fetch("http://localhost:8080/api/orden/calcular", {
         method: "POST",
         body: JSON.stringify(createPedidoObject(pedido)),
@@ -80,7 +79,6 @@ export default function SelectedProdsServs() {
         eliminado: false
       }))
 
-      console.log("obtiene", prods_servs);
       setPedido({... pedido, prods_servs});
     }
     catch(error) {
