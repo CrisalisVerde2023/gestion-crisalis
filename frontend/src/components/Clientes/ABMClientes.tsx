@@ -3,7 +3,7 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import LB_Clientes from "./LB_Clientes";
 import SelectedClient from "../SelectedClient";
-
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function ABMClientesComponent() {
   const navigate = useNavigate();
@@ -25,21 +25,14 @@ export default function ABMClientesComponent() {
           <LB_Clientes seleccion={seleccion || ""} />
         </Col>
       </Row>
-      {seleccion === "simple"
-        && (
+      {seleccion === "simple" && (
           <div className="flex flex-row justify-content-center bg-denim-400 text-white">
             <p className="mr-1">Cliente seleccionado:</p>
           </div>
-        )
-        && <SelectedClient />}
+        ) && <SelectedClient />}
       <div className="flex justify-center items-center mb-4">
         <div className="flex justify-evenly mt-2 mx-2">
-          <button
-            onClick={() => goBack()}
-            className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
-          >
-            Volver
-          </button>
+          <VolverBtn fnOnClick={goBack} />
         </div>
       </div>
     </Container>

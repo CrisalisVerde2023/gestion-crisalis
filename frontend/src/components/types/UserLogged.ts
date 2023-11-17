@@ -1,4 +1,4 @@
-import { ClienteType, defaultClienteType } from "./clientType";
+import { ClientesType, defaultClienteType } from "./clientType";
 import { ProductServiceType } from "./productServiceType";
 
 export type UserLogged = {
@@ -10,8 +10,24 @@ export type UserLogged = {
 };
 
 export type PedidoType = {
-  cliente: ClienteType;
+  cliente: ClientesType;
   prods_servs: ProductServiceType[];
+};
+
+export type SendPedidoType = {
+  idCliente: number;
+  idUsuario: number;
+  detalleOrden: {
+    idServicioProducto: number; // This matches the object property idServicioProducto
+    cantidad: number;
+    garantia?: number | null; // This is now optional and can be null
+  }[];
+};
+
+export const defaultSendPedidoType = {
+  idCliente: -1,
+  idUsuario: -1,
+  detalleOrden: [],
 };
 
 export type UserLoggedContextType = {

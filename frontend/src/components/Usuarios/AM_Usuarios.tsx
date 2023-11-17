@@ -10,6 +10,7 @@ import { UserLoggedContext } from "../../contexts/UserLoggedContext";
 import LoadingComponent from "../LoadingComponent";
 import Swal from "sweetalert2";
 import { useFetchReturnType } from "../../hooks/useFetch";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function AM_Usuario() {
   const { idUsuario } = useParams<{ idUsuario: string }>();
@@ -26,7 +27,6 @@ export default function AM_Usuario() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<UsuariosType>(defaultUsuariosType);
   const [oldUsuario, setOldUsuario] = useState("");
-  const { userLogged, setUserLogged } = useContext(UserLoggedContext);
   const [response, setResponse] = useState<useFetchReturnType | null>(null);
   let fetchedData: useFetchReturnType | null = null;
 
@@ -49,45 +49,6 @@ export default function AM_Usuario() {
       }
     }
   }, [response]);
-
-  /*
-  useEffect(() => {
-    if (createResponse && !createResponse.loading && !createResponse.hasError) {
-      // Handle successful user creation logic here
-      Swal.fire({
-        title: "Realizado!",
-        text: "Se ha creado el usuario.",
-        icon: "success",
-        timer: 2000,
-      }).then(() => navigate(-1));
-    } else if (
-      createResponse &&
-      !createResponse.loading &&
-      createResponse.hasError
-    ) {
-      // Handle user creation error here
-      Swal.fire("Error!", "No se ha podido crear el usuario.", "error");
-    }
-  }, [createResponse]);
-
-  useEffect(() => {
-    if (modifyResponse && !modifyResponse.loading && !modifyResponse.hasError) {
-      // Handle successful user modification logic here
-      Swal.fire({
-        title: "Realizado!",
-        text: "Se ha modificado el usuario.",
-        icon: "success",
-        timer: 2000,
-      }).then(() => navigate(-1));
-    } else if (
-      modifyResponse &&
-      !modifyResponse.loading &&
-      modifyResponse.hasError
-    ) {
-      // Handle user modification error here
-      Swal.fire("Error!", "No se ha podido modificar el usuario.", "error");
-    }
-  }, [modifyResponse]);*/
 
   const goBack = () => {
     navigate(-1);
@@ -255,12 +216,7 @@ export default function AM_Usuario() {
                       {idToModify ? "Modificar" : "Crear"}
                     </button>
 
-                    <button
-                      className="bg-denim-400 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-denim-500"
-                      onClick={goBack}
-                    >
-                      Volver
-                    </button>
+                    <VolverBtn fnOnClick={goBack} />
                   </div>
                 </>
               )}

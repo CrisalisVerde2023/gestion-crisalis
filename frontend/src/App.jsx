@@ -9,7 +9,6 @@ function App() {
   return (
     <>
       <div
-        className="p-2"
         style={{ marginLeft: "0.5rem", marginRight: "0.5rem" }}
       >
         <UserLoggedProvider>

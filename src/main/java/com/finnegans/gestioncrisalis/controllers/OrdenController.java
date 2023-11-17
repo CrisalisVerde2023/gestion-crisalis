@@ -1,7 +1,6 @@
 package com.finnegans.gestioncrisalis.controllers;
 
 import com.finnegans.gestioncrisalis.dtos.OrdenDTO;
-import com.finnegans.gestioncrisalis.models.Orden;
 import com.finnegans.gestioncrisalis.services.OrdenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +21,16 @@ public class OrdenController {
 
     @PostMapping
     public ResponseEntity<?> create( @RequestBody OrdenDTO ordenDTO){
-        Orden orden=this.ordenService.save(ordenDTO);
-        return new ResponseEntity<>(orden, HttpStatus.CREATED);
+        return new ResponseEntity<>(
+            this.ordenService.generar(ordenDTO, false),
+            HttpStatus.CREATED);
+    }
+
+    @GetMapping("/calcular")
+    public ResponseEntity<?> calcular( @RequestBody OrdenDTO ordenDTO){
+        return new ResponseEntity<>(
+            this.ordenService.generar(ordenDTO, true).getOrdenDetalles(),
+            HttpStatus.OK);
     }
 
     @GetMapping
@@ -35,14 +42,12 @@ public class OrdenController {
     public ResponseEntity<?> getById(@PathVariable @PositiveOrZero Long id){
         return new ResponseEntity<>(this.ordenService.getById(id), HttpStatus.OK);
     }
-/*
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> anular(@PathVariable @PositiveOrZero Long id){
         this.ordenService.anular(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-*/
-
 }
 
 

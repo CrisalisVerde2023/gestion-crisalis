@@ -30,7 +30,7 @@ export type useFetchReturnType = {
   statusCode: number;
 };
 
-const defaultUseFetchValues = {
+export const defaultUseFetchValues = {
   json: null,
   loading: true,
   hasError: false,
@@ -71,7 +71,6 @@ export const useFetch = (
     const text = await response.text(); // Await the text Promise
     let jsonResponse;
     if (text.length > 0) {
-      console.log("Received:", text); // Log the received text
       jsonResponse = JSON.parse(text); // Then parse
     }
 
@@ -83,9 +82,7 @@ export const useFetch = (
       }
 
       if (response.status === 400 || response.status > 401) {
-        throw new Error(
-          `El servidor respondió con error Status: ${response.status} : ${response.statusText}`
-        );
+        console.log("error")//Saque el throw porque cortaba la ejecución del programay se pudria todo y no mostraba las alertas
       }
     }
     setEstado({

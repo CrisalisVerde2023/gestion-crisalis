@@ -3,6 +3,7 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import LB_Productos from "./LB_ProductService";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import SelectedProdsServs from "../SelectedProdsServs";
+import VolverBtn from "../UI Elements/VolverBtn";
 
 export default function ABMProductServiceComponent() {
   const navigate = useNavigate();
@@ -22,18 +23,16 @@ export default function ABMProductServiceComponent() {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto flex justify-content-center">
       <div className="flex flex-col">
         <div className="mb-2">
-          <LB_Productos seleccion={seleccion || ""}/>
+          <LB_Productos seleccion={seleccion || ""} />
         </div>
-        {seleccion === "multiple"
-          && (
+        {seleccion === "multiple" && (
             <div className="flex flex-row justify-content-center bg-denim-400 text-white">
               <p className="mr-1">Productos / Servicios seleccionados:</p>
             </div>
-            )
-          && <SelectedProdsServs/>}
+          ) && <SelectedProdsServs />}
         <div className="flex justify-center items-center mb-4">
           <div className="flex justify-evenly mt-2 mx-2">
             <button
@@ -52,12 +51,7 @@ export default function ABMProductServiceComponent() {
             </button>
           </div>
           <div className="flex justify-evenly mt-2 mx-2">
-            <button
-              onClick={goBack}
-              className="bg-red-600 px-4 py-2 rounded-md text-white font-medium tracking-wide hover:bg-red-700"
-            >
-              Volver
-            </button>
+            <VolverBtn fnOnClick={goBack} />
           </div>
         </div>
       </div>

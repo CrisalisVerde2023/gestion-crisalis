@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+
+import java.util.List;
 
 import javax.persistence.*;
-import java.util.Optional;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +19,7 @@ import java.util.Optional;
 @Table(name = "ORDEN_DETALLES")
 public class OrdenDetalle {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(strategy = "native", name = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
@@ -50,9 +49,6 @@ public class OrdenDetalle {
     @Column(name = "COSTO", nullable = false)
     private Float costo;
 
-    @Column(name = "IMPUESTO")
-    private Double impuesto;
-
     @Column(name = "DESCUENTO")
     private Double descuento;
 
@@ -67,4 +63,22 @@ public class OrdenDetalle {
 
     @Column(name = "ANULADO", nullable = false)
     private boolean anulado;
+
+    @Column(name = "TIPO", nullable = false)
+    private String tipo;
+
+    @OneToOne(mappedBy = "ordenDetalle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Suscripcion suscripcion;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "ORDEN_DETALLES_IMPUESTOS",
+        joinColumns = @JoinColumn(name = "ORDEN_DETALLE_ID"),
+        inverseJoinColumns = @JoinColumn(name = "IMPUESTO_ID")
+    )
+    private List<Impuesto> impuestos;
+
+    @Transient
+    private Float impuesto;
 }
