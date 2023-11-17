@@ -138,22 +138,10 @@ export const useCrud = (url: string) => {
         timer: 2000,
       });
 
-      const { json } = { ...estado };
-      const impuestoIndex = json.findIndex(
-        (impuesto: ImpuestosType) => impuesto.id == id
-      );
-      const newJson = [
-        ...json.slice(0, impuestoIndex),
-        {
-          ...json[impuestoIndex],
-          eliminado: !json[impuestoIndex].eliminado,
-        },
-        ...json.slice(impuestoIndex + 1),
-      ];
+      getAllData();
 
       setEstado({
         ...estado,
-        json: newJson,
         loading: false,
         statusCode: response.status,
       });

@@ -344,9 +344,9 @@ export default function Dashboard() {
           />
         </svg>
       </button>
-      <div className="pb-8 mx-auto max-w-screen-xl sm:pb-16 lg:pb-6">
-        <div className="max-w-screen-md mb-8 lg:mb-16 mx-auto">
-          <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+      <div className="max-w-screen-xl pb-8 mx-auto sm:pb-16 lg:pb-6">
+        <div className="max-w-screen-md mx-auto mb-8 lg:mb-16">
+          <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
             Diseñado para equipos empresariales
           </h2>
           <p className="text-gray-500 sm:text-xl dark:text-gray-400">
@@ -357,11 +357,11 @@ export default function Dashboard() {
         </div>
         {isAdmin && (
           <div
-            className="flex flex-column justify-content-center align-items-center my-3 d-none"
+            className="flex my-3 flex-column justify-content-center align-items-center d-none"
             ref={shortcutsDiv}
           >
             <div className="flex flex-row justify-content-center align-items-center">
-              <div className="flex justify-center items-center w-10 h-10 rounded-md bg-yellow-200 lg:h-12 lg:w-12 dark:bg-primary-900 mr-2">
+              <div className="flex items-center justify-center w-10 h-10 mr-2 bg-yellow-200 rounded-md lg:h-12 lg:w-12 dark:bg-primary-900">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true"
@@ -378,7 +378,7 @@ export default function Dashboard() {
               </h5>
             </div>
             <div
-              className="grid grid-cols-6 gap-y-2 spaceVerticalChilds spaceHorizontalChilds rounded-md border-dashed border-yellow-400 border-2 mt-2 shortcutsDiv"
+              className="grid grid-cols-6 mt-2 border-2 border-yellow-400 border-dashed rounded-md gap-y-2 spaceVerticalChilds spaceHorizontalChilds shortcutsDiv"
               style={{ minHeight: "10vh", width: "85%" }}
               ref={dropBox}
             ></div>
@@ -392,19 +392,19 @@ export default function Dashboard() {
           {isAdmin && (
             <>
               <div>
-                <div className="flex justify-center items-center w-10 h-10 rounded-md bg-electric-violet-50 lg:h-12 lg:w-12 dark:bg-primary-900">
+                <div className="flex items-center justify-center w-10 h-10 rounded-md bg-electric-violet-50 lg:h-12 lg:w-12 dark:bg-primary-900">
                   {svgDatabase}
                 </div>
                 <h3 className="my-3 text-xl font-bold dark:text-white text-start">
                   Alta, Baja y Modificación
                 </h3>
 
-                <ul className="text-gray-500 dark:text-gray-400 space-y-3">
+                <ul className="space-y-3 text-gray-500 dark:text-gray-400">
                   {entidadesABM.map((entidad, index) => (
                     <li
                       key={entidad}
                       data-entidad={entidad}
-                      className="flex hover:bg-slate-50 rounded-md shadow-md bg-white-pure draggable-element"
+                      className="flex rounded-md shadow-md hover:bg-slate-50 bg-white-pure draggable-element"
                       onDrag={(e) => {
                         handleOnDragEvent(e);
                       }}
@@ -415,9 +415,9 @@ export default function Dashboard() {
                     >
                       <Link
                         to={`/${entidad.toLowerCase().replace(/\s+/g, "")}`}
-                        className="flex p-3 w-full justify-between"
+                        className="flex justify-between w-full p-3"
                       >
-                        <span>{`ABM de ${entidad}`}</span>
+                        <span>{`${entidad}`}</span>
                         {renderIcon(index + 1, {
                           className:
                             "w-4 h-4 text-electric-violet dark:text-white self-center svgIconColored",
@@ -430,7 +430,7 @@ export default function Dashboard() {
                 </ul>
               </div>
               <div>
-                <div className="flex justify-center items-center w-10 h-10 rounded-md bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+                <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
                   <svg
                     className="w-5 h-5 text-denim lg:w-6 lg:h-6 dark:text-primary-300"
                     fill="currentColor"
@@ -448,13 +448,18 @@ export default function Dashboard() {
                 <h3 className="my-3 text-xl font-bold dark:text-white text-start">
                   Pedidos
                 </h3>
-
                 <ul className="text-gray-500 dark:text-gray-400 space-y-3">
-                  <li key="Listado y anulación de pedidos" className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
-                    <Link to={`/pedidos`} className="flex p-3 w-full justify-between">
+                  <li
+                    key="Listado y anulación de pedidos"
+                    className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md"
+                  >
+                    <Link
+                      to={`/pedidos`}
+                      className="flex p-3 w-full justify-between"
+                    >
                       <span>Listado y anulación de Pedidos</span>
                       <svg
-                        className="w-4 h-4 text-denim dark:text-white self-center"
+                        className="self-center w-4 h-4 text-denim dark:text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
@@ -466,15 +471,15 @@ export default function Dashboard() {
                   </li>
                   <li
                     key="Alta de pedido"
-                    className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md"
+                    className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure"
                   >
                     <Link
                       to={`/altaPedido`}
-                      className="flex p-3 w-full justify-between"
+                      className="flex justify-between w-full p-3"
                     >
                       <span>Alta de Pedido</span>
                       <svg
-                        className="w-4 h-4 text-denim dark:text-white self-center"
+                        className="self-center w-4 h-4 text-denim dark:text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
@@ -487,7 +492,7 @@ export default function Dashboard() {
                 </ul>
               </div>
               <div>
-                <div className="flex justify-center items-center w-10 h-10 rounded-md bg-atlantis-50 lg:h-12 lg:w-12 dark:bg-primary-900">
+                <div className="flex items-center justify-center w-10 h-10 rounded-md bg-atlantis-50 lg:h-12 lg:w-12 dark:bg-primary-900">
                   <svg
                     className="w-5 h-5 text-atlantis lg:w-6 lg:h-6 dark:text-primary-300"
                     fill="currentColor"
@@ -504,15 +509,15 @@ export default function Dashboard() {
                 <h3 className="my-3 text-xl font-bold dark:text-white text-start">
                   Servicios
                 </h3>
-                <ul className="text-gray-500 dark:text-gray-400 space-y-3">
-                  <li className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
+                <ul className="space-y-3 text-gray-500 dark:text-gray-400">
+                  <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
                     <Link
-                      to={`/home`}
+                      to={`/suscripciones`}
                       className="flex p-3 w-full justify-between"
                     >
                       <span>{`Asignar Servicios a Cliente`}</span>
                       <svg
-                        className="w-4 h-4 text-atlantis dark:text-white self-center"
+                        className="self-center w-4 h-4 text-atlantis dark:text-white"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
