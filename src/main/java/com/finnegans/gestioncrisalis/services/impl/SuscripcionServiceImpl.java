@@ -45,9 +45,11 @@ public class SuscripcionServiceImpl implements SuscripcionService {
 
     @Override
     public boolean tieneServiciosActivos(Cliente cliente) {
-        for (Cliente cli : (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
-            for (Orden ord : cli.getOrdenes())
-                for (OrdenDetalle ordDet : ord.getOrdenDetalles()) {
+        if (cliente == null) return false;
+        
+        for (Cliente cli: (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
+            for (Orden ord: cli.getOrdenes())
+                for (OrdenDetalle ordDet: ord.getOrdenDetalles()) {
                     Suscripcion ordenSus = ordDet.getSuscripcion();
 
                     if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion())) return true;

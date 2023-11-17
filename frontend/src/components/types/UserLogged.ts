@@ -15,7 +15,7 @@ export type PedidoType = {
 };
 
 export type SendPedidoType = {
-  idCliente: number;
+  idCliente: number | null;
   idUsuario: number;
   detalleOrden: {
     idServicioProducto: number; // This matches the object property idServicioProducto
