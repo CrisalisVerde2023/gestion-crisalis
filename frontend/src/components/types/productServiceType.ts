@@ -16,6 +16,10 @@ export type ProductServiceType = {
   garantia: number | null;
   idImpuestos: number[];
   eliminado: boolean;
+
+  descuento: number | null;
+  garantiaCosto: number | null;
+  impuesto: number;
 };
 
 
@@ -30,4 +34,8 @@ export const defaultProductServiceValues: ProductServiceType = {
   garantia: null,
   idImpuestos: [],
   eliminado: false,
+
+  descuento: null,
+  garantiaCosto: null,
+  impuesto: 0
 };
