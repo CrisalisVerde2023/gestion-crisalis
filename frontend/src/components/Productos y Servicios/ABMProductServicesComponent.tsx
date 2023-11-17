@@ -4,6 +4,7 @@ import LB_Productos from "./LB_ProductService";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import SelectedProdsServs from "../SelectedProdsServs";
 import VolverBtn from "../UI Elements/VolverBtn";
+import { TableProductos } from "./TableProductos";
 
 export default function ABMProductServiceComponent() {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ export default function ABMProductServiceComponent() {
       <div className="flex flex-col">
         <div className="mb-2">
           <LB_Productos seleccion={seleccion || ""} />
+          {/* <TableProductos /> */}
         </div>
         {seleccion === "multiple" && (
             <div className="flex flex-row justify-content-center bg-denim-400 text-white">

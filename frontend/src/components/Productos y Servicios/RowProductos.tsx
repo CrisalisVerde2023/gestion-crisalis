@@ -3,8 +3,8 @@ import Swal from "sweetalert2";
 import EditarBtn from "../UI Elements/EditarBtn";
 import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
 
-export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
-  const [formData, setFormData] = useState({ ...impuesto });
+export const RowProductos = ({ producto, deleteByIdData, updateByIdData }) => {
+  const [formData, setFormData] = useState({ ...producto });
   const [showModalUpdate, setShowModalUpdate] = useState(false);
 
   const handleModalEdit = () => {
@@ -19,15 +19,23 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
   const handleEdit = (e) => {
     e.preventDefault();
     const dataId = e.target.getAttribute("data-id");
-    const body = { ...formData, porcentaje: Number(formData.porcentaje) };
+    const body = {
+      ...formData,
+      id: formData.id,
+      tipo: formData.tipo,
+      nombre: formData.nombre,
+      costo: formData.costo,
+      soporte: formData.soporte,
+      idImpuestos: formData.idImpuestos,
+    };
     updateByIdData({ id: dataId, body }).then(handleModalEdit());
   };
 
-  const handleRemove = (impuesto) => {
+  const handleRemove = (producto) => {
     Swal.fire({
       title: "Confirmar cambio de estado de usuario?",
-      text: `Esta por ${impuesto.eliminado ? "activar" : "desactivar"} a ${
-        impuesto.nombre
+      text: `Esta por ${producto.eliminado ? "activar" : "desactivar"} a ${
+        producto.nombre
       }`,
       icon: "warning",
       showCancelButton: true,
@@ -36,7 +44,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
     }).then((result) => {
-      if (result.isConfirmed) deleteByIdData({ id: impuesto.id });
+      if (result.isConfirmed) deleteByIdData({ id: producto.id });
     });
   };
 
@@ -47,26 +55,29 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
           scope="row"
           className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center"
         >
-          {impuesto.nombre}
+          {producto.nombre}
         </th>
-        <td className="px-4 py-3 text-center">{impuesto.porcentaje}</td>
+        <td className="px-4 py-3 text-center">{producto.tipo}</td>
+        <td className="px-4 py-3 text-center">{producto.costo}</td>
+        <td className="px-4 py-3 text-center">{producto.soporte}</td>
+        <td className="px-4 py-3 text-center">{producto.idImpuestos}</td>
         <td className="px-4 py-3 text-center">
           <span
             className={`${
-              impuesto.eliminado
+              producto.eliminado
                 ? "bg-red-100 text-red-800"
                 : "bg-atlantis-100 text-atlantis-800"
             } text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300`}
           >
-            {impuesto.eliminado ? "Inactivo" : "Activo"}
+            {producto.eliminado ? "Inactivo" : "Activo"}
           </span>
         </td>
         <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
           <div className="flex items-center space-x-4">
             <EditarBtn fnOnClick={handleModalEdit} />
             <ToggleEstadoBtn
-              fnOnClick={() => handleRemove(impuesto)}
-              estado={impuesto.eliminado}
+              fnOnClick={() => handleRemove(producto)}
+              estado={producto.eliminado}
             />
           </div>
         </td>
@@ -85,7 +96,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
               {/* <!-- Modal header -->  */}
               <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {`Editar impuesto ${impuesto.nombre}`}
+                  {`Editar producto ${producto.nombre}`}
                 </h3>
                 <button
                   type="button"
@@ -117,7 +128,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                       htmlFor="nombre-modal-update"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
-                      Impuesto
+                      Nombre
                     </label>
                     <input
                       type="text"
@@ -126,27 +137,27 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                       value={formData.nombre}
                       onChange={handleInputChange}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="IVA"
+                      placeholder="Televisor"
                     />
                   </div>
                   <div>
                     <label
-                      htmlFor="porcentaje-modal-update"
+                      htmlFor="costo-modal-update"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
-                      Porcentaje
+                      Costo
                     </label>
                     <input
                       type="text"
-                      name="porcentaje"
-                      id="porcentaje-modal-update"
-                      value={formData.porcentaje}
+                      name="costo"
+                      id="costo-modal-update"
+                      value={formData.costo}
                       onChange={handleInputChange}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="21.0"
+                      placeholder="1000"
                     />
                   </div>
-                  {/* <div>
+                  <div>
                     <label
                       htmlFor="price"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -199,35 +210,17 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                       SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic
                       Keyboard - US
                     </textarea>
-                  </div> */}
+                  </div>
                 </div>
                 <div className="flex items-center justify-center space-x-4">
                   <button
                     type="submit"
                     className="text-white bg-denim hover:bg-denim-400 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                    data-id={impuesto.id}
+                    data-id={producto.id}
                     onClick={handleEdit}
                   >
-                    Actualizar impuesto
+                    Actualizar producto
                   </button>
-                  {/* <button
-                    type="button"
-                    className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                  >
-                    <svg
-                      className="mr-1 -ml-1 w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Delete
-                  </button> */}
                 </div>
               </form>
             </div>

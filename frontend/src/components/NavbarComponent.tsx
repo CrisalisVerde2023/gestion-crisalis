@@ -20,6 +20,7 @@ export default function NavbarComponent() {
 
   function closeSession() {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("roles");
     setUserLogged(defaultUserLogState);
   }
 

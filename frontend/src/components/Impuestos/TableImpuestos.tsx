@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { RowImpuestos } from "./RowImpuestos";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
-import { ImpuestosType } from "../types/taxType";
 
 const HOST_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
 
@@ -31,7 +30,7 @@ export const TableImpuestos = () => {
     });
   };
 
-  const handleCreate = (e: any) => {
+  const handleCreate = (e) => {
     e.preventDefault();
     const body = { ...formData, porcentaje: Number(formData.porcentaje) };
     create({ body }).then(
@@ -41,23 +40,19 @@ export const TableImpuestos = () => {
   };
 
   const filteredImpuestos = () => {
-    if (search.length === 0) {
-      return json;
-    } else if (!json) {
-      return;
-    } else {
-      return json.filter((impuesto: ImpuestosType) =>
-        impuesto.nombre.toLowerCase().includes(search.toLowerCase())
-      );
-    }
+    if (search.length === 0) return json;
+
+    return json.filter((impuesto) =>
+      impuesto.nombre.toLowerCase().includes(search.toLowerCase())
+    );
   };
 
   const goBack = () => {
     navigate(-1);
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
   };
 
   return (
@@ -68,7 +63,7 @@ export const TableImpuestos = () => {
             {/* Buscar */}
             <BuscarBar fnOnChange={handleSearchChange} value={search} />
             {/* Botones */}
-            <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+            <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0 mx-0">
               <button
                 type="button"
                 id="createProductModalButton"
@@ -92,8 +87,8 @@ export const TableImpuestos = () => {
                 </svg>
                 Crear impuesto
               </button>
-              <div className="flex items-center space-x-3 w-full md:w-auto">
-                {/* ACCIONES
+              {/* <div className="flex items-center space-x-3 w-full md:w-auto"> */}
+              {/* ACCIONES
                 <button
                   id="actionsDropdownButton"
                   data-dropdown-toggle="actionsDropdown"
@@ -141,7 +136,7 @@ export const TableImpuestos = () => {
                     </a>
                   </div>
                 </div> */}
-                {/* FILTROS
+              {/* FILTROS
                 <button
                   id="filterDropdownButton"
                   data-dropdown-toggle="filterDropdown"
@@ -362,7 +357,7 @@ export const TableImpuestos = () => {
                     </li>
                   </ul>
                 </div> */}
-              </div>
+              {/* </div> */}
             </div>
           </div>
           {/* Tabla */}
@@ -375,6 +370,9 @@ export const TableImpuestos = () => {
                   </th>
                   <th scope="col" className="px-4 py-3 text-center">
                     Porcentaje
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-center">
+                    Estado
                   </th>
                   <th scope="col" className="px-4 py-3 text-center">
                     Acciones
@@ -394,19 +392,28 @@ export const TableImpuestos = () => {
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
-                    </tr>
-                    <tr className="animate-pulse">
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
                     </tr>
                     <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
+                    </tr>
+                    <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                      </td>
                       <td className="px-4 py-3">
                         <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
                       </td>
@@ -418,8 +425,14 @@ export const TableImpuestos = () => {
                       </td>
                     </tr>
                   </>
+                ) : !Boolean(json.length) ? (
+                  <tr className="p-4">
+                    <td colSpan={3} className="text-center p-4">
+                      NO HAY DATOS
+                    </td>
+                  </tr>
                 ) : (
-                  filteredImpuestos().map((impuesto: ImpuestosType) => (
+                  filteredImpuestos().map((impuesto) => (
                     <RowImpuestos
                       impuesto={impuesto}
                       key={impuesto.id}
@@ -431,6 +444,7 @@ export const TableImpuestos = () => {
               </tbody>
             </table>
           </div>
+
           {/* Tabla footer paginacion */}
           {/* <nav
             className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
@@ -571,9 +585,9 @@ export const TableImpuestos = () => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
                   <span className="sr-only">Close modal</span>
@@ -585,7 +599,7 @@ export const TableImpuestos = () => {
                   <div>
                     <label
                       htmlFor="nombre-modal-create"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
                       Impuesto
                     </label>
@@ -603,7 +617,7 @@ export const TableImpuestos = () => {
                   <div>
                     <label
                       htmlFor="porcentaje-modal-create"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
                       Porcentaje
                     </label>
@@ -679,9 +693,9 @@ export const TableImpuestos = () => {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     />
                   </svg>
                   Agregar nuevo impuesto

@@ -52,7 +52,6 @@ public class ClienteServiceImpl implements ClienteService {
                 .orElseThrow(() -> new ResourceNotFound("Persona con id: ".concat(String.valueOf(clienteDTO.getPersonaIdDTO())).concat(" no encontrada")));
         if(clienteDTO.getEmpresaIdDTO() == null){
             if(clienteConMismaPersonaYempresaExiste(persona, null)) throw new DataIntegrityException("Ya existe un cliente de tipo persona con la misma persona");
-            //System.out.println("Este cliente es de tipo persona");
             Cliente cliente = this.clienteRepository.save(
                     Cliente.builder()
                             .persona(persona)
@@ -64,7 +63,6 @@ public class ClienteServiceImpl implements ClienteService {
         Empresa empresa = this.empresaRepository.findById(clienteDTO.getEmpresaIdDTO())
                     .orElseThrow(() -> new ResourceNotFound("Empresa con id: ".concat(String.valueOf(clienteDTO.getEmpresaIdDTO())).concat(" no encontrada")));
         if(clienteConMismaPersonaYempresaExiste(persona, empresa)) throw new DataIntegrityException("Ya existe un cliente de tipo empresa con la misma persona y empresa");
-        //System.out.println("Este cliente es de tipo empresa");
         Cliente cliente = this.clienteRepository.save(
                 Cliente.builder()
                         .persona(persona)

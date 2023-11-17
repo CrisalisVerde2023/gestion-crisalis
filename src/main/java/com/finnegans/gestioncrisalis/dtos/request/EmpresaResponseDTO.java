@@ -10,13 +10,12 @@ import java.time.LocalDateTime;
 public class EmpresaResponseDTO {
     @JsonProperty("id")
     private Long idDTO;
-
     @JsonProperty("nombre")
     private String nombreDTO;
-
     @JsonProperty("cuit")
     private String cuitDTO;
-
     @JsonProperty("start_date")
     private String start_dateDTO;
+    @JsonProperty("eliminado")
+    private boolean eliminadoDTO;
 }
