@@ -11,7 +11,7 @@ const defaultUseFetchValues = {
   statusCode: 0,
 };
 
-export const useCrud = ({ url }) => {
+export const useCrud = (url) => {
   const { userLogged, setUserLogged } = useContext(UserLoggedContext);
   const [estado, setEstado] = useState(defaultUseFetchValues);
   const navigate = useNavigate();

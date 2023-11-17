@@ -61,6 +61,7 @@ export const useLogin = () => {
             (rol: any) => rol.authority
           ); //roles mapeados por alguna feature
 
+          sessionStorage.setItem("roles", JSON.stringify(roles));
           setUserLogged({
             id: json.id,
             email: claims.sub,

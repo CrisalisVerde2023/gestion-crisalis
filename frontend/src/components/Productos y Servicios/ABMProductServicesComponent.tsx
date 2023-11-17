@@ -28,7 +28,7 @@ export default function ABMProductServiceComponent() {
       <div className="flex flex-col">
         <div className="mb-2">
           <LB_Productos seleccion={seleccion || ""} />
-          <TableProductos />
+          {/* <TableProductos /> */}
         </div>
         {seleccion === "multiple" && (
             <div className="flex flex-row justify-content-center bg-denim-400 text-white">

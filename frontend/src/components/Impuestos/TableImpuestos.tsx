@@ -20,7 +20,7 @@ export const TableImpuestos = () => {
     create,
     deleteByIdData,
     updateByIdData,
-  } = useCrud({ url: HOST_API_IMPUESTOS });
+  } = useCrud(HOST_API_IMPUESTOS);
 
   const handleOnChange = ({ target }) => {
     const { name, value } = target;

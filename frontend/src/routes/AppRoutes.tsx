@@ -34,43 +34,47 @@ export const AppRoutes = () => {
           path="/clientes/AMClientes/:idCliente"
           element={<AM_Clientes />}
         />
-
         <Route path="/empresas" element={<TableEmpresas />} />
-        <Route path="/usuarios" element={<TableUsuarios />} />
-        <Route
-          path="/productosyservicios"
-          element={<ABMProductServicesComponent />}
-        />
-        <Route
-          path="/productosyservicios/AMProductos"
-          element={<AM_ProductService />}
-        />
-        <Route
-          path="/productosyservicios/AMProductos/:idProdServ"
-          element={<AM_ProductService />}
-        />
-        <Route
-          path="/productosyservicios"
-          element={<ABMProductServicesComponent />}
-        />
-        <Route
-          path="/productosyservicios/AMProductos"
-          element={<AM_ProductService />}
-        />
-        <Route
-          path="/productosyservicios/AMProductos/:idProdServ"
-          element={<AM_ProductService />}
-        />
-        <Route
-          path="/productosyservicios/AMServicios"
-          element={<AM_ProductService />}
-        />
-        <Route
-          path="/productosyservicios/AMServicios/:idProdServ"
-          element={<AM_ProductService />}
-        />
+
+        <Route element={<AuthRoute />}>
+          <Route path="/usuarios" element={<TableUsuarios />} />
+          <Route path="/impuestos" element={<TableImpuestos />} />
+
+          <Route
+            path="/productosyservicios"
+            element={<ABMProductServicesComponent />}
+          />
+          <Route
+            path="/productosyservicios/AMProductos"
+            element={<AM_ProductService />}
+          />
+          <Route
+            path="/productosyservicios/AMProductos/:idProdServ"
+            element={<AM_ProductService />}
+          />
+          <Route
+            path="/productosyservicios"
+            element={<ABMProductServicesComponent />}
+          />
+          <Route
+            path="/productosyservicios/AMProductos"
+            element={<AM_ProductService />}
+          />
+          <Route
+            path="/productosyservicios/AMProductos/:idProdServ"
+            element={<AM_ProductService />}
+          />
+          <Route
+            path="/productosyservicios/AMServicios"
+            element={<AM_ProductService />}
+          />
+          <Route
+            path="/productosyservicios/AMServicios/:idProdServ"
+            element={<AM_ProductService />}
+          />
+        </Route>
+
         <Route path="/altaPedido" element={<AM_Pedidos />} />
-        <Route path="/impuestos" element={<TableImpuestos />} />
         <Route path="/pedidos" element={<ABMPedidos />} />
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />

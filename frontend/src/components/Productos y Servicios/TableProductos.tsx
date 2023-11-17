@@ -26,7 +26,7 @@ export const TableProductos = () => {
     create,
     deleteByIdData,
     updateByIdData,
-  } = useCrud({ url: HOST_API_PRODUCTOS });
+  } = useCrud(HOST_API_PRODUCTOS);
 
   const handleOnChange = ({ target }) => {
     const { name, value } = target;

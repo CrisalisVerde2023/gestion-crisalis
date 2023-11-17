@@ -20,7 +20,7 @@ export const TableUsuarios = () => {
     create,
     deleteByIdData,
     updateByIdData,
-  } = useCrud({ url: HOST_API_USUARIOS });
+  } = useCrud(HOST_API_USUARIOS);
 
   const handleOnChange = ({ target }) => {
     const { name, value } = target;
