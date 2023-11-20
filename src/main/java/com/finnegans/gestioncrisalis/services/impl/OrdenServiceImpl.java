@@ -91,7 +91,7 @@ public class OrdenServiceImpl implements OrdenService {
 
     // Motor de cálculo
     private List<OrdenDetalle> calculin(List<Producto> productosServicios, List<OrdenDetalleDTO> detallesDTO, boolean aplicaDescuento, Orden orden) {
-        // Parámetros de negocio
+        // Parámetros de negocio, considerar obtener de tabla PARAMETROS.
         Double paramDescuento = 0.1D; // El descuento aplicado sobre el costo del producto.
         Double paramLimiteDescuento = 2500D; // El límite máximo del descuento a aplicar.
         Double paramInteresGtia = 0.2D; 
@@ -100,6 +100,8 @@ public class OrdenServiceImpl implements OrdenService {
             ? detallesDTO.stream().filter(detalleDTO -> detalleDTO.getIdProductService() == producto.getId()).findFirst().get().getCantidad() * producto.getCosto()
             : 0
         ).sum();
+
+        Double razonDescuento = Math.min(totalPedido * paramDescuento, paramLimiteDescuento) / totalPedido;
 
         return productosServicios.stream().map(producto -> {
             OrdenDetalleDTO item = detallesDTO.stream().filter(detalleDTO -> detalleDTO.getIdProductService() == producto.getId()).findFirst().get();
@@ -112,9 +114,7 @@ public class OrdenServiceImpl implements OrdenService {
                 producto.getTipo().equals("PRODUCTO") ? item.getCantidad() : 1,
                 producto.getNombre(),
                 producto.getCosto(),
-                (producto.getTipo().equals("SERVICIO")) ? null : (aplicaDescuento) ? Math.round(producto.getCosto() * 
-                (((totalPedido * paramDescuento) > paramLimiteDescuento) ? (paramLimiteDescuento / totalPedido) : paramDescuento)
-                 * 100.0) / 100.0 : 0,
+                (producto.getTipo().equals("SERVICIO")) ? null : (aplicaDescuento) ? Math.round(producto.getCosto() * razonDescuento * 100.0) / 100.0 : 0,
                 producto.getSoporte() == null ? null : producto.getSoporte(),
                 item.getGarantia(),
                 (item.getGarantia() != null) ? (item.getGarantia() * paramInteresGtia * producto.getCosto()) : null,
