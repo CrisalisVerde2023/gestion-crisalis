@@ -25,11 +25,12 @@ export const AppRoutes = () => {
         <Route path="/home" element={<Dashboard />} />
         <Route path="/personas" element={<TablePersonas />} />
         <Route path="/clientes" element={<ABMClientesComponent />} />
+        <Route path="/empresas" element={<TableEmpresas />} />
+        <Route path="/suscripciones" element={<TableSuscripciones />} />
         <Route
           path="/clientes/AMClientes/:idCliente"
           element={<AM_Clientes />}
         />
-        <Route path="/empresas" element={<TableEmpresas />} />
 
         <Route element={<AuthRoute />}>
           <Route path="/usuarios" element={<TableUsuarios />} />
@@ -41,7 +42,6 @@ export const AppRoutes = () => {
         <Route path="/pedidos" element={<ABMPedidos />} />
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
-        <Route path="/suscripciones" element={<TableSuscripciones />} />
       </Routes>
     </>
   );
