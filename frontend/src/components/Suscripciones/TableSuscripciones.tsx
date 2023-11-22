@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useCrud } from "../../hooks/useCrud";
-import { useNavigate } from "react-router-dom";
 import { RowSuscripciones } from "./RowSuscripciones";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
@@ -10,15 +9,11 @@ const HOST_API_SUSCRIPCIONES = "http://localhost:8080/api/suscripciones";
 export const TableSuscripciones = () => {
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const navigate = useNavigate();
   const {
     estado: { loading, json },
     deleteByIdData,
+    goBack,
   } = useCrud(HOST_API_SUSCRIPCIONES);
-
-  const cleanByEstado = (json) => {
-    return json.map((suscripcion) => suscripcion.estado);
-  };
 
   const filteredSuscripciones = () => {
     if (search.length === 0) return json;
@@ -34,10 +29,6 @@ export const TableSuscripciones = () => {
           ? suscripcion.empresa === ""
           : "")
     );
-  };
-
-  const goBack = () => {
-    navigate(-1);
   };
 
   const handleSearchChange = (e) => {

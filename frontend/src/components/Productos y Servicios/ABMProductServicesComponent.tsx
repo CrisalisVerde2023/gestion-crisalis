@@ -27,8 +27,8 @@ export default function ABMProductServiceComponent() {
     <div className="container mx-auto flex justify-content-center">
       <div className="flex flex-col">
         <div className="mb-2">
-          <LB_Productos seleccion={seleccion || ""} />
-          {/* <TableProductos /> */}
+          {/* <LB_Productos seleccion={seleccion || ""} /> */}
+          <TableProductos />
         </div>
         {seleccion === "multiple" && (
             <div className="flex flex-row justify-content-center bg-denim-400 text-white">
