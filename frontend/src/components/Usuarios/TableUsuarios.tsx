@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useCrud } from "../../hooks/useCrud";
-import { useNavigate } from "react-router-dom";
 import { RowUsuarios } from "./RowUsuarios";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
@@ -14,12 +13,12 @@ export const TableUsuarios = () => {
     usuario: "",
     password: "",
   });
-  const navigate = useNavigate();
   const {
     estado: { loading, json },
     create,
     deleteByIdData,
     updateByIdData,
+    goBack,
   } = useCrud(HOST_API_USUARIOS);
 
   const handleOnChange = ({ target }) => {
@@ -53,10 +52,6 @@ export const TableUsuarios = () => {
     return json.filter((usuario) =>
       usuario.usuario.toLowerCase().includes(search.toLowerCase())
     );
-  };
-
-  const goBack = () => {
-    navigate(-1);
   };
 
   const handleSearchChange = (e) => {

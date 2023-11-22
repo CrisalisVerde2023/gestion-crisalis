@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useCrud } from "../../hooks/useCrud";
-import { useNavigate } from "react-router-dom";
 import { RowEmpresas } from "./RowEmpresas";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
@@ -15,12 +14,12 @@ export const TableEmpresas = () => {
     cuit: "",
     start_date: "",
   });
-  const navigate = useNavigate();
   const {
     estado: { loading, json },
     create,
     deleteByIdData,
     updateByIdData,
+    goBack,
   } = useCrud(HOST_API_EMPRESAS);
 
   const handleOnChange = ({ target }) => {
@@ -58,10 +57,6 @@ export const TableEmpresas = () => {
         empresa.nombre.toLowerCase().includes(search.toLowerCase()) ||
         empresa.cuit.toLowerCase().includes(search.toLowerCase())
     );
-  };
-
-  const goBack = () => {
-    navigate(-1);
   };
 
   const handleSearchChange = (e) => {

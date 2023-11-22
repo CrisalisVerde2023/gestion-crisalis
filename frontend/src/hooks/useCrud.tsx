@@ -242,19 +242,11 @@ export const useCrud = (url) => {
         timer: 2000,
       });
 
-      const { json } = { ...estado };
-      const impuestoIndex = json.findIndex((impuesto) => impuesto.id == id);
-      const newJson = [
-        ...json.slice(0, impuestoIndex),
-        {
-          ...body,
-        },
-        ...json.slice(impuestoIndex + 1),
-      ];
+      getAllData();
 
       setEstado({
         ...estado,
-        json: newJson,
+        /* json: newJson, */
         loading: false,
         statusCode: response.status,
       });
@@ -268,11 +260,16 @@ export const useCrud = (url) => {
     }
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return {
     estado,
     getAllData,
     deleteByIdData,
     create,
     updateByIdData,
+    goBack,
   };
 };

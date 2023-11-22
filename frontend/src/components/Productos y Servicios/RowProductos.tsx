@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import EditarBtn from "../UI Elements/EditarBtn";
 import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
+import { DropdownImpuestosProductos } from "./DropdownImpuestosProductos";
 
-export const RowProductos = ({ producto, deleteByIdData, updateByIdData }) => {
+export const RowProductos = ({
+  producto,
+  deleteByIdData,
+  updateByIdData,
+  handleSetSelected,
+}) => {
   const [formData, setFormData] = useState({ ...producto });
   const [showModalUpdate, setShowModalUpdate] = useState(false);
 
@@ -48,6 +54,12 @@ export const RowProductos = ({ producto, deleteByIdData, updateByIdData }) => {
     });
   };
 
+  const mapIdImpuestos = (impuestos) =>
+    impuestos.map((impuesto) => impuesto.id);
+
+  const handleIdImpuestos = (newState) =>
+    setFormData({ ...formData, idImpuestos: newState });
+
   return (
     <>
       <tr className="border-b dark:border-gray-700">
@@ -60,7 +72,26 @@ export const RowProductos = ({ producto, deleteByIdData, updateByIdData }) => {
         <td className="px-4 py-3 text-center">{producto.tipo}</td>
         <td className="px-4 py-3 text-center">{producto.costo}</td>
         <td className="px-4 py-3 text-center">{producto.soporte}</td>
-        <td className="px-4 py-3 text-center">{producto.idImpuestos}</td>
+        <td className="px-4 py-3 text-center">
+          <div className="flex space-x-1 bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 overflow-auto">
+            {producto.impuestos.length ? (
+              producto.impuestos.map((impuesto) => {
+                return (
+                  <span
+                    key={impuesto.id}
+                    className="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300"
+                  >
+                    {impuesto.nombre}
+                  </span>
+                );
+              })
+            ) : (
+              <span className="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
+                Sin impuestos
+              </span>
+            )}
+          </div>
+        </td>
         <td className="px-4 py-3 text-center">
           <span
             className={`${
@@ -96,13 +127,17 @@ export const RowProductos = ({ producto, deleteByIdData, updateByIdData }) => {
               {/* <!-- Modal header -->  */}
               <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {`Editar producto ${producto.nombre}`}
+                  {`Editar ${
+                    producto.tipo === "PRODUCTO" ? "producto" : "servicio"
+                  } ${producto.nombre.toLowerCase()}`}
                 </h3>
                 <button
                   type="button"
                   className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                   data-modal-toggle="updateProductModal"
-                  onClick={() => setShowModalUpdate(false)}
+                  onClick={() => {
+                    setShowModalUpdate(false), handleSetSelected([]);
+                  }}
                 >
                   <svg
                     aria-hidden="true"
@@ -157,61 +192,34 @@ export const RowProductos = ({ producto, deleteByIdData, updateByIdData }) => {
                       placeholder="1000"
                     />
                   </div>
-                  <div>
-                    <label
-                      htmlFor="price"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Price
-                    </label>
-                    <input
-                      type="number"
-                      value="399"
-                      name="price"
-                      id="price"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="$299"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="category"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Category
-                    </label>
-                    <select
-                      id="category"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    >
-                      <option selected="">Electronics</option>
-                      <option value="TV">TV/Monitors</option>
-                      <option value="PC">PC</option>
-                      <option value="GA">Gaming/Console</option>
-                      <option value="PH">Phones</option>
-                    </select>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label
-                      htmlFor="description"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Description
-                    </label>
-                    <textarea
-                      id="description"
-                      rows="5"
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="Write a description..."
-                    >
-                      Standard glass, 3.8GHz 8-core 10th-generation Intel Core
-                      i7 processor, Turbo Boost up to 5.0GHz, 16GB 2666MHz DDR4
-                      memory, Radeon Pro 5500 XT with 8GB of GDDR6 memory, 256GB
-                      SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic
-                      Keyboard - US
-                    </textarea>
-                  </div>
+                  {producto.tipo === "SERVICIO" && (
+                    <div className="col-span-2 px-32">
+                      <label
+                        htmlFor="soporte-modal-create"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
+                      >
+                        Mantenimiento
+                      </label>
+                      <input
+                        value={formData.soporte}
+                        onChange={handleInputChange}
+                        type="text"
+                        name="soporte"
+                        id="soporte-modal-create"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="500"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  <DropdownImpuestosProductos
+                    handleSetSelected={handleSetSelected}
+                    impuestos={mapIdImpuestos(producto.impuestos)}
+                    handleIdImpuestos={handleIdImpuestos}
+                  />
                 </div>
+
                 <div className="flex items-center justify-center space-x-4">
                   <button
                     type="submit"

@@ -1,31 +1,32 @@
 import React, { useState } from "react";
 import { useCrud } from "../../hooks/useCrud";
-import { useNavigate } from "react-router-dom";
 import { RowProductos } from "./RowProductos";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
-import { DropdownSearch } from "../UI Elements/DropdownSearch";
+import { DropdownImpuestosProductos } from "./DropdownImpuestosProductos";
 
 const HOST_API_PRODUCTOS = "http://localhost:8080/api/prods_servs";
-const HOST_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
+const defaultProduct = {
+  id: null,
+  tipo: "",
+  nombre: "",
+  costo: "",
+  soporte: "",
+  idImpuestos: [],
+};
 
 export const TableProductos = () => {
-  const [search, setSearch] = useState("");
+  const [searchProducto, setSearchProducto] = useState("");
   const [showModalCreate, setShowModalCreate] = useState(false);
-  const [formData, setFormData] = useState({
-    id: null,
-    tipo: "",
-    nombre: "",
-    costo: "",
-    soporte: "",
-    idImpuestos: [],
-  });
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState(defaultProduct);
+  const [tipo, setTipo] = useState("PRODUCTO");
+  const [showDropdownFilter, setShowDropdownFilter] = useState(false);
   const {
-    estado: { loading, json },
+    estado: { loading: loadingProductos, json: jsonProductos },
     create,
     deleteByIdData,
     updateByIdData,
+    goBack,
   } = useCrud(HOST_API_PRODUCTOS);
 
   const handleOnChange = ({ target }) => {
@@ -38,43 +39,45 @@ export const TableProductos = () => {
 
   const handleCreate = (e) => {
     e.preventDefault();
+
     const body = {
       ...formData,
-      id: formData.id,
-      tipo: formData.tipo,
+      tipo: tipo,
       nombre: formData.nombre,
       costo: formData.costo,
-      soporte: formData.soporte,
+      soporte: formData.soporte ?? null,
       idImpuestos: formData.idImpuestos,
     };
+
     create({ body }).then(
       setShowModalCreate(!showModalCreate),
-      setFormData({
-        id: null,
-        tipo: "",
-        nombre: "",
-        costo: "",
-        soporte: "",
-        idImpuestos: [],
-      })
+      setFormData(defaultProduct)
     );
   };
 
   const filteredProductos = () => {
-    if (search.length === 0) return json;
+    if (searchProducto.length === 0) return jsonProductos;
 
-    return json.filter((producto) =>
-      producto.nombre.toLowerCase().includes(search.toLowerCase())
+    return jsonProductos.filter(
+      (producto) =>
+        producto.nombre.toLowerCase().includes(searchProducto.toLowerCase()) ||
+        producto.tipo.toLowerCase().includes(searchProducto.toLowerCase()) ||
+        (searchProducto === "PRODUCTO"
+          ? producto.tipo === "PRODUCTO"
+          : searchProducto === "SERVICIO"
+          ? producto.tipo === "SERVICIO"
+          : "")
     );
   };
 
-  const goBack = () => {
-    navigate(-1);
+  const handleSearchChange = ({ target }) => {
+    setSearchProducto(target.value);
   };
-
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
+  const handleTipoChange = ({ target }) => {
+    setTipo(target.value);
   };
+  const handleSetSelected = (newState) =>
+    setFormData({ ...formData, idImpuestos: newState });
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
@@ -82,7 +85,7 @@ export const TableProductos = () => {
         <div className="bg-white dark:bg-gray-800  shadow-md sm:rounded-lg overflow-hidden">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
             {/* Buscar */}
-            <BuscarBar fnOnChange={handleSearchChange} value={search} />
+            <BuscarBar fnOnChange={handleSearchChange} value={searchProducto} />
             {/* Botones */}
             <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
               <button
@@ -108,6 +111,83 @@ export const TableProductos = () => {
                 </svg>
                 Crear producto
               </button>
+
+              <div className="flex flex-col items-center w-full md:w-auto">
+                <button
+                  id="actionsDropdownButton"
+                  data-dropdown-toggle="actionsDropdown"
+                  className="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  type="button"
+                  onClick={() => {
+                    setShowDropdownFilter(!showDropdownFilter),
+                      setSearchProducto("");
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    className="h-4 w-4 mr-2 text-gray-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Tipo
+                  <svg
+                    className="-mr-1 ml-1.5 w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    />
+                  </svg>
+                </button>
+                {showDropdownFilter && (
+                  <div
+                    id="actionsDropdown"
+                    className="origin-top-right fixed mt-[40px] z-10 w-32 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
+                  >
+                    <ul
+                      className="py-1 text-sm text-gray-700 dark:text-gray-200"
+                      aria-labelledby="actionsDropdownButton"
+                    >
+                      <li
+                        className="cursor-pointer block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-value="PRODUCTO"
+                        onClick={(e) => {
+                          setShowDropdownFilter(!showDropdownFilter),
+                            setSearchProducto(
+                              e.target.getAttribute("data-value")
+                            );
+                        }}
+                      >
+                        Producto
+                      </li>
+                      <li
+                        className="cursor-pointer block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-value="SERVICIO"
+                        onClick={(e) => {
+                          setShowDropdownFilter(!showDropdownFilter),
+                            setSearchProducto(
+                              e.target.getAttribute("data-value")
+                            );
+                        }}
+                      >
+                        Servicio
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           {/* Tabla */}
@@ -139,79 +219,79 @@ export const TableProductos = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
+                {loadingProductos ? (
                   <>
                     <tr className="animate-pulse">
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                    </tr>
-                    <tr className="animate-pulse">
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                     </tr>
                     <tr className="animate-pulse">
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                    </tr>
+                    <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="w-full h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                     </tr>
                   </>
-                ) : !Boolean(json.length) ? (
+                ) : !Boolean(jsonProductos.length) ? (
                   <tr className="p-4">
                     <td colSpan={7} className="text-center p-4">
                       NO HAY DATOS
@@ -224,6 +304,7 @@ export const TableProductos = () => {
                       key={producto.id}
                       deleteByIdData={deleteByIdData}
                       updateByIdData={updateByIdData}
+                      handleSetSelected={handleSetSelected}
                     />
                   ))
                 )}
@@ -353,15 +434,27 @@ export const TableProductos = () => {
             <div className="relative p-4 bg-white rounded-lg shadow-2xl drop-shadow-2xl dark:bg-gray-800 sm:p-5">
               {/* <!-- Modal header --> */}
               <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Crear producto
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                  Crear
+                  <select
+                    name="tipo"
+                    id="tipo"
+                    className="bg-gray-50 border border-gray-300 text-lg font-semibold text-gray-900 ms-1 rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    onChange={handleTipoChange}
+                    autoFocus
+                  >
+                    <option value="PRODUCTO">producto</option>
+                    <option value="SERVICIO">servicio</option>
+                  </select>
                 </h3>
                 <button
                   type="button"
                   className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                   data-modal-target="createProductModal"
                   data-modal-toggle="createProductModal"
-                  onClick={() => setShowModalCreate(false)}
+                  onClick={() => {
+                    setShowModalCreate(false), setFormData(defaultProduct);
+                  }}
                 >
                   <svg
                     aria-hidden="true"
@@ -418,11 +511,32 @@ export const TableProductos = () => {
                       required
                     />
                   </div>
+                  {tipo === "SERVICIO" && (
+                    <div className="col-span-2 px-32">
+                      <label
+                        htmlFor="soporte-modal-create"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
+                      >
+                        Mantenimiento
+                      </label>
+                      <input
+                        value={formData.soporte}
+                        onChange={handleOnChange}
+                        type="text"
+                        name="soporte"
+                        id="soporte-modal-create"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="500"
+                        required
+                      />
+                    </div>
+                  )}
 
-                  <div className="col-span-2 flex flex-col">
-                    <DropdownSearch url={HOST_API_IMPUESTOS} />
-                  </div>
+                  <DropdownImpuestosProductos
+                    handleSetSelected={handleSetSelected}
+                  />
                 </div>
+
                 <button
                   type="submit"
                   className="text-white inline-flex items-center bg-denim hover:bg-denim-400 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
