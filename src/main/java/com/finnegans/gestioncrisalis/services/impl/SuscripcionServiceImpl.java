@@ -7,6 +7,7 @@ import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.models.Orden;
 import com.finnegans.gestioncrisalis.models.OrdenDetalle;
 import com.finnegans.gestioncrisalis.models.Persona;
+import com.finnegans.gestioncrisalis.models.Producto;
 import com.finnegans.gestioncrisalis.models.Suscripcion;
 import com.finnegans.gestioncrisalis.repositories.SuscripcionRepository;
 import com.finnegans.gestioncrisalis.services.SuscripcionService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SuscripcionServiceImpl implements SuscripcionService {
@@ -26,37 +28,17 @@ public class SuscripcionServiceImpl implements SuscripcionService {
         this.suscripcionRepository = suscripcionRepository;
     }
 
-    // El método siguiente no es necesario, se deja a modo de guía/ejemplo
     @Override
-    public List<Suscripcion> getServiciosActivos(Cliente cliente) {
-        List<Suscripcion> serviciosActivos = new ArrayList<Suscripcion>();
-
-        for (Cliente cli : (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
-            for (Orden ord : cli.getOrdenes())
-                for (OrdenDetalle ordDet : ord.getOrdenDetalles()) {
-                    Suscripcion ordenSus = ordDet.getSuscripcion();
-
-                    if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion())) serviciosActivos.add(ordenSus);
-                }
-        ;
-
-        return serviciosActivos;
-    }
-
-    @Override
-    public boolean tieneServiciosActivos(Cliente cliente) {
-        if (cliente == null) return false;
-        
-        for (Cliente cli: (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
-            for (Orden ord: cli.getOrdenes())
-                for (OrdenDetalle ordDet: ord.getOrdenDetalles()) {
-                    Suscripcion ordenSus = ordDet.getSuscripcion();
-
-                    if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion())) return true;
-                }
-        ;
-
-        return false;
+    public List<Producto> getServiciosActivos(Cliente cliente) {
+        return (cliente == null)
+            ? new ArrayList<Producto>()
+            : ((cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente)).stream()
+                .flatMap(cli -> cli.getOrdenes().stream())
+                .flatMap(ord -> ord.getOrdenDetalles().stream())
+                .map(ordDet -> ((ordDet.getSuscripcion() != null) && (ordDet.getSuscripcion().isEstadoSuscripcion()))
+                    ? ordDet.getSuscripcion().getOrdenDetalle().getProductoServicio()
+                    : null)
+                .collect(Collectors.toList());
     }
 
     @Override

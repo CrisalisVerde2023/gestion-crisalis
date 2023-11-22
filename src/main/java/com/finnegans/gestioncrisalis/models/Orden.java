@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -40,6 +41,13 @@ public class Orden {
 
     @OneToMany(mappedBy = "orden")
     private List<OrdenDetalle> ordenDetalles;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "DESCUENTOS",
+            joinColumns = @JoinColumn(name = "ORDEN_ID"),
+            inverseJoinColumns = @JoinColumn(name = "SERVICIO_ID"))
+    private Set<Producto> serviciosHabilitantes;
 
     @PrePersist
     public void prePersist() {
