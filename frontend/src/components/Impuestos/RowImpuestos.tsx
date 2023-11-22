@@ -201,6 +201,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                     </textarea>
                   </div> */}
                 </div>
+
                 <div className="flex items-center justify-center space-x-4">
                   <button
                     type="submit"
