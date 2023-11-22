@@ -11,8 +11,10 @@ import com.finnegans.gestioncrisalis.services.SuscripcionService;
 import org.springframework.stereotype.Service;
 import com.finnegans.gestioncrisalis.dtos.OrdenDTO;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OrdenServiceImpl implements OrdenService {
@@ -40,9 +42,6 @@ public class OrdenServiceImpl implements OrdenService {
         Usuario usuario = usuarioRepository.findById(ordenDTO.getIdUsuario()).orElseThrow(()->new ResourceNotFound("No se encontró el usuario: " + ordenDTO.getIdUsuario()));
         List<OrdenDetalle> detalles;
 
-        //Creamos una orden en blanco
-        Orden orden = new Orden(null, cliente, usuario, false, null, null);
-
         // Levantamos el listado de productos/servicios (OrdenDetalleDTO) solicitados desde el front
         List<OrdenDetalleDTO> detallesDTO = ordenDTO.getOrdenDetalles();
 
@@ -50,8 +49,21 @@ public class OrdenServiceImpl implements OrdenService {
         List<Producto> productosServicios = productRepository.findAllById(detallesDTO.stream().map(OrdenDetalleDTO::getIdProductService).collect(Collectors.toList()));
         if (productosServicios.isEmpty()) throw new ResourceNotFound("No se encontraron productos/servicios que procesar");
 
-        boolean tieneServiciosPedidos = productosServicios.stream().anyMatch(producto -> producto.getTipo().equals("SERVICIO"));
-        boolean aplicaDescuento = (tieneServiciosPedidos || suscripcionService.tieneServiciosActivos(cliente));
+        List<Producto> serviciosPedidos = productosServicios.stream().filter(producto -> producto.getTipo().equals("SERVICIO")).collect(Collectors.toList());
+        List<Producto> serviciosActivos = suscripcionService.getServiciosActivos(cliente);
+        
+        boolean aplicaDescuento = ((serviciosPedidos.size() + serviciosActivos.size()) > 0);
+
+        //Creamos una orden en blanco
+        Orden orden = new Orden(
+            null,
+            cliente,
+            usuario,
+            false,
+            null,
+            null,
+            Stream.of(serviciosPedidos, serviciosActivos).flatMap(Collection::stream).collect(Collectors.toSet())
+        );
 
         // Llamada al motor
         detalles = calculin(productosServicios, detallesDTO, aplicaDescuento, orden);
@@ -62,7 +74,7 @@ public class OrdenServiceImpl implements OrdenService {
         if (!provisorio) { // Si no es provisorio completo los impuestos del detalle
             this.ordenRepository.fillOrdenDetalleImpuesto();
             
-            if (tieneServiciosPedidos) // ... y hay servicios pedidos creo las suscripciones
+            if (!serviciosPedidos.isEmpty()) // ... y hay servicios pedidos creo las suscripciones
                 suscripcionService.createSubByOds(detalles.stream().filter(detalle -> detalle.getTipo().equals("SERVICIO")).collect(Collectors.toList()));
         }
 
