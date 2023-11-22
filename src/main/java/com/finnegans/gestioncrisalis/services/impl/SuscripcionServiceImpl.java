@@ -30,15 +30,18 @@ public class SuscripcionServiceImpl implements SuscripcionService {
 
     @Override
     public List<Producto> getServiciosActivos(Cliente cliente) {
-        return (cliente == null)
-            ? new ArrayList<Producto>()
-            : ((cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente)).stream()
-                .flatMap(cli -> cli.getOrdenes().stream())
-                .flatMap(ord -> ord.getOrdenDetalles().stream())
-                .map(ordDet -> ((ordDet.getSuscripcion() != null) && (ordDet.getSuscripcion().isEstadoSuscripcion()))
-                    ? ordDet.getSuscripcion().getOrdenDetalle().getProductoServicio()
-                    : null)
-                .collect(Collectors.toList());
+        List<Producto> serviciosActivos = new ArrayList<Producto>();
+
+        if (cliente != null)
+            for (Cliente cli: (cliente.getEmpresa() != null) ? cliente.getEmpresa().getClientes() : Arrays.asList(cliente))
+                for (Orden ord: cli.getOrdenes())
+                    for (OrdenDetalle ordDet: ord.getOrdenDetalles()) {
+                        Suscripcion ordenSus = ordDet.getSuscripcion();
+
+                        if ((ordenSus != null) && (ordenSus.isEstadoSuscripcion())) serviciosActivos.add(ordDet.getProductoServicio());
+                    }
+
+        return serviciosActivos;
     }
 
     @Override
