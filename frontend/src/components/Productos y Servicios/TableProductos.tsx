@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+// @ts-nocheck
+import React, { useEffect, useState } from "react";
 import { useCrud } from "../../hooks/useCrud";
 import { RowProductos } from "./RowProductos";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
 import { DropdownImpuestosProductos } from "./DropdownImpuestosProductos";
+import { useSearchParams } from "react-router-dom";
+import SelectedProdsServs from "../SelectedProdsServs";
 
 const HOST_API_PRODUCTOS = "http://localhost:8080/api/prods_servs";
 const defaultProduct = {
@@ -29,6 +32,9 @@ export const TableProductos = () => {
     goBack,
   } = useCrud(HOST_API_PRODUCTOS);
 
+  const [searchParams] = useSearchParams();
+  const seleccion = searchParams.get("seleccion");
+
   const handleOnChange = ({ target }) => {
     const { name, value } = target;
     setFormData({
@@ -36,6 +42,11 @@ export const TableProductos = () => {
       [name]: value,
     });
   };
+
+  useEffect(() => {
+    if (seleccion) console.log(seleccion);
+    else console.log("Vacio");
+  }, [seleccion]);
 
   const handleCreate = (e) => {
     e.preventDefault();
@@ -305,13 +316,18 @@ export const TableProductos = () => {
                       deleteByIdData={deleteByIdData}
                       updateByIdData={updateByIdData}
                       handleSetSelected={handleSetSelected}
+                      seleccion={!seleccion ? "" : seleccion}
                     />
                   ))
                 )}
               </tbody>
             </table>
           </div>
-
+          {seleccion === "multiple" && (
+              <div className="flex flex-row justify-content-center bg-denim-400 text-white">
+                <p className="mr-1">Productos / Servicios seleccionados:</p>
+              </div>
+            ) && <SelectedProdsServs />}
           {/* Tabla footer paginacion */}
           {/* <nav
             className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"

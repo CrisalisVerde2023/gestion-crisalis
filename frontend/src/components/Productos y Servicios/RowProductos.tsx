@@ -1,17 +1,54 @@
-import React, { useState } from "react";
+// @ts-nocheck
+import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import EditarBtn from "../UI Elements/EditarBtn";
 import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
 import { DropdownImpuestosProductos } from "./DropdownImpuestosProductos";
+import { UserLoggedContext } from "../../contexts/UserLoggedContext";
+import { ProductServiceType } from "../types/productServiceType";
+import AgregarBtn from "../UI Elements/AgregarBtn";
+import RemoverBtn from "../UI Elements/RemoverBtn";
 
 export const RowProductos = ({
   producto,
   deleteByIdData,
   updateByIdData,
   handleSetSelected,
+  seleccion = "",
 }) => {
   const [formData, setFormData] = useState({ ...producto });
   const [showModalUpdate, setShowModalUpdate] = useState(false);
+  const { pedido, setPedido } = useContext(UserLoggedContext);
+
+  // Function to add an item to the pedido
+  const addToPedido = (selected: ProductServiceType) => {
+    // If the item doesn't exist, add it.
+    if (!pedido.prods_servs.some((item) => item.id === selected.id)) {
+      const updatedProdsServs = [
+        ...pedido.prods_servs,
+        {
+          ...selected,
+          cantidad: 1,
+          garantia: selected.tipo === "PRODUCTO" ? 0 : null,
+
+          descuento: null,
+          garantiaCosto: selected.tipo === "PRODUCTO" ? 0 : null,
+        },
+      ];
+      setPedido({ ...pedido, prods_servs: updatedProdsServs });
+    }
+  };
+
+  // Function to remove an item from the pedido
+  const removeFromPedido = (selected: ProductServiceType) => {
+    // If the item already exists, filter it out to remove it.
+    if (pedido.prods_servs.some((item) => item.id === selected.id)) {
+      const updatedProdsServs = pedido.prods_servs.filter(
+        (item) => item.id !== selected.id
+      );
+      setPedido({ ...pedido, prods_servs: updatedProdsServs });
+    }
+  };
 
   const handleModalEdit = () => {
     setShowModalUpdate(!showModalUpdate);
@@ -103,15 +140,27 @@ export const RowProductos = ({
             {producto.eliminado ? "Inactivo" : "Activo"}
           </span>
         </td>
-        <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
-          <div className="flex items-center space-x-4">
-            <EditarBtn fnOnClick={handleModalEdit} />
-            <ToggleEstadoBtn
-              fnOnClick={() => handleRemove(producto)}
-              estado={producto.eliminado}
-            />
-          </div>
-        </td>
+        {seleccion === "" && (
+          <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+            <div className="flex items-center space-x-4">
+              <EditarBtn fnOnClick={handleModalEdit} />
+              <ToggleEstadoBtn
+                fnOnClick={() => handleRemove(producto)}
+                estado={producto.eliminado}
+              />
+            </div>
+          </td>
+        )}
+        {seleccion === "multiple" &&
+          (!pedido.prods_servs.some((item) => item.id === producto.id) ? (
+            <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+              <AgregarBtn fnOnClick={() => addToPedido(producto)} />
+            </td>
+          ) : (
+            <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
+              <RemoverBtn fnOnClick={() => removeFromPedido(producto)} />
+            </td>
+          ))}
       </tr>
       {showModalUpdate && (
         /* <!-- Update modal --> */

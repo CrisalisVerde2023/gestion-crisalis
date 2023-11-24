@@ -81,9 +81,14 @@ public class OrdenServiceImpl implements OrdenService {
         return provisorio ? orden : this.ordenRepository.saveAndFlush(orden);
     }
 
-    @Override
     public List<OrdenEncabezadoDTO> getAll() {
-        return this.ordenRepository.getEncabezados();
+        List<OrdenEncabezadoDTO> encabezados = ordenRepository.getEncabezados();
+        for (OrdenEncabezadoDTO dto : encabezados) {
+            List<Integer> productIds = ordenRepository.findProdsServsIdsByOrderId(dto.getId());
+            int[] prodsServsArray = productIds.stream().mapToInt(i -> i).toArray();
+            dto.setProdsServs(prodsServsArray); // Set the product/service IDs
+        }
+        return encabezados;
     }
 
     public Orden getById(Long id) {
