@@ -8,6 +8,6 @@ import com.finnegans.gestioncrisalis.views.ReporteMayorDescuento;
 
 public interface ReporteService {
      public List<ReporteHistorial> getHistorialPedidos();
-     public List<ReporteDescuento> getMayorDescuento();
-     public List<ReporteMayorDescuento> getDescuentosPedidos();
+     public List<ReporteMayorDescuento> getMayorDescuento();
+     public List<ReporteDescuento> getDescuentosPedidos();
 }
