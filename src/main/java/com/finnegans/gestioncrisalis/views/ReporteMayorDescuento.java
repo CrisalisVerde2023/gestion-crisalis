@@ -44,7 +44,7 @@ import lombok.Getter;
                 "\t\t\tINNER JOIN public.personas ON personas.id = clientes.persona_id\n" +
                 "\t\t\tINNER JOIN public.productos_servicios ON productos_servicios.id = descuentos.servicio_id\n" +
                 "\t\t\tLEFT JOIN public.empresas ON empresas.id = clientes.empresa_id\n" +
-                "\t\tWHERE public.ordenes.fecha_creacion::date BETWEEN '20231101' AND '20231124'\n" +
+
                 "\t\tGROUP BY \n" +
                 "\t\t\tordenes.fecha_creacion,\n" +
                 "\t\t\tid_orden,\n" +
