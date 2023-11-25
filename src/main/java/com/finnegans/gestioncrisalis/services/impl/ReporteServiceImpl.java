@@ -30,13 +30,13 @@ public class ReporteServiceImpl implements ReporteService {
     }
 
     @Override
-    public List<ReporteDescuento> getMayorDescuento(){
-        return this.reporteDescuentoRepository.findAll();
+    public List<ReporteMayorDescuento> getMayorDescuento(){
+        return this.reporteMayorDescuentoRepository.findAll();
     }
 
     @Override
-    public List<ReporteMayorDescuento> getDescuentosPedidos(){
-        return this.reporteMayorDescuentoRepository.findAll();
+    public List<ReporteDescuento> getDescuentosPedidos(){
+        return this.reporteDescuentoRepository.findAll();
     }
 
 }
