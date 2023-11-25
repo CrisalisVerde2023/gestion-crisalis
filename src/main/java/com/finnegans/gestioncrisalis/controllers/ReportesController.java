@@ -13,8 +13,8 @@ import com.finnegans.gestioncrisalis.services.ReporteService;
 public class ReportesController {
     private ReporteService reportesServices;
 
-    public ReportesController(ReporteService reportesRepository) {
-        this.reportesServices = reportesRepository;
+    public ReportesController(ReporteService reportesService) {
+        this.reportesServices = reportesService;
     }
 
     @GetMapping(value = "/historial")
@@ -31,5 +31,4 @@ public class ReportesController {
     public ResponseEntity<?> reporte3() {
         return new ResponseEntity<>(this.reportesServices.getDescuentosPedidos(), HttpStatus.OK);
     }
-
 }
