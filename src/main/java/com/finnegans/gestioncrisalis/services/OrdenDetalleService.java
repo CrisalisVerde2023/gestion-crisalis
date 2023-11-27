@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface OrdenDetalleService {
 
-    public List<OrdenDetalle> getAll();
+    List<OrdenDetalle> findAllOrdenDetalles();
 
-    public OrdenDetalle getById(Long id);
-    public OrdenDetalle anular(Long id);
-    List<OrdenDetalle> getOrdenDetalleByOrden(Long id);
+    OrdenDetalle findOrdenDetalleById(Long id);
+
+    OrdenDetalle cancelOrdenDetalle(Long id);
 }

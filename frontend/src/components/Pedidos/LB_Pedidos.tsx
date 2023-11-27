@@ -5,7 +5,7 @@ import {
   Search,
   CheckCircleFill,
 } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   useFetchPedidos,
   useDeletePedidos,
@@ -56,6 +56,7 @@ export default function LB_Pedido() {
   let fetchResponseEmpresa = useFetchEmpresas(undefined, shouldFetchEmpresas);
   let fetchResponsePersonas = useFetchPersonas(undefined, shouldFetchEmpresas);
   let fetchResponseClientes = useFetchClientes(undefined, shouldFetchClientes);
+  const navigate = useNavigate();
   const [prods_servs, setProds_Servs] = useState<ProductServiceType[] | null>(
     null
   );
@@ -313,7 +314,7 @@ export default function LB_Pedido() {
   const actionButtons = (row: EncabezadoPedidoType) => (
     <div className="flex justify-center items-center space-x-4">
       <BorrarBtn fnOnClick={() => handleClickedElement(row)} />
-      <VerBtn fnOnClick={() => console.log("llevar a orden detail")} />
+      <VerBtn fnOnClick={() => navigate(`/pedidos/detalle/${row.id}`)} />
     </div>
   );
 

@@ -14,6 +14,7 @@ import { TableUsuarios } from "../components/Usuarios/TableUsuarios";
 import { TableEmpresas } from "../components/Empresas/TableEmpresas";
 import { TableSuscripciones } from "../components/Suscripciones/TableSuscripciones";
 import { TableProductos } from "../components/Productos y Servicios/TableProductos";
+import PedidoDetalleComponent from "../components/Pedidos/PedidoDetalleComponent";
 
 export const AppRoutes = () => {
   return (
@@ -40,6 +41,11 @@ export const AppRoutes = () => {
 
         <Route path="/altaPedido" element={<AM_Pedidos />} />
         <Route path="/pedidos" element={<ABMPedidos />} />
+        <Route path="/pedidos/detalle/" element={<PedidoDetalleComponent />} />
+        <Route
+          path="/pedidos/detalle/:idPedido"
+          element={<PedidoDetalleComponent />}
+        />
         <Route path="/error" element={<NotFoundComponent />} />
         <Route path="/*" element={<NotFoundComponent />} />
       </Routes>

@@ -13,16 +13,17 @@ public class OrdenDetalleController {
 
     private final OrdenDetalleService ordenDetalleService;
 
+
     public OrdenDetalleController(OrdenDetalleService orderDetailService) {
         this.ordenDetalleService = orderDetailService;
     }
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getDetallesOrdenes() {
-        return new ResponseEntity<>(this.ordenDetalleService.getAll(), HttpStatus.OK);
+        return new ResponseEntity<>(this.ordenDetalleService.findAllOrdenDetalles(), HttpStatus.OK);
     }
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{id}")
     public ResponseEntity<?> getOrdenDetalleByOrden(@PathVariable Long id) {
-        return new ResponseEntity<>(this.ordenDetalleService.getOrdenDetalleByOrden(id), HttpStatus.OK);
+        return new ResponseEntity<>(this.ordenDetalleService.findOrdenDetalleById(id), HttpStatus.OK);
     }
 
 }
