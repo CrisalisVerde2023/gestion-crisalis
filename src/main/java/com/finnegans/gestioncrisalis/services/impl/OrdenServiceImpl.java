@@ -106,7 +106,7 @@ public class OrdenServiceImpl implements OrdenService {
         // Parámetros de negocio, considerar obtener de tabla PARAMETROS.
         Double paramDescuento = 0.1D; // El descuento aplicado sobre el costo del producto.
         Double paramLimiteDescuento = 2500D; // El límite máximo del descuento a aplicar.
-        Double paramInteresGtia = 0.2D; 
+        Double paramInteresGtia = 0.02D; 
 
         Double totalPedido = productosServicios.stream().mapToDouble(producto -> (producto.getTipo().equals("PRODUCTO"))
             ? detallesDTO.stream().filter(detalleDTO -> detalleDTO.getIdProductService() == producto.getId()).findFirst().get().getCantidad() * producto.getCosto()
