@@ -3,12 +3,13 @@ import { RowPedidosCliente } from "./RowPedidosCliente";
 import VolverBtn from "../../UI Elements/VolverBtn";
 import { useInformes } from "../../../hooks/useInformes";
 
-const HOST_API_PEDIDOS_CLIENTE = "http://localhost:8080/api/???";
+const HOST_API_PEDIDOS_CLIENTE = "http://localhost:8080/api/reportes/historial";
 
 export const TablePedidosCliente = () => {
   const [search, setSearch] = useState("");
   const {
     estado: { loading, json },
+    totales,
     goBack,
   } = useInformes({
     url: HOST_API_PEDIDOS_CLIENTE,
@@ -213,9 +214,32 @@ export const TablePedidosCliente = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredPedidos().map((pedidos, index) => (
-                    <RowPedidosCliente pedidos={pedidos} key={index} />
-                  ))
+                  <>
+                    {filteredPedidos().map((pedidos, index) => (
+                      <RowPedidosCliente pedidos={pedidos} key={index} />
+                    ))}
+
+                    <tr className="p-4 bg-gray-100">
+                      <td colSpan={5} className="text-left font-bold p-4">
+                        TOTAL GENERAL
+                      </td>
+                      <td colSpan={1} className="text-center p-4 font-semibold">
+                        {totales.cantidades}
+                      </td>
+                      <td colSpan={1} className="text-center p-4 font-semibold">
+                        {`$ ${totales.precios}`}
+                      </td>
+                      <td colSpan={1} className="text-center p-4 font-semibold">
+                        {`$ ${totales.preciosItem}`}
+                      </td>
+                      <td colSpan={1} className="text-center p-4 font-semibold">
+                        {`$ ${totales.totalImpuestos}`}
+                      </td>
+                      <td colSpan={1} className="text-center p-4 font-semibold">
+                        {`$ ${totales.totalPedidos}`}
+                      </td>
+                    </tr>
+                  </>
                 )}
               </tbody>
             </table>

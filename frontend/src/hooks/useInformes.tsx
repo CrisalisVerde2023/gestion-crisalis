@@ -3,7 +3,7 @@ import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { defaultUserLogState } from "../components/types/UserLogged";
-import pedidosMock from "../mocks/pedidos-cliente-servicio-producto.json";
+import jsonMock from "../mocks/pedidos-cliente-servicio-producto.json";
 
 const defaultUseInformes = {
   json: null,
@@ -16,6 +16,13 @@ export const useInformes = ({ url, tipoInforme }) => {
   const [estado, setEstado] = useState(defaultUseInformes);
   const navigate = useNavigate();
   const token = userLogged.token;
+  const [totales, setTotales] = useState({
+    cantidades: null,
+    precios: null,
+    preciosItem: null,
+    totalImpuestos: null,
+    totalPedidos: null,
+  });
 
   useEffect(() => {
     tipoInforme === "pedidosByCliente" && getPedidosByCliente();
@@ -23,7 +30,7 @@ export const useInformes = ({ url, tipoInforme }) => {
 
   const getPedidosByCliente = async () => {
     try {
-      /* const response = await fetch(url, {
+      const response = await fetch(url, {
         headers: {
           Authorization: token,
           "Content-Type": "application/json",
@@ -56,12 +63,21 @@ export const useInformes = ({ url, tipoInforme }) => {
 
         setEstado({ ...estado, hasError: true });
         return;
-      } */
+      }
 
-      const groupByClientes = Object.groupBy(
-        pedidosMock,
-        ({ cliente }) => cliente
-      );
+      const totales = json.reduce((acc, pedidoAct) => {
+        acc.cantidades = (acc.cantidades || 0) + pedidoAct.cantidad;
+        acc.precios = (acc.precios || 0) + pedidoAct.costo;
+        acc.preciosItem =
+          (acc.preciosItem || 0) + pedidoAct.costo * pedidoAct.cantidad;
+        acc.totalImpuestos = (acc.totalImpuestos || 0) + pedidoAct.impuesto;
+        acc.totalPedidos =
+          (acc.totalPedidos || 0) +
+          (pedidoAct.costo * pedidoAct.cantidad + pedidoAct.impuesto);
+        return acc;
+      }, {});
+
+      const groupByClientes = Object.groupBy(json, ({ cliente }) => cliente);
       const pedidos = Object.values(groupByClientes);
 
       setEstado({
@@ -69,6 +85,7 @@ export const useInformes = ({ url, tipoInforme }) => {
         loading: false,
         hasError: false,
       });
+      setTotales(totales);
     } catch (error) {
       Swal.fire("Atención!", "Error al consultar", "warning");
       setEstado({ ...estado, hasError: true });
@@ -84,6 +101,7 @@ export const useInformes = ({ url, tipoInforme }) => {
 
   return {
     estado,
+    totales,
     getPedidosByCliente,
     goBack,
   };
