@@ -1,9 +1,12 @@
 package com.finnegans.gestioncrisalis.controllers;
 
+import java.time.LocalDate;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.finnegans.gestioncrisalis.services.ReporteService;
@@ -30,5 +33,10 @@ public class ReportesController {
     @GetMapping(value = "/descuentosPedidos")
     public ResponseEntity<?> reporte3() {
         return new ResponseEntity<>(this.reportesServices.getDescuentosPedidos(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/servicioMayorDescuento")
+    public ResponseEntity<?> reporte4(@RequestParam("fechaDesde") String fechaDesde, @RequestParam("fechaHasta") String fechaHasta) {
+        return new ResponseEntity<>(this.reportesServices.getServicioMayorDescuento(LocalDate.parse(fechaDesde), LocalDate.parse(fechaHasta)), HttpStatus.OK);
     }
 }
