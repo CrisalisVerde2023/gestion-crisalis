@@ -357,6 +357,7 @@ export default function Dashboard() {
             impulsar el crecimiento económico.
           </p>
         </div>
+
         <div
           className="flex flex-column justify-content-center align-items-center my-3 d-none"
           ref={shortcutsDiv}
@@ -384,9 +385,10 @@ export default function Dashboard() {
             ref={dropBox}
           ></div>
         </div>
+
         <div
           className={`space-y-8 md:grid md:grid-cols-2 ${
-            isTecnico ? "lg:grid-cols-1 place-items-center" : "lg:grid-cols-3"
+            isTecnico ? "lg:grid-cols-1 place-items-center" : "lg:grid-cols-2"
           } md:gap-12 md:space-y-0`}
         >
           <>
@@ -450,6 +452,83 @@ export default function Dashboard() {
                         );
                       }
                     })}
+                  </ul>
+                </div>
+
+                <div>
+                  <div className="flex justify-center items-center w-10 h-10 rounded-md bg-carnation-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+                    <svg
+                      className="w-6 h-6 text-carnation dark:text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 16 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 1v4a1 1 0 0 1-1 1H1m8-2h3M9 7h3m-4 3v6m-4-3h8m3-11v16a.969.969 0 0 1-.932 1H1.934A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.829 1h8.239A.969.969 0 0 1 15 2ZM4 10h8v6H4v-6Z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="my-3 text-xl font-bold dark:text-white text-start">
+                    Informes
+                  </h3>
+
+                  <ul className="text-gray-500 dark:text-gray-400 space-y-3">
+                    <li className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
+                      <Link
+                        to={`/pedidos/clientes/productos`}
+                        className="flex p-3 w-full justify-between"
+                      >
+                        <span>Pedidos por Cliente, Servicio y Producto</span>
+                        <svg
+                          className="w-4 h-4 text-carnation dark:text-white self-center"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                    <li className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
+                      <Link
+                        to={`/home`}
+                        className="flex p-3 w-full justify-between"
+                      >
+                        <span>Descuentos por Cliente, Servicio y Fecha</span>
+                        <svg
+                          className="w-4 h-4 text-carnation dark:text-white self-center"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                    <li className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
+                      <Link
+                        to={`/home`}
+                        className="flex p-3 w-full justify-between"
+                      >
+                        <span>Servicios por Clientes de mayor descuento</span>
+                        <svg
+                          className="w-4 h-4 text-carnation dark:text-white self-center"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
                   </ul>
                 </div>
 
