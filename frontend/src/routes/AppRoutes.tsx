@@ -14,6 +14,7 @@ import { TableUsuarios } from "../components/Usuarios/TableUsuarios";
 import { TableEmpresas } from "../components/Empresas/TableEmpresas";
 import { TableSuscripciones } from "../components/Suscripciones/TableSuscripciones";
 import { TableProductos } from "../components/Productos y Servicios/TableProductos";
+import { TablePedidosCliente } from "../components/informes/pedidoscliente/TablePedidosCliente";
 
 export const AppRoutes = () => {
   return (
@@ -27,6 +28,10 @@ export const AppRoutes = () => {
         <Route path="/clientes" element={<ABMClientesComponent />} />
         <Route path="/empresas" element={<TableEmpresas />} />
         <Route path="/suscripciones" element={<TableSuscripciones />} />
+        <Route
+          path="/pedidos/clientes/productos"
+          element={<TablePedidosCliente />}
+        />
         <Route
           path="/clientes/AMClientes/:idCliente"
           element={<AM_Clientes />}
