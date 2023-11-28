@@ -11,17 +11,17 @@ const defaultUseFetchValues = {
   statusCode: 0,
 };
 
-export const useCrud = (url) => {
+export const useCrud = (url: string) => {
   const { userLogged, setUserLogged } = useContext(UserLoggedContext);
   const [estado, setEstado] = useState(defaultUseFetchValues);
   const navigate = useNavigate();
   const token = userLogged.token;
 
   useEffect(() => {
-    getAllData();
+    getAllData(url);
   }, []);
 
-  const getAllData = async () => {
+  const getAllData = async (url: string) => {
     try {
       const response = await fetch(url, {
         headers: {
@@ -37,18 +37,14 @@ export const useCrud = (url) => {
           Swal.fire("Sesión expirada", "Será redirigido al login.", "error");
           setUserLogged(defaultUserLogState);
           navigate("/login");
-        }
-
-        if (
+        } else if (
           response.status === 400 ||
-          (response.status > 401 && response.status < 500)
+          (response.status > 401 && response.status <= 499)
         ) {
           throw new Error(
             `Hubo un error con la petición: ${response.status}: ${response.statusText}`
           );
-        }
-
-        if (response.status > 499) {
+        } else if (response.status >= 500) {
           throw new Error(
             `Hubo un error con el servidor: ${response.status}: ${response.statusText}`
           );
@@ -57,26 +53,31 @@ export const useCrud = (url) => {
         setEstado({ ...estado, hasError: true });
         return;
       }
-
       setEstado({
         json:
           response.ok && response.status < 400
-            ? json.sort((a, b) => a.id > b.id)
+            ? Array.isArray(json)
+              ? json.sort((a, b) => a.id - b.id)
+              : [json]
             : null,
         loading: false,
-        hasError: response.ok ? false : true,
+        hasError: !response.ok,
         statusCode: response.status,
       });
-    } catch (error) {
+    } catch (error: any) {
       Swal.fire("Atención!", "Error al consultar", "warning");
       setEstado({ ...estado, hasError: true });
+      console.error(error); // Log the full error for debugging
+
+      // Check if error.config exists before trying to access error.config.url
+      const url = error.config ? error.config.url : "unknown";
       throw new Error(
-        `Ocurrió un error: "${error.name}" con codigo: "${error.code}" y mensaje: "${error.message}" al hacer la peticion a "${error.config.url}"`
+        `Ocurrió un error: "${error.name}" con codigo: "${error.code}" y mensaje: "${error.message}" al hacer la peticion a "${url}"`
       );
     }
   };
 
-  const deleteByIdData = async ({ id }) => {
+  const deleteByIdData = async (id: number) => {
     try {
       const response = await fetch(`${url}/${id}`, {
         method: "PATCH",

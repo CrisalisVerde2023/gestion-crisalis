@@ -21,7 +21,8 @@ public class OrdenDetalleController {
     public ResponseEntity<?> getDetallesOrdenes() {
         return new ResponseEntity<>(this.ordenDetalleService.findAllOrdenDetalles(), HttpStatus.OK);
     }
-    @GetMapping("/{id}")
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getOrdenDetalleByOrden(@PathVariable Long id) {
         return new ResponseEntity<>(this.ordenDetalleService.findOrdenDetalleById(id), HttpStatus.OK);
     }
