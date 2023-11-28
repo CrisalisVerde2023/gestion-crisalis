@@ -32,10 +32,10 @@ export const TablePedidosCliente = () => {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
-      <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
-        <div className="bg-white dark:bg-gray-800  shadow-md sm:rounded-lg overflow-hidden">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+    <section className="p-3 antialiased bg-gray-50 dark:bg-gray-900 sm:p-5">
+      <div className="max-w-screen-xl px-4 mx-auto lg:px-12">
+        <div className="overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+          <div className="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
             {/* Buscar */}
             <div className="w-full md:w-1/2">
               <form className="flex items-center">
@@ -61,7 +61,7 @@ export const TablePedidosCliente = () => {
                   <input
                     type="text"
                     id="simple-search"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    className="block w-full py-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Buscar cliente"
                     value={search}
                     onChange={handleSearchChange}
@@ -112,104 +112,104 @@ export const TablePedidosCliente = () => {
                   <>
                     <tr className="animate-pulse">
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                    </tr>
-                    <tr className="animate-pulse">
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                     </tr>
                     <tr className="animate-pulse">
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="h-11 mx-4 bg-slate-300 rounded-xl"></div>
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                    </tr>
+                    <tr className="animate-pulse">
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="mx-4 h-11 bg-slate-300 rounded-xl"></div>
                       </td>
                     </tr>
                   </>
                 ) : !Boolean(json.length) ? (
                   <tr className="p-4">
-                    <td colSpan={10} className="text-center p-4">
+                    <td colSpan={10} className="p-4 text-center">
                       NO HAY DATOS
                     </td>
                   </tr>
@@ -220,22 +220,22 @@ export const TablePedidosCliente = () => {
                     ))}
 
                     <tr className="p-4 bg-gray-100">
-                      <td colSpan={5} className="text-left font-bold p-4">
+                      <td colSpan={5} className="p-4 font-bold text-left">
                         TOTAL GENERAL
                       </td>
-                      <td colSpan={1} className="text-center p-4 font-semibold">
+                      <td colSpan={1} className="p-4 font-semibold text-center">
                         {totales.cantidades}
                       </td>
-                      <td colSpan={1} className="text-center p-4 font-semibold">
+                      <td colSpan={1} className="p-4 font-semibold text-center">
                         {`$ ${totales.precios}`}
                       </td>
-                      <td colSpan={1} className="text-center p-4 font-semibold">
+                      <td colSpan={1} className="p-4 font-semibold text-center">
                         {`$ ${totales.preciosItem}`}
                       </td>
-                      <td colSpan={1} className="text-center p-4 font-semibold">
+                      <td colSpan={1} className="p-4 font-semibold text-center">
                         {`$ ${totales.totalImpuestos}`}
                       </td>
-                      <td colSpan={1} className="text-center p-4 font-semibold">
+                      <td colSpan={1} className="p-4 font-semibold text-center">
                         {`$ ${totales.totalPedidos}`}
                       </td>
                     </tr>
@@ -247,7 +247,7 @@ export const TablePedidosCliente = () => {
 
           {/* Tabla footer paginacion */}
           {/* <nav
-            className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+            className="flex flex-col items-start justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0"
             aria-label="Table navigation"
           >
             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -285,7 +285,7 @@ export const TablePedidosCliente = () => {
               <li>
                 <a
                   href="#"
-                  className="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  className="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
                   1
                 </a>
@@ -293,7 +293,7 @@ export const TablePedidosCliente = () => {
               <li>
                 <a
                   href="#"
-                  className="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  className="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
                   2
                 </a>
@@ -302,7 +302,7 @@ export const TablePedidosCliente = () => {
                 <a
                   href="#"
                   aria-current="page"
-                  className="flex items-center justify-center text-sm z-10 py-2 px-3 leading-tight text-primary-600 bg-primary-50 border border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+                  className="z-10 flex items-center justify-center px-3 py-2 text-sm leading-tight border text-primary-600 bg-primary-50 border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
                 >
                   3
                 </a>
@@ -310,7 +310,7 @@ export const TablePedidosCliente = () => {
               <li>
                 <a
                   href="#"
-                  className="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  className="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
                   ...
                 </a>
@@ -318,7 +318,7 @@ export const TablePedidosCliente = () => {
               <li>
                 <a
                   href="#"
-                  className="flex items-center justify-center text-sm py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  className="flex items-center justify-center px-3 py-2 text-sm leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
                   100
                 </a>
@@ -348,8 +348,8 @@ export const TablePedidosCliente = () => {
           </nav> */}
         </div>
 
-        <div className="flex justify-center items-center mt-3">
-          <div className="flex justify-evenly w-1/2 mx-2">
+        <div className="flex items-center justify-center mt-3">
+          <div className="flex w-1/2 mx-2 justify-evenly">
             <VolverBtn fnOnClick={goBack} />
           </div>
         </div>
