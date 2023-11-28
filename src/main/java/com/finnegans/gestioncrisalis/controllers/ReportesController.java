@@ -26,8 +26,8 @@ public class ReportesController {
     }
 
     @GetMapping(value = "/mayorDescuento")
-    public ResponseEntity<?> reporte2() {
-        return new ResponseEntity<>(this.reportesServices.getMayorDescuento(), HttpStatus.OK);
+    public ResponseEntity<?> reporte2(@RequestParam("fechaDesde") String fechaDesde, @RequestParam("fechaHasta") String fechaHasta) {
+        return new ResponseEntity<>(this.reportesServices.getMayorDescuento(LocalDate.parse(fechaDesde), LocalDate.parse(fechaHasta)), HttpStatus.OK);
     }
 
     @GetMapping(value = "/descuentosPedidos")

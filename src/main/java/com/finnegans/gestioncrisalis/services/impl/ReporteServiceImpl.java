@@ -36,8 +36,8 @@ public class ReporteServiceImpl implements ReporteService {
     }
 
     @Override
-    public List<ReporteMayorDescuento> getMayorDescuento(){
-        return this.reporteMayorDescuentoRepository.findAll();
+    public List<ReporteMayorDescuento> getMayorDescuento(LocalDate fechaDesde, LocalDate fechaHasta){
+         return this.reporteMayorDescuentoRepository.getMayorDescuento(fechaDesde, fechaHasta);
     }
 
     @Override
