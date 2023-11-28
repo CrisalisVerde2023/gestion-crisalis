@@ -514,7 +514,7 @@ export default function Dashboard() {
                     </li>
                     <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
                       <Link
-                        to={`/home`}
+                        to={`/informes/pedidoMayorDescuento`}
                         className="flex justify-between w-full p-3"
                       >
                         <span>Servicios por Clientes de mayor descuento</span>
