@@ -28,65 +28,101 @@ export const TableDescuentosTotales = () => {
         })
             .then(resp => resp.json())
             .then(data => setDatos(data))
-            .catch(error => console.error("Error fetching data:", error));
-    }, [token]);
+            .catch(error => console.error("Error al obtener los datos:", error));
+    }, []);
 
 
 
     return (
         <section className="p-3 antialiased bg-gray-50 dark:bg-gray-900 sm:p-5">
-        {datos.length
-            ?
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Servicio</th>
-                            <th>Fecha</th>
-                            <th>Descuento</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            datos.concat({cliente: "", servicio: "", fecha: "", descuento: 0}).map((el, idx) => {
-                                cantidadRegistros++;
-                                cantidadTotal++;
-                                total += el.descuento;
-                                descuentoTotal += el.descuento;
+            <div className="max-w-screen-xl px-4 mx-auto lg:px-12">
+                <div className="overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+                    <div className="overflow-x-auto">
 
-                                return (
-                                    <React.Fragment key={idx}>
-                                        {(clientePrevio != el.cliente)
-                                        && 
-                                            <>
-                                                {clientePrevio != undefined &&
-                                                <tr>
-                                                    <td>Total {clientePrevio}:</td>
-                                                    <td colSpan={2}>{cantidadRegistros - 2 + (cantidadRegistros = 1)}</td>
-                                                    <td>{(total - el.descuento * 2 + (total = el.descuento)).toFixed(2)}</td>
-                                                </tr>}
-                                                {
-                                                    (el.cliente != "")
-                                                        ? <tr><td>{clientePrevio = el.cliente}</td><td> </td><td> </td><td> </td></tr>
-                                                        : <tr><td>Total general:</td><td colSpan={2}>{cantidadTotal - 1}</td><td>{descuentoTotal.toFixed(2)}</td></tr>
-                                                }
-                                            </>
-                                        }
-                                        {(el.cliente != "") && <tr><td></td><td>{el.servicio}</td><td>{el.fecha}</td><td>{el.descuento.toFixed(2)}</td></tr>}
-                                        </React.Fragment>
-                                )
-                            })
+                        {datos.length
+                            ?
+                            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" className="px-4 py-3 text-left">Cliente</th>
+                                        <th scope="col" className="px-4 py-3 text-center">Servicio</th>
+                                        <th scope="col" className="px-4 py-3 text-center">Fecha</th>
+                                        <th scope="col" className="px-4 py-3 text-center w-28">Descuento</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        datos.concat({ cliente: "", servicio: "", fecha: "", descuento: 0 }).map((el, idx) => {
+                                            cantidadRegistros++;
+                                            cantidadTotal++;
+                                            total += el.descuento;
+                                            descuentoTotal += el.descuento;
+
+                                            return (
+                                                <React.Fragment key={idx}>
+                                                    {(clientePrevio != el.cliente)
+                                                        &&
+                                                        <>
+                                                            {clientePrevio != undefined &&
+                                                                <tr className="border-b dark:border-gray-700">
+                                                                    <td colSpan={1} className="p-4 font-semibold text-left">Total {clientePrevio}:</td>
+                                                                    <td colSpan={1} className="p-4 font-semibold text-center">{cantidadRegistros - 2 + (cantidadRegistros = 1)}</td>
+                                                                    <td colSpan={3} className="p-4 font-semibold text-right">$ {(total - el.descuento * 2 + (total = el.descuento)).toFixed(2)}</td>
+                                                                </tr>}
+                                                            {
+                                                                (el.cliente != "")
+                                                                    ? <tr className="bg-gray-100 border-y dark:border-gray-700">
+                                                                        <td className="p-1 text-left ps-3" colSpan={4}>{clientePrevio = el.cliente}</td>
+
+                                                                    </tr>
+                                                                    : <tr className="border-b dark:border-gray-700">
+                                                                        <td className="p-4 font-bold text-left">TOTAL GENERAL:</td>
+                                                                        <td className="p-4 font-bold text-center">{cantidadTotal - 1}</td>
+                                                                        <td></td>
+                                                                        <td className="p-4 font-bold text-right">$ {descuentoTotal.toFixed(2)}</td>
+                                                                        
+                                                                    </tr>
+                                                            }
+                                                        </>
+                                                    }
+                                                    {(el.cliente != "") && <tr className="border-b dark:border-gray-700">
+                                                        <th
+                                                            scope="row"
+                                                            className="px-4 py-3 font-medium text-center text-gray-900 whitespace-nowrap dark:text-white"
+                                                        ></th>
+                                                        <td colSpan={1} className="p-4 font-semibold text-center">{el.servicio}</td>
+                                                        <td colSpan={1} className="p-4 font-semibold text-center">{el.fecha}</td>
+                                                        <td colSpan={1} className="p-4 font-semibold text-right">$ {el.descuento.toFixed(2)}</td>
+                                                    </tr>
+                                                    }
+                                                </React.Fragment>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                            :
+
+                            <h3 className="p-4 text-center">
+                                NO HAY DATOS
+                            </h3>
+
                         }
-                    </tbody>
-                </table>
-            :
-                <h3>No hay datos...</h3>
-        }
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
             <div className="flex items-center justify-center mt-3">
                 <div className="flex w-1/2 mx-2 justify-evenly">
                     <VolverBtn fnOnClick={() => navigate(-1)} />
                 </div>
             </div>
+
         </section>
     );
 };
