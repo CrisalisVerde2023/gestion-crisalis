@@ -346,9 +346,9 @@ export default function Dashboard() {
           />
         </svg>
       </button>
-      <div className="pb-8 mx-auto max-w-screen-xl sm:pb-16 lg:pb-6">
-        <div className="max-w-screen-md mb-8 lg:mb-16 mx-auto">
-          <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+      <div className="max-w-screen-xl pb-8 mx-auto sm:pb-16 lg:pb-6">
+        <div className="max-w-screen-md mx-auto mb-8 lg:mb-16">
+          <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
             Diseñado para equipos empresariales
           </h2>
           <p className="text-gray-500 sm:text-xl dark:text-gray-400">
@@ -357,12 +357,13 @@ export default function Dashboard() {
             impulsar el crecimiento económico.
           </p>
         </div>
+
         <div
-          className="flex flex-column justify-content-center align-items-center my-3 d-none"
+          className="flex my-3 flex-column justify-content-center align-items-center d-none"
           ref={shortcutsDiv}
         >
           <div className="flex flex-row justify-content-center align-items-center">
-            <div className="flex justify-center items-center w-10 h-10 rounded-md bg-yellow-200 lg:h-12 lg:w-12 dark:bg-primary-900 mr-2">
+            <div className="flex items-center justify-center w-10 h-10 mr-2 bg-yellow-200 rounded-md lg:h-12 lg:w-12 dark:bg-primary-900">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
@@ -379,28 +380,29 @@ export default function Dashboard() {
             </h5>
           </div>
           <div
-            className="grid grid-cols-6 gap-y-2 spaceVerticalChilds spaceHorizontalChilds rounded-md border-dashed border-yellow-400 border-2 mt-2 shortcutsDiv"
+            className="grid grid-cols-6 mt-2 border-2 border-yellow-400 border-dashed rounded-md gap-y-2 spaceVerticalChilds spaceHorizontalChilds shortcutsDiv"
             style={{ minHeight: "10vh", width: "85%" }}
             ref={dropBox}
           ></div>
         </div>
+
         <div
           className={`space-y-8 md:grid md:grid-cols-2 ${
-            isTecnico ? "lg:grid-cols-1 place-items-center" : "lg:grid-cols-3"
+            isTecnico ? "lg:grid-cols-1 place-items-center" : "lg:grid-cols-2"
           } md:gap-12 md:space-y-0`}
         >
           <>
             {!isTecnico && (
               <>
                 <div>
-                  <div className="flex justify-center items-center w-10 h-10 rounded-md bg-electric-violet-50 lg:h-12 lg:w-12 dark:bg-primary-900">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md bg-electric-violet-50 lg:h-12 lg:w-12 dark:bg-primary-900">
                     {svgDatabase}
                   </div>
                   <h3 className="my-3 text-xl font-bold dark:text-white text-start">
                     Alta, Baja y Modificación
                   </h3>
 
-                  <ul className="text-gray-500 dark:text-gray-400 space-y-3">
+                  <ul className="space-y-3 text-gray-500 dark:text-gray-400">
                     {entidadesABM.map((entidad, index) => {
                       if (
                         (entidad !== "Usuarios" &&
@@ -414,7 +416,7 @@ export default function Dashboard() {
                           <li
                             key={entidad}
                             data-entidad={entidad}
-                            className="flex hover:bg-slate-50 rounded-md shadow-md bg-white-pure draggable-element"
+                            className="flex rounded-md shadow-md hover:bg-slate-50 bg-white-pure draggable-element"
                             onDrag={(e) => {
                               handleOnDragEvent(e);
                             }}
@@ -427,7 +429,7 @@ export default function Dashboard() {
                               to={`/${entidad
                                 .toLowerCase()
                                 .replace(/\s+/g, "")}`}
-                              className="flex p-3 w-full justify-between"
+                              className="flex justify-between w-full p-3"
                             >
                               <span>{`ABM de ${entidad}`}</span>
                               {/* {renderIcon(index + 1, {
@@ -437,7 +439,7 @@ export default function Dashboard() {
                             "aria-hidden": "true",
                           })} */}
                               <svg
-                                className="w-4 h-4 text-electric-violet dark:text-white self-center"
+                                className="self-center w-4 h-4 text-electric-violet dark:text-white"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -454,7 +456,84 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center w-10 h-10 rounded-md bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md bg-carnation-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+                    <svg
+                      className="w-6 h-6 text-carnation dark:text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 16 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 1v4a1 1 0 0 1-1 1H1m8-2h3M9 7h3m-4 3v6m-4-3h8m3-11v16a.969.969 0 0 1-.932 1H1.934A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.829 1h8.239A.969.969 0 0 1 15 2ZM4 10h8v6H4v-6Z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="my-3 text-xl font-bold dark:text-white text-start">
+                    Informes
+                  </h3>
+
+                  <ul className="space-y-3 text-gray-500 dark:text-gray-400">
+                    <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
+                      <Link
+                        to={`/pedidos/clientes/productos`}
+                        className="flex justify-between w-full p-3"
+                      >
+                        <span>Pedidos por Cliente, Servicio y Producto</span>
+                        <svg
+                          className="self-center w-4 h-4 text-carnation dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                    <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
+                      <Link
+                        to={`/informes/descuentosTotales`}
+                        className="flex justify-between w-full p-3"
+                      >
+                        <span>Descuentos por Cliente, Servicio y Fecha</span>
+                        <svg
+                          className="self-center w-4 h-4 text-carnation dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                    <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
+                      <Link
+                        to={`/home`}
+                        className="flex justify-between w-full p-3"
+                      >
+                        <span>Servicios por Clientes de mayor descuento</span>
+                        <svg
+                          className="self-center w-4 h-4 text-carnation dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
                     <svg
                       className="w-5 h-5 text-denim lg:w-6 lg:h-6 dark:text-primary-300"
                       fill="currentColor"
@@ -473,18 +552,18 @@ export default function Dashboard() {
                     Pedidos
                   </h3>
 
-                  <ul className="text-gray-500 dark:text-gray-400 space-y-3">
+                  <ul className="space-y-3 text-gray-500 dark:text-gray-400">
                     <li
                       key="Listado y anulación de pedidos"
-                      className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md"
+                      className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure"
                     >
                       <Link
                         to={`/pedidos`}
-                        className="flex p-3 w-full justify-between"
+                        className="flex justify-between w-full p-3"
                       >
                         <span>Listado y anulación de Pedidos</span>
                         <svg
-                          className="w-4 h-4 text-denim dark:text-white self-center"
+                          className="self-center w-4 h-4 text-denim dark:text-white"
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="currentColor"
@@ -496,15 +575,15 @@ export default function Dashboard() {
                     </li>
                     <li
                       key="Alta de pedido"
-                      className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md"
+                      className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure"
                     >
                       <Link
                         to={`/altaPedido`}
-                        className="flex p-3 w-full justify-between"
+                        className="flex justify-between w-full p-3"
                       >
                         <span>Alta de Pedido</span>
                         <svg
-                          className="w-4 h-4 text-denim dark:text-white self-center"
+                          className="self-center w-4 h-4 text-denim dark:text-white"
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="currentColor"
@@ -520,7 +599,7 @@ export default function Dashboard() {
             )}
 
             <div className={`${isTecnico ? "w-80" : ""}`}>
-              <div className="flex justify-center items-center w-10 h-10 rounded-md bg-atlantis-50 lg:h-12 lg:w-12 dark:bg-primary-900">
+              <div className="flex items-center justify-center w-10 h-10 rounded-md bg-atlantis-50 lg:h-12 lg:w-12 dark:bg-primary-900">
                 <svg
                   className="w-5 h-5 text-atlantis lg:w-6 lg:h-6 dark:text-primary-300"
                   fill="currentColor"
@@ -537,15 +616,15 @@ export default function Dashboard() {
               <h3 className="my-3 text-xl font-bold dark:text-white text-start">
                 Servicios
               </h3>
-              <ul className="text-gray-500 dark:text-gray-400 space-y-3">
-                <li className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md">
+              <ul className="space-y-3 text-gray-500 dark:text-gray-400">
+                <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
                   <Link
                     to={`/suscripciones`}
-                    className="flex p-3 w-full justify-between"
+                    className="flex justify-between w-full p-3"
                   >
                     <span>{`Asignar Servicios a Cliente`}</span>
                     <svg
-                      className="w-4 h-4 text-atlantis dark:text-white self-center"
+                      className="self-center w-4 h-4 text-atlantis dark:text-white"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="currentColor"
