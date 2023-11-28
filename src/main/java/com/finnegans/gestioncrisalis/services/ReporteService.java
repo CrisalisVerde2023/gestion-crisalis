@@ -10,7 +10,7 @@ import com.finnegans.gestioncrisalis.views.ReporteServicioMayorDescuento;
 
 public interface ReporteService {
      public List<ReporteHistorial> getHistorialPedidos();
-     public List<ReporteMayorDescuento> getMayorDescuento();
+     public List<ReporteMayorDescuento> getMayorDescuento(LocalDate fechaDesde, LocalDate fechaHasta);
      public List<ReporteDescuento> getDescuentosPedidos();
      public List<ReporteServicioMayorDescuento> getServicioMayorDescuento(LocalDate fechaDesde, LocalDate fechaHasta);
 }

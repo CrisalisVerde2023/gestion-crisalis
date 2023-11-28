@@ -15,6 +15,9 @@ import { TableEmpresas } from "../components/Empresas/TableEmpresas";
 import { TableSuscripciones } from "../components/Suscripciones/TableSuscripciones";
 import { TableProductos } from "../components/Productos y Servicios/TableProductos";
 import PedidoDetalleComponent from "../components/Pedidos/PedidoDetalleComponent";
+import { TablePedidosCliente } from "../components/informes/pedidoscliente/TablePedidosCliente";
+import { TableDescuentosTotales } from "../components/informes/descuentosTotales/TableDescuentosTotales";
+import { TablePedidoMayorDescuento } from "../components/informes/pedidoMayorDescuento/TablePedidoMayorDescuento";
 
 export const AppRoutes = () => {
   return (
@@ -28,6 +31,18 @@ export const AppRoutes = () => {
         <Route path="/clientes" element={<ABMClientesComponent />} />
         <Route path="/empresas" element={<TableEmpresas />} />
         <Route path="/suscripciones" element={<TableSuscripciones />} />
+        <Route
+          path="/pedidos/clientes/productos"
+          element={<TablePedidosCliente />}
+        />
+        <Route
+          path="/informes/descuentosTotales"
+          element={<TableDescuentosTotales />}
+        />
+        <Route
+          path="/informes/pedidoMayorDescuento"
+          element={<TablePedidoMayorDescuento />}
+        />
         <Route
           path="/clientes/AMClientes/:idCliente"
           element={<AM_Clientes />}
