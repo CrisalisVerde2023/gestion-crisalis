@@ -40,7 +40,7 @@ export const AppRoutes = () => {
           element={<TableDescuentosTotales />}
         />
         <Route
-          path="/informes/servicioMayorDescuento"
+          path="/informes/pedidoMayorDescuento"
           element={<TablePedidoMayorDescuento />}
         />
         <Route
