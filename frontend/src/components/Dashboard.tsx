@@ -11,6 +11,9 @@ import { UserLoggedContext } from "../contexts/UserLoggedContext";
 export default function Dashboard() {
   const { userLogged } = useContext(UserLoggedContext);
   const { isAdmin } = userLogged;
+  const isTecnico = JSON.parse(sessionStorage.getItem("roles")).includes(
+    "ROLE_TECNICO"
+  );
   const dropBox = useRef<HTMLDivElement>(null);
   const addShortcutButton = useRef<HTMLButtonElement>(null);
   const removeShortcutButton = useRef<HTMLButtonElement>(null);
@@ -72,7 +75,6 @@ export default function Dashboard() {
   function handleOnDropEvent(e: React.DragEvent<HTMLButtonElement>) {
     if (draggedItem) {
       const entidad = (draggedItem as HTMLElement).getAttribute("data-entidad");
-      console.log(entidad);
 
       if (entidad && !shortcuts.includes(entidad) && dropBox.current) {
         setShortcuts([...shortcuts, entidad]);
@@ -355,182 +357,286 @@ export default function Dashboard() {
             impulsar el crecimiento económico.
           </p>
         </div>
-        {isAdmin && (
-          <div
-            className="flex my-3 flex-column justify-content-center align-items-center d-none"
-            ref={shortcutsDiv}
-          >
-            <div className="flex flex-row justify-content-center align-items-center">
-              <div className="flex items-center justify-center w-10 h-10 mr-2 bg-yellow-200 rounded-md lg:h-12 lg:w-12 dark:bg-primary-900">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  className="w-5 h-5 text-amber-400 lg:w-6 lg:h-6 dark:text-primary-300"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  {" "}
-                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />{" "}
-                </svg>
-              </div>
-              <h5 className="text-xl font-bold dark:text-white text-start">
-                Acceso Rapido
-              </h5>
+
+        <div
+          className="flex my-3 flex-column justify-content-center align-items-center d-none"
+          ref={shortcutsDiv}
+        >
+          <div className="flex flex-row justify-content-center align-items-center">
+            <div className="flex items-center justify-center w-10 h-10 mr-2 bg-yellow-200 rounded-md lg:h-12 lg:w-12 dark:bg-primary-900">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                className="w-5 h-5 text-amber-400 lg:w-6 lg:h-6 dark:text-primary-300"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                {" "}
+                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />{" "}
+              </svg>
             </div>
-            <div
-              className="grid grid-cols-6 mt-2 border-2 border-yellow-400 border-dashed rounded-md gap-y-2 spaceVerticalChilds spaceHorizontalChilds shortcutsDiv"
-              style={{ minHeight: "10vh", width: "85%" }}
-              ref={dropBox}
-            ></div>
+            <h5 className="text-xl font-bold dark:text-white text-start">
+              Acceso Rapido
+            </h5>
           </div>
-        )}
+          <div
+            className="grid grid-cols-6 mt-2 border-2 border-yellow-400 border-dashed rounded-md gap-y-2 spaceVerticalChilds spaceHorizontalChilds shortcutsDiv"
+            style={{ minHeight: "10vh", width: "85%" }}
+            ref={dropBox}
+          ></div>
+        </div>
+
         <div
           className={`space-y-8 md:grid md:grid-cols-2 ${
-            isAdmin ? "lg:grid-cols-3" : "lg:grid-cols-2"
+            isTecnico ? "lg:grid-cols-1 place-items-center" : "lg:grid-cols-2"
           } md:gap-12 md:space-y-0`}
         >
-          {isAdmin && (
-            <>
-              <div>
-                <div className="flex items-center justify-center w-10 h-10 rounded-md bg-electric-violet-50 lg:h-12 lg:w-12 dark:bg-primary-900">
-                  {svgDatabase}
-                </div>
-                <h3 className="my-3 text-xl font-bold dark:text-white text-start">
-                  Alta, Baja y Modificación
-                </h3>
+          <>
+            {!isTecnico && (
+              <>
+                <div>
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md bg-electric-violet-50 lg:h-12 lg:w-12 dark:bg-primary-900">
+                    {svgDatabase}
+                  </div>
+                  <h3 className="my-3 text-xl font-bold dark:text-white text-start">
+                    Alta, Baja y Modificación
+                  </h3>
 
-                <ul className="space-y-3 text-gray-500 dark:text-gray-400">
-                  {entidadesABM.map((entidad, index) => (
-                    <li
-                      key={entidad}
-                      data-entidad={entidad}
-                      className="flex rounded-md shadow-md hover:bg-slate-50 bg-white-pure draggable-element"
-                      onDrag={(e) => {
-                        handleOnDragEvent(e);
-                      }}
-                      onDragEnd={(e) => {
-                        handleOnDragEndEvent(e);
-                      }}
-                      draggable={true}
+                  <ul className="space-y-3 text-gray-500 dark:text-gray-400">
+                    {entidadesABM.map((entidad, index) => {
+                      if (
+                        (entidad !== "Usuarios" &&
+                          entidad !== "Productos y Servicios" &&
+                          entidad !== "Impuestos") ||
+                        (entidad === "Usuarios" && isAdmin) ||
+                        (entidad === "Productos y Servicios" && isAdmin) ||
+                        (entidad === "Impuestos" && isAdmin)
+                      ) {
+                        return (
+                          <li
+                            key={entidad}
+                            data-entidad={entidad}
+                            className="flex rounded-md shadow-md hover:bg-slate-50 bg-white-pure draggable-element"
+                            onDrag={(e) => {
+                              handleOnDragEvent(e);
+                            }}
+                            onDragEnd={(e) => {
+                              handleOnDragEndEvent(e);
+                            }}
+                            draggable={true}
+                          >
+                            <Link
+                              to={`/${entidad
+                                .toLowerCase()
+                                .replace(/\s+/g, "")}`}
+                              className="flex justify-between w-full p-3"
+                            >
+                              <span>{`${entidad}`}</span>
+                              {/* {renderIcon(index + 1, {
+                            className:
+                              "w-4 h-4 text-electric-violet dark:text-white self-center svgIconColored",
+                            fill: "currentColor",
+                            "aria-hidden": "true",
+                          })} */}
+                              <svg
+                                className="self-center w-4 h-4 text-electric-violet dark:text-white"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 14 16"
+                              >
+                                <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                              </svg>
+                            </Link>
+                          </li>
+                        );
+                      }
+                    })}
+                  </ul>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md bg-carnation-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+                    <svg
+                      className="w-6 h-6 text-carnation dark:text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 16 20"
                     >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 1v4a1 1 0 0 1-1 1H1m8-2h3M9 7h3m-4 3v6m-4-3h8m3-11v16a.969.969 0 0 1-.932 1H1.934A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.829 1h8.239A.969.969 0 0 1 15 2ZM4 10h8v6H4v-6Z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="my-3 text-xl font-bold dark:text-white text-start">
+                    Informes
+                  </h3>
+
+                  <ul className="space-y-3 text-gray-500 dark:text-gray-400">
+                    <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
                       <Link
-                        to={`/${entidad.toLowerCase().replace(/\s+/g, "")}`}
+                        to={`/pedidos/clientes/productos`}
                         className="flex justify-between w-full p-3"
                       >
-                        <span>{`${entidad}`}</span>
-                        {renderIcon(index + 1, {
-                          className:
-                            "w-4 h-4 text-electric-violet dark:text-white self-center svgIconColored",
-                          fill: "currentColor",
-                          "aria-hidden": "true",
-                        })}
+                        <span>Pedidos por Cliente, Servicio y Producto</span>
+                        <svg
+                          className="self-center w-4 h-4 text-carnation dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
                       </Link>
                     </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
-                  <svg
-                    className="w-5 h-5 text-denim lg:w-6 lg:h-6 dark:text-primary-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
-                      clipRule="evenodd"
-                    ></path>
-                    <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
-                  </svg>
+                    <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
+                      <Link
+                        to={`/informes/descuentosTotales`}
+                        className="flex justify-between w-full p-3"
+                      >
+                        <span>Descuentos por Cliente, Servicio y Fecha</span>
+                        <svg
+                          className="self-center w-4 h-4 text-carnation dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                    <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
+                      <Link
+                        to={`/informes/pedidoMayorDescuento`}
+                        className="flex justify-between w-full p-3"
+                      >
+                        <span>Servicios por Clientes de mayor descuento</span>
+                        <svg
+                          className="self-center w-4 h-4 text-carnation dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
-                <h3 className="my-3 text-xl font-bold dark:text-white text-start">
-                  Pedidos
-                </h3>
-                <ul className="text-gray-500 dark:text-gray-400 space-y-3">
-                  <li
-                    key="Listado y anulación de pedidos"
-                    className="flex hover:bg-slate-100 rounded-md bg-white-pure shadow-md"
-                  >
-                    <Link
-                      to={`/pedidos`}
-                      className="flex p-3 w-full justify-between"
+
+                <div>
+                  <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+                    <svg
+                      className="w-5 h-5 text-denim lg:w-6 lg:h-6 dark:text-primary-300"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <span>Listado y anulación de Pedidos</span>
-                      <svg
-                        className="self-center w-4 h-4 text-denim dark:text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 14 16"
-                      >
-                        <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
-                      </svg>
-                    </Link>
-                  </li>
-                  <li
-                    key="Alta de pedido"
-                    className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure"
-                  >
-                    <Link
-                      to={`/altaPedido`}
-                      className="flex justify-between w-full p-3"
+                      <path
+                        fillRule="evenodd"
+                        d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                        clipRule="evenodd"
+                      ></path>
+                      <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
+                    </svg>
+                  </div>
+                  <h3 className="my-3 text-xl font-bold dark:text-white text-start">
+                    Pedidos
+                  </h3>
+
+                  <ul className="space-y-3 text-gray-500 dark:text-gray-400">
+                    <li
+                      key="Listado y anulación de pedidos"
+                      className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure"
                     >
-                      <span>Alta de Pedido</span>
-                      <svg
-                        className="self-center w-4 h-4 text-denim dark:text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 14 16"
+                      <Link
+                        to={`/pedidos`}
+                        className="flex justify-between w-full p-3"
                       >
-                        <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
-                      </svg>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <div className="flex items-center justify-center w-10 h-10 rounded-md bg-atlantis-50 lg:h-12 lg:w-12 dark:bg-primary-900">
-                  <svg
-                    className="w-5 h-5 text-atlantis lg:w-6 lg:h-6 dark:text-primary-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
+                        <span>Listado y anulación de Pedidos</span>
+                        <svg
+                          className="self-center w-4 h-4 text-denim dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                    <li
+                      key="Alta de pedido"
+                      className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure"
+                    >
+                      <Link
+                        to={`/altaPedido`}
+                        className="flex justify-between w-full p-3"
+                      >
+                        <span>Alta de Pedido</span>
+                        <svg
+                          className="self-center w-4 h-4 text-denim dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 16"
+                        >
+                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                        </svg>
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
-                <h3 className="my-3 text-xl font-bold dark:text-white text-start">
-                  Servicios
-                </h3>
-                <ul className="space-y-3 text-gray-500 dark:text-gray-400">
-                  <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
-                    <Link
-                      to={`/suscripciones`}
-                      className="flex p-3 w-full justify-between"
-                    >
-                      <span>{`Asignar Servicios a Cliente`}</span>
-                      <svg
-                        className="self-center w-4 h-4 text-atlantis dark:text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 14 16"
-                      >
-                        <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
-                      </svg>
-                    </Link>
-                  </li>
-                </ul>
+              </>
+            )}
+
+            <div className={`${isTecnico ? "w-80" : ""}`}>
+              <div className="flex items-center justify-center w-10 h-10 rounded-md bg-atlantis-50 lg:h-12 lg:w-12 dark:bg-primary-900">
+                <svg
+                  className="w-5 h-5 text-atlantis lg:w-6 lg:h-6 dark:text-primary-300"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
               </div>
-            </>
-          )}
+              <h3 className="my-3 text-xl font-bold dark:text-white text-start">
+                Servicios
+              </h3>
+              <ul className="space-y-3 text-gray-500 dark:text-gray-400">
+                <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
+                  <Link
+                    to={`/suscripciones`}
+                    className="flex justify-between w-full p-3"
+                  >
+                    <span>{`Asignar Servicios a Cliente`}</span>
+                    <svg
+                      className="self-center w-4 h-4 text-atlantis dark:text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 14 16"
+                    >
+                      <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
+                    </svg>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </>
         </div>
       </div>
     </section>

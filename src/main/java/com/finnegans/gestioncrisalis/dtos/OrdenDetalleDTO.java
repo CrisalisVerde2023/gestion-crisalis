@@ -18,4 +18,6 @@ public class OrdenDetalleDTO {
     @JsonProperty("idServicioProducto")
     private Long idProductService;
 
+
+
 }

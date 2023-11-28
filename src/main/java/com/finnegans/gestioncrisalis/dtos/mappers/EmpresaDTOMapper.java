@@ -21,7 +21,7 @@ public class EmpresaDTOMapper {
     public EmpresaResponseDTO build() {
         if (empresa == null) throw new RuntimeException("Debe pasar la entidad Empresa");
         String formattedDate = DateParser.formatDateToString(empresa.getStart_date(), "yyyy-MM-dd");
-        return new EmpresaResponseDTO(empresa.getId(), empresa.getNombre(), empresa.getCuit(), formattedDate);
+        return new EmpresaResponseDTO(empresa.getId(), empresa.getNombre(), empresa.getCuit(), formattedDate, empresa.isEliminado());
     }
 
 

@@ -7,16 +7,11 @@ import com.finnegans.gestioncrisalis.exceptions.custom.ResourceNotFound;
 import com.finnegans.gestioncrisalis.models.Empresa;
 import com.finnegans.gestioncrisalis.repositories.EmpresaRepository;
 import com.finnegans.gestioncrisalis.services.EmpresaService;
-import com.finnegans.gestioncrisalis.validations.DateParser;
 import com.sun.jdi.request.InvalidRequestStateException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmpresaServiceImpl implements EmpresaService {
     private final EmpresaRepository empresaRepository;
-    private static final SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private static final SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public EmpresaServiceImpl(EmpresaRepository empresaRepository){
         this.empresaRepository = empresaRepository;
@@ -92,6 +87,7 @@ public class EmpresaServiceImpl implements EmpresaService {
         Empresa empresa = this.empresaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Empresa no encontrada con id: " + id));
 
-        this.empresaRepository.deleteById(id);
+        empresa.setEliminado(!empresa.isEliminado());
+        this.empresaRepository.save(empresa);
     }
 }

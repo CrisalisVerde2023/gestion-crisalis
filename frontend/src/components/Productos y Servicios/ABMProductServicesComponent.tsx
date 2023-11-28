@@ -4,6 +4,7 @@ import LB_Productos from "./LB_ProductService";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import SelectedProdsServs from "../SelectedProdsServs";
 import VolverBtn from "../UI Elements/VolverBtn";
+import { TableProductos } from "./TableProductos";
 
 export default function ABMProductServiceComponent() {
   const navigate = useNavigate();
@@ -21,12 +22,16 @@ export default function ABMProductServiceComponent() {
   function goBack() {
     navigate(-1);
   }
+  useEffect(() => {
+    if (seleccion) console.log(seleccion);
+    else console.log("Vacio");
+  }, [seleccion]);
 
   return (
     <div className="container mx-auto flex justify-content-center">
       <div className="flex flex-col">
         <div className="mb-2">
-          <LB_Productos seleccion={seleccion || ""} />
+          <TableProductos seleccion={seleccion || ""} />
         </div>
         {seleccion === "multiple" && (
             <div className="flex flex-row justify-content-center bg-denim-400 text-white">

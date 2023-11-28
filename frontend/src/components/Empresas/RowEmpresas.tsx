@@ -3,8 +3,8 @@ import Swal from "sweetalert2";
 import EditarBtn from "../UI Elements/EditarBtn";
 import ToggleEstadoBtn from "../UI Elements/ToggleEstadoBtn";
 
-export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
-  const [formData, setFormData] = useState({ ...impuesto });
+export const RowEmpresas = ({ empresa, deleteByIdData, updateByIdData }) => {
+  const [formData, setFormData] = useState({ ...empresa });
   const [showModalUpdate, setShowModalUpdate] = useState(false);
 
   const handleModalEdit = () => {
@@ -19,15 +19,20 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
   const handleEdit = (e) => {
     e.preventDefault();
     const dataId = e.target.getAttribute("data-id");
-    const body = { ...formData, porcentaje: Number(formData.porcentaje) };
+    const body = {
+      ...formData,
+      nombre: formData.nombre,
+      cuit: formData.cuit,
+      start_date: formData.start_date,
+    };
     updateByIdData({ id: dataId, body }).then(handleModalEdit());
   };
 
-  const handleRemove = (impuesto) => {
+  const handleRemove = (empresa) => {
     Swal.fire({
-      title: "Confirmar cambio de estado de usuario?",
-      text: `Esta por ${impuesto.eliminado ? "activar" : "desactivar"} a ${
-        impuesto.nombre
+      title: "Confirmar cambio de estado de empresa?",
+      text: `Esta por ${empresa.eliminado ? "activar" : "desactivar"} a ${
+        empresa.nombre
       }`,
       icon: "warning",
       showCancelButton: true,
@@ -36,7 +41,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
     }).then((result) => {
-      if (result.isConfirmed) deleteByIdData({ id: impuesto.id });
+      if (result.isConfirmed) deleteByIdData({ id: empresa.id });
     });
   };
 
@@ -47,26 +52,27 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
           scope="row"
           className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center"
         >
-          {impuesto.nombre}
+          {empresa.nombre}
         </th>
-        <td className="px-4 py-3 text-center">{impuesto.porcentaje}</td>
+        <td className="px-4 py-3 text-center">{empresa.cuit}</td>
+        <td className="px-4 py-3 text-center">{empresa.start_date}</td>
         <td className="px-4 py-3 text-center">
           <span
             className={`${
-              impuesto.eliminado
+              empresa.eliminado
                 ? "bg-red-100 text-red-800"
                 : "bg-atlantis-100 text-atlantis-800"
             } text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300`}
           >
-            {impuesto.eliminado ? "Inactivo" : "Activo"}
+            {empresa.eliminado ? "Inactivo" : "Activo"}
           </span>
         </td>
         <td className="px-4 py-3 text-center font-medium text-gray-900 whitespace-nowrap dark:text-white w-5">
           <div className="flex items-center space-x-4">
             <EditarBtn fnOnClick={handleModalEdit} />
             <ToggleEstadoBtn
-              fnOnClick={() => handleRemove(impuesto)}
-              estado={impuesto.eliminado}
+              fnOnClick={() => handleRemove(empresa)}
+              estado={empresa.eliminado}
             />
           </div>
         </td>
@@ -85,7 +91,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
               {/* <!-- Modal header -->  */}
               <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {`Editar impuesto ${impuesto.nombre}`}
+                  {`Editar empresa ${empresa.nombre}`}
                 </h3>
                 <button
                   type="button"
@@ -117,7 +123,7 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                       htmlFor="nombre-modal-update"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
-                      Impuesto
+                      Empresa
                     </label>
                     <input
                       type="text"
@@ -126,109 +132,60 @@ export const RowImpuestos = ({ impuesto, deleteByIdData, updateByIdData }) => {
                       value={formData.nombre}
                       onChange={handleInputChange}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="IVA"
+                      placeholder="Finnegans"
                     />
                   </div>
                   <div>
                     <label
-                      htmlFor="porcentaje-modal-update"
+                      htmlFor="cuit-modal-update"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
-                      Porcentaje
+                      Cuit
                     </label>
                     <input
                       type="text"
-                      name="porcentaje"
-                      id="porcentaje-modal-update"
-                      value={formData.porcentaje}
+                      name="cuit"
+                      id="cuit-modal-update"
+                      value={formData.cuit}
                       onChange={handleInputChange}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="21.0"
+                      placeholder="20301231231"
                     />
                   </div>
-                  {/* <div>
+                  <div className="col-span-2 px-32">
                     <label
-                      htmlFor="price"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      htmlFor="start_date-modal-update"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center"
                     >
-                      Price
+                      Fecha de inicio
                     </label>
                     <input
-                      type="number"
-                      value="399"
-                      name="price"
-                      id="price"
+                      type="date"
+                      name="start_date"
+                      id="start_date-modal-update"
+                      value={formData.start_date}
+                      onChange={(e) => {
+                        /* const [year, month, day] = e.target.value.split("-");
+                        const newDate = `${day}-${month}-${year}`; */
+                        setFormData({
+                          ...formData,
+                          start_date: e.target.value,
+                        });
+                      }}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="$299"
+                      placeholder="01/01/1990"
                     />
                   </div>
-                  <div>
-                    <label
-                      htmlFor="category"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Category
-                    </label>
-                    <select
-                      id="category"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    >
-                      <option selected="">Electronics</option>
-                      <option value="TV">TV/Monitors</option>
-                      <option value="PC">PC</option>
-                      <option value="GA">Gaming/Console</option>
-                      <option value="PH">Phones</option>
-                    </select>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label
-                      htmlFor="description"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Description
-                    </label>
-                    <textarea
-                      id="description"
-                      rows="5"
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="Write a description..."
-                    >
-                      Standard glass, 3.8GHz 8-core 10th-generation Intel Core
-                      i7 processor, Turbo Boost up to 5.0GHz, 16GB 2666MHz DDR4
-                      memory, Radeon Pro 5500 XT with 8GB of GDDR6 memory, 256GB
-                      SSD storage, Gigabit Ethernet, Magic Mouse 2, Magic
-                      Keyboard - US
-                    </textarea>
-                  </div> */}
                 </div>
-
                 <div className="flex items-center justify-center space-x-4">
                   <button
                     type="submit"
                     className="text-white bg-denim hover:bg-denim-400 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                    data-id={impuesto.id}
+                    data-id={empresa.id}
                     onClick={handleEdit}
                   >
-                    Actualizar impuesto
+                    Actualizar Empresa
                   </button>
-                  {/* <button
-                    type="button"
-                    className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                  >
-                    <svg
-                      className="mr-1 -ml-1 w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Delete
-                  </button> */}
                 </div>
               </form>
             </div>

@@ -1,0 +1,52 @@
+[
+  {
+    "cliente": "Coca Cola",
+    "nombre": "Internet 100MB",
+    "orden": 23,
+    "anulado": false,
+    "fecha": "2023-02-01",
+    "cantidad": 1,
+    "costo": 2000,
+    "impuesto": 2100
+  },
+  {
+    "cliente": "Coca Cola",
+    "nombre": "Celular",
+    "orden": 23,
+    "anulado": false,
+    "fecha": "2023-02-01",
+    "cantidad": 2,
+    "costo": 300,
+    "impuesto": 2100
+  },
+  {
+    "cliente": "Coca Cola",
+    "nombre": "Celular",
+    "orden": 34,
+    "anulado": true,
+    "fecha": "2023-03-05",
+    "cantidad": 1,
+    "costo": 350,
+    "impuesto": 70
+  },
+  {
+    "cliente": "Coca Cola",
+    "nombre": "Modem",
+    "orden": 34,
+    "anulado": true,
+    "fecha": "2023-03-05",
+    "cantidad": 1,
+    "costo": 850,
+    "impuesto": 750
+  },
+  {
+    "cliente": "Pepsi SA",
+    "nombre": "Celular",
+    "orden": 25,
+    "anulado": false,
+    "fecha": "2023-02-02",
+    "cantidad": 1,
+    "costo": 300,
+    "impuesto": 60
+  }
+]
