@@ -431,7 +431,7 @@ export default function Dashboard() {
                                 .replace(/\s+/g, "")}`}
                               className="flex justify-between w-full p-3"
                             >
-                              <span>{`ABM de ${entidad}`}</span>
+                              <span>{`${entidad}`}</span>
                               {/* {renderIcon(index + 1, {
                             className:
                               "w-4 h-4 text-electric-violet dark:text-white self-center svgIconColored",
