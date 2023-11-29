@@ -26,10 +26,10 @@
   ```
 - En IntelliJ presionar Ctrl+Shift+Alt+S y seleccionar el JDK 11
 - Abrir terminal en la raiz del proyecto
-- Construir el compose con Postgres 16 y pgAdmin 7
+- Construir el compose para ambiente develop con Postgres 16 y pgAdmin 7
     ```console
     # agregar flag -d (detach) para levantar el compose separado
-    docker compose up
+    docker compose -f docker-compose.dev.yaml up
     ```
 - Para ver la db de manera visual
   > http://localhost:8040/

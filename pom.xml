@@ -10,8 +10,8 @@
 		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.finnegans</groupId>
-	<artifactId>gestioncrisalis</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>gestion-crisalis</artifactId>
+	<version>0.0.1</version>
 	<name>gestioncrisalis</name>
 	<description>Proyecto Back office Crisalis</description>
 	<properties>

@@ -1,0 +1,46 @@
+version: "3"
+services:
+  java-app:
+    container_name: java-app
+    image: gestion-crisalis
+    build: .
+    ports:
+      - 8080:8080
+    restart: always
+    environment:
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=123456
+      - DATABASE_URL=jdbc:postgresql://localhost:5432/CrisalisDB
+    depends_on:
+      - java-db
+      - pg-admin
+
+  java-db:
+    container_name: postgres-db
+    image: postgres:15.1
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: CrisalisDB
+    volumes:
+      - ./postgresdata:/var/lib/postgresql/data
+
+  pg-admin:
+    user: root
+    container_name: pg-admin
+    image: dpage/pgadmin4:6.17
+    ports:
+      - 8040:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: gestioncrisalis@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: 123456
+    depends_on:
+      - java-db
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    mem_limit: "512m"
+    mem_reservation: "128m"
+    cpus: "0.5"
