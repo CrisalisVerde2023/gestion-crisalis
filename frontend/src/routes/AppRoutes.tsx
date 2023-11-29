@@ -18,6 +18,7 @@ import PedidoDetalleComponent from "../components/Pedidos/PedidoDetalleComponent
 import { TablePedidosCliente } from "../components/informes/pedidoscliente/TablePedidosCliente";
 import { TableDescuentosTotales } from "../components/informes/descuentosTotales/TableDescuentosTotales";
 import { TablePedidoMayorDescuento } from "../components/informes/pedidoMayorDescuento/TablePedidoMayorDescuento";
+import { TableServicioMayorDescuento } from "../components/informes/servicioMayorDescuento/TableServicioMayorDescuento";
 
 export const AppRoutes = () => {
   return (
@@ -42,6 +43,10 @@ export const AppRoutes = () => {
         <Route
           path="/informes/pedidoMayorDescuento"
           element={<TablePedidoMayorDescuento />}
+        />
+        <Route
+          path="/informes/servicioMayorDescuento"
+          element={<TableServicioMayorDescuento />}
         />
         <Route
           path="/clientes/AMClientes/:idCliente"
