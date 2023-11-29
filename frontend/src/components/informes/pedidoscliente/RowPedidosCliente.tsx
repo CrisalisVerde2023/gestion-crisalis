@@ -42,9 +42,9 @@ export const RowPedidosCliente = ({ pedidos }) => {
               <td className="px-4 py-3 text-center">{`$ ${
                 pedido.costo * pedido.cantidad
               }`}</td>
-              <td className="px-4 py-3 text-center">{`$ ${pedido.impuesto}`}</td>
+              <td className="px-4 py-3 text-center">{`$ ${pedido.impuestosOrden}`}</td>
               <td className="px-4 py-3 text-center">{`$ ${
-                pedido.costo * pedido.cantidad + pedido.impuesto
+                pedido.impuestosOrden + pedido.subtotalOrden
               }`}</td>
             </tr>
           ))}
