@@ -517,7 +517,7 @@ export default function Dashboard() {
                         to={`/informes/pedidoMayorDescuento`}
                         className="flex justify-between w-full p-3"
                       >
-                        <span>Servicios por Clientes de mayor descuento</span>
+                        <span>Pedido que mayor descuento generó y serv hab</span>
                         <svg
                           className="self-center w-4 h-4 text-carnation dark:text-white"
                           aria-hidden="true"

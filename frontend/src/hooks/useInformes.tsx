@@ -70,10 +70,12 @@ export const useInformes = ({ url, tipoInforme }) => {
         acc.precios = (acc.precios || 0) + pedidoAct.costo;
         acc.preciosItem =
           (acc.preciosItem || 0) + pedidoAct.costo * pedidoAct.cantidad;
-        acc.totalImpuestos = (acc.totalImpuestos || 0) + pedidoAct.impuesto;
+        
+          acc.totalImpuestos =
+          (acc.totalImpuestos || 0) + pedidoAct.impuestosOrden;
         acc.totalPedidos =
           (acc.totalPedidos || 0) +
-          (pedidoAct.costo * pedidoAct.cantidad + pedidoAct.impuesto);
+          (pedidoAct.impuestosOrden + pedidoAct.subtotalOrden);
         return acc;
       }, {});
 
