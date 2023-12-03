@@ -18,10 +18,10 @@ export const useCrud = (url: string) => {
   const token = userLogged.token;
 
   useEffect(() => {
-    getAllData(url);
+    getAllData();
   }, []);
 
-  const getAllData = async (url: string) => {
+  const getAllData = async () => {
     try {
       const response = await fetch(url, {
         headers: {
@@ -77,9 +77,10 @@ export const useCrud = (url: string) => {
     }
   };
 
-  const deleteByIdData = async (id: number) => {
+  const deleteByIdData = async (id: { id: number; }) => {
     try {
-      const response = await fetch(`${url}/${id}`, {
+      console.log(id);
+      const response = await fetch(`${url}/${id.id}`, {
         method: "PATCH",
         headers: {
           Authorization: token,
@@ -94,23 +95,14 @@ export const useCrud = (url: string) => {
           navigate("/login");
         }
 
-        if (
-          response.status === 400 ||
-          (response.status > 401 && response.status < 500)
-        ) {
-          throw new Error(
-            `Hubo un error con la petición: ${response.status}: ${response.statusText}`
-          );
-        }
-
-        if (response.status > 499) {
-          throw new Error(
-            `Hubo un error con el servidor: ${response.status}: ${response.statusText}`
-          );
-        }
-
+        if (response.status > 299)
+          throw new Error((response.status > 499)
+            ? `Hubo un error con el servidor: ${response.status}: ${response.statusText}`
+            : (response.status > 399)
+              ? `Hubo un error con la petición: ${response.status}: ${response.statusText}`
+              : 'Hubo un error con la petición')
+    
         setEstado({ ...estado, hasError: true });
-        return;
       }
 
       Swal.fire({
