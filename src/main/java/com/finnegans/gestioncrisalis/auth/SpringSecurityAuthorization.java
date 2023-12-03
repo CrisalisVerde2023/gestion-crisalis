@@ -53,6 +53,7 @@ public class SpringSecurityAuthorization {
         return httpSecurity.authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/api/usuarios").hasRole("ADMIN")
+                .antMatchers("/api/suscripciones/**").hasRole("TECNICO")
                 .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
