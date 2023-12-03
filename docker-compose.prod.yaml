@@ -2,7 +2,7 @@ version: "3"
 services:
   java-app:
     container_name: java-app
-    image: gestion-crisalis
+    image: miguemaisares/gestion-crisalis:beta-1
     build: .
     ports:
       - 8080:8080
