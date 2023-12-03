@@ -3,7 +3,7 @@ services:
   java-app:
     container_name: java-app
     image: miguemaisares/gestion-crisalis:1.0.0
-    build: .
+    #build: .
     ports:
       - 8080:8080
     restart: always
