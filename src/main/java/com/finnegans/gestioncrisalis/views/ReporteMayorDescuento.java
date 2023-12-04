@@ -23,6 +23,7 @@ public class ReporteMayorDescuento{
     private Long idNro;
 
     private String cliente;
+
     private String servicio;
 
     private Long idOrden;

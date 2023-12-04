@@ -514,27 +514,10 @@ export default function Dashboard() {
                     </li>
                     <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
                       <Link
-                        to={`/informes/pedidoMayorDescuento`}
+                        to={`/home`}
                         className="flex justify-between w-full p-3"
                       >
-                        <span>Pedidos con mayor descuento por Clientes</span>
-                        <svg
-                          className="self-center w-4 h-4 text-carnation dark:text-white"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 14 16"
-                        >
-                          <path d="M0 .984v14.032a1 1 0 0 0 1.506.845l12.006-7.016a.974.974 0 0 0 0-1.69L1.506.139A1 1 0 0 0 0 .984Z" />
-                        </svg>
-                      </Link>
-                    </li>
-                    <li className="flex rounded-md shadow-md hover:bg-slate-100 bg-white-pure">
-                      <Link
-                        to={`/informes/servicioMayorDescuento`}
-                        className="flex justify-between w-full p-3"
-                      >
-                        <span>Servicios con mayor descuento generado por Cliente</span>
+                        <span>Servicios por Clientes de mayor descuento</span>
                         <svg
                           className="self-center w-4 h-4 text-carnation dark:text-white"
                           aria-hidden="true"
