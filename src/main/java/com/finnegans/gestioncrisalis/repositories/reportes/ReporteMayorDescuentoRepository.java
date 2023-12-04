@@ -32,7 +32,7 @@ public interface ReporteMayorDescuentoRepository extends JpaRepository<ReporteMa
             "\t\t\t(SELECT \n" +
             "\t\t\t\tordenes.fecha_creacion AS fecha,\n" +
             "\t\t\t\tordenes.id AS id_orden,\n" +
-            "\t\t\t\tSUM(od.descuento) AS descuento,\n" +
+            "\t\t\t\tSUM(od.descuento * od.cantidad) AS descuento,\n" +
             "\t\t\t\tproductos_servicios.nombre AS servicio,\n" +
             "\t\t\t\tCASE WHEN (empresas.nombre IS NULL) THEN personas.nombre || ' ' || personas.apellido ELSE empresas.nombre END AS cliente\n" +
             "\t\t\tFROM \n" +

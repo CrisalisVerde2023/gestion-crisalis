@@ -227,16 +227,16 @@ export const TablePedidosCliente = () => {
                         {totales.cantidades}
                       </td>
                       <td colSpan={1} className="p-4 font-semibold text-center">
-                        {`$ ${totales.precios}`}
+                        {`$ ${(totales.precios || 0).toFixed(2)}`}
                       </td>
                       <td colSpan={1} className="p-4 font-semibold text-center">
-                        {`$ ${totales.preciosItem}`}
+                        {`$ ${(totales.preciosItem || 0).toFixed(2)}`}
                       </td>
                       <td colSpan={1} className="p-4 font-semibold text-center">
-                        {`$ ${totales.totalImpuestos}`}
+                        {`$ ${(totales.totalImpuestos || 0).toFixed(2)}`}
                       </td>
                       <td colSpan={1} className="p-4 font-semibold text-center">
-                        {`$ ${totales.totalPedidos}`}
+                        {`$ ${(totales.totalPedidos || 0).toFixed(2)}`}
                       </td>
                     </tr>
                   </>

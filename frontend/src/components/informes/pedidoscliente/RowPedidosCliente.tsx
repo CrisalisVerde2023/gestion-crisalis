@@ -38,13 +38,13 @@ export const RowPedidosCliente = ({ pedidos }) => {
               </td>
               <td className="px-4 py-3 text-center">{pedido.fecha}</td>
               <td className="px-4 py-3 text-center">{pedido.cantidad}</td>
-              <td className="px-4 py-3 text-center">{`$ ${pedido.costo}`}</td>
+              <td className="px-4 py-3 text-center">{`$ ${pedido.costo.toFixed(2)}`}</td>
               <td className="px-4 py-3 text-center">{`$ ${
-                pedido.costo * pedido.cantidad
+                (pedido.costo * pedido.cantidad).toFixed(2)
               }`}</td>
-              <td className="px-4 py-3 text-center">{`$ ${pedido.impuestosOrden}`}</td>
+              <td className="px-4 py-3 text-center">{`$ ${(pedido.impuestosOrden || 0).toFixed(2)}`}</td>
               <td className="px-4 py-3 text-center">{`$ ${
-                pedido.impuestosOrden + pedido.subtotalOrden
+                ((pedido.impuestosOrden || 0) + (pedido.subtotalOrden || 0)).toFixed(2)
               }`}</td>
             </tr>
           ))}

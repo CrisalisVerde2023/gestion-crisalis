@@ -514,7 +514,7 @@ export default function LB_Pedido() {
               </thead>
               <tbody>
                 {filteredData &&
-                  filteredData.map((row, index) => (
+                  filteredData.sort((a, b) => b.id - a.id).map((row, index) => (
                     <tr key={index} className="border-b">
                       <td className="px-4 py-2 border border-gray-300">
                         {row.id}
@@ -535,7 +535,7 @@ export default function LB_Pedido() {
                         {row.cantServs}
                       </td>
                       <td className="px-4 py-2 border border-gray-300">
-                        {row.total.toFixed(2)}
+                        $ {(row.total || 0).toFixed(2)}
                       </td>
                       <td className="px-4 py-2 border border-gray-300">
                         {row.anulado ? "Anulado" : "Activo"}

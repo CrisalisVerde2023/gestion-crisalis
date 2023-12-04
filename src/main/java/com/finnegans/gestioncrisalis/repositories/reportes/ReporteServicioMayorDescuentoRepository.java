@@ -30,7 +30,7 @@ public interface ReporteServicioMayorDescuentoRepository extends JpaRepository<R
             "\t\t\tINNER JOIN clientes cli ON cli.id = ord.cliente_id\r\n" + //
             "\t\t\tINNER JOIN personas per ON per.id = cli.persona_id\r\n" + //
             "\t\t\tLEFT JOIN empresas emp ON emp.id = cli.empresa_id\r\n" + //
-            "\t\tWHERE ord.fecha_creacion BETWEEN :fecha_desde AND :fecha_hasta\r\n" + //
+            "\t\tWHERE DATE(ord.fecha_creacion) BETWEEN :fecha_desde AND :fecha_hasta\r\n" + //
             "\t\tGROUP BY cliente, servicio\r\n" + //
             "\t\tORDER BY descuento DESC) AS sq1) AS sq2\r\n" + //
             "WHERE sq2.rnk = 1", nativeQuery = true)
