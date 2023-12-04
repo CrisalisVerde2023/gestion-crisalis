@@ -399,7 +399,7 @@ export default function Dashboard() {
                     {svgDatabase}
                   </div>
                   <h3 className="my-3 text-xl font-bold dark:text-white text-start">
-                    Alta, Baja y Modificación
+                    Administración
                   </h3>
 
                   <ul className="space-y-3 text-gray-500 dark:text-gray-400">
