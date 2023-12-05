@@ -11,7 +11,7 @@ export default function ABMClientesComponent() {
   const seleccion = searchParams.get("seleccion");
 
   function goToAMClientes() {
-    navigate("/empresas/AMEmpresas");
+    navigate("/empresas");
   }
 
   const goBack = () => {
@@ -26,12 +26,12 @@ export default function ABMClientesComponent() {
         </Col>
       </Row>
       {seleccion === "simple" && (
-          <div className="flex flex-row justify-content-center bg-denim-400 text-white">
+          <div className="flex flex-row text-white justify-content-center bg-denim-400">
             <p className="mr-1">Cliente seleccionado:</p>
           </div>
         ) && <SelectedClient />}
-      <div className="flex justify-center items-center mb-4">
-        <div className="flex justify-evenly mt-2 mx-2">
+      <div className="flex items-center justify-center mb-4">
+        <div className="flex mx-2 mt-2 justify-evenly">
           <VolverBtn fnOnClick={goBack} />
         </div>
       </div>

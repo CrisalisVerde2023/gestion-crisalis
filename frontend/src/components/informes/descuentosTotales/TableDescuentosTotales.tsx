@@ -86,9 +86,9 @@ export const TableDescuentosTotales = () => {
                                     colSpan={1}
                                     className="p-4 font-semibold text-center"
                                   >
-                                    {cantidadRegistros -
+                                    {/* {cantidadRegistros -
                                       2 +
-                                      (cantidadRegistros = 1)}
+                                      (cantidadRegistros = 1)} */}
                                   </td>
                                   <td
                                     colSpan={3}
@@ -118,7 +118,7 @@ export const TableDescuentosTotales = () => {
                                     TOTAL GENERAL:
                                   </td>
                                   <td className="p-4 font-bold text-center">
-                                    {cantidadTotal - 1}
+                                    {/* {cantidadTotal - 1} */}
                                   </td>
                                   <td></td>
                                   <td className="p-4 font-bold text-right">
