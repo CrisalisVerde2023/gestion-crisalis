@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useCrud } from "../../hooks/useCrud";
 
-const HOST_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
+const HOST_API_IMPUESTOS = `${import.meta.env.VITE_URL_HOST_API}/impuestos`;
 
 export const DropdownImpuestosProductos = ({
   handleSetSelected,

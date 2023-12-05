@@ -1,7 +1,7 @@
 import { HTTPMethod, useFetch } from "../hooks/useFetch";
 import { PersonasType } from "./../components/types/personType";
 
-const URL_API_PERSONAS = "http://localhost:8080/api/personas";
+const URL_API_PERSONAS = `${import.meta.env.VITE_URL_HOST_API}/personas`;
 
 export const useFetchPersonas = (
   id?: number,

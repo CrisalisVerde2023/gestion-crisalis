@@ -4,7 +4,7 @@ import { RowPersonas } from "./RowPersonas";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
 
-const HOST_API_PERSONAS = "http://localhost:8080/api/personas";
+const HOST_API_PERSONAS = `${import.meta.env.VITE_URL_HOST_API}/personas`;
 
 export const TablePersonas = () => {
   const [search, setSearch] = useState("");

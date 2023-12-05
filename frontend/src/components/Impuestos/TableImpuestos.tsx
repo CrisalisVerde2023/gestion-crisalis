@@ -4,7 +4,7 @@ import { RowImpuestos } from "./RowImpuestos";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
 
-const HOST_API_IMPUESTOS = "http://localhost:8080/api/impuestos";
+const HOST_API_IMPUESTOS = `${import.meta.env.VITE_URL_HOST_API}/impuestos`;
 
 export const TableImpuestos = () => {
   const [search, setSearch] = useState("");

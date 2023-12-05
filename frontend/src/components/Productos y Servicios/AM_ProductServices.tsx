@@ -21,7 +21,9 @@ import { ImpuestosType } from "../types/taxType";
 import { useCrud } from "../../hooks/useCrud";
 import VolverBtn from "../UI Elements/VolverBtn";
 
-const HOST_API_IMPUESTOS: string = "http://localhost:8080/api/impuestos";
+const HOST_API_IMPUESTOS: string = `${
+  import.meta.env.VITE_URL_HOST_API
+}/impuestos`;
 
 export default function AM_ProductService() {
   const {
@@ -54,7 +56,9 @@ export default function AM_ProductService() {
 
   //let fetchImpuestos = useFetchImpuestos(undefined, shouldFetch);
   const [impuestos, setImpuestos] = useState<ImpuestosType[] | null>(null);
-  const [impuestosFiltrados, setImpuestosFiltrados] = useState<ImpuestosType[] | null>(null)
+  const [impuestosFiltrados, setImpuestosFiltrados] = useState<
+    ImpuestosType[] | null
+  >(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   //Le mando un useEffect que escuche los cambios de impuestos y me los guarde en un estado
@@ -64,7 +68,7 @@ export default function AM_ProductService() {
 
   //Use Effect para el filtrado de impuestos
   useEffect(() => {
-    const impuestosFiltrados = impuestos?.filter(impuesto =>
+    const impuestosFiltrados = impuestos?.filter((impuesto) =>
       impuesto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setImpuestosFiltrados(impuestosFiltrados || []);
@@ -240,8 +244,8 @@ export default function AM_ProductService() {
                     {location.pathname.includes("/AMProductos")
                       ? "productos"
                       : location.pathname.includes("/AMServicios")
-                        ? "servicios"
-                        : null}
+                      ? "servicios"
+                      : null}
                   </h1>
                 </div>
                 {isLoading ? (
@@ -315,7 +319,7 @@ export default function AM_ProductService() {
                           }}
                           value={
                             formData.soporte !== null &&
-                              formData.soporte !== undefined
+                            formData.soporte !== undefined
                               ? Number(formData.soporte)
                               : ""
                           }
@@ -336,8 +340,10 @@ export default function AM_ProductService() {
                 ) : null}
 
                 <div className=" bg-denim-700 rounded-lg p-1 h-[150px] flex flex-col">
-                  <span className="text-white font-bold">Impuestos asociados al {formData.tipo.toLocaleLowerCase()}</span>
-                  
+                  <span className="text-white font-bold">
+                    Impuestos asociados al {formData.tipo.toLocaleLowerCase()}
+                  </span>
+
                   <div className="overflow-y-auto flex-1 h-full rounded-lg bg-white p-1">
                     {formData.idImpuestos?.length === 0 && (
                       <p>Este {formData.tipo} está libre de impuestos</p>
@@ -371,17 +377,17 @@ export default function AM_ProductService() {
                           <Trash />
                         </div>
                       ))}
-
                     </ul>
                   </div>
                 </div>
 
                 <div className="w-full  bg-denim-700 p-1 rounded-lg">
                   <div className="flex justify-between mb-1 items-center">
-                    <p className="font-bold text-sm ml-1 text-white">Agregar Impuestos</p>
+                    <p className="font-bold text-sm ml-1 text-white">
+                      Agregar Impuestos
+                    </p>
                     <div className="flex items-center">
                       <span className="text-white">
-
                         <Filter />
                       </span>
                       <input
@@ -397,10 +403,11 @@ export default function AM_ProductService() {
                     {impuestosFiltrados?.map((impuesto) => (
                       <div
                         key={impuesto.id}
-                        className={`border-2 p-[3px] f hover:bg-atlantis-600 cursor-pointer rounded-xl ${impuesto.eliminado
-                          ? "bg-red-500 hover:bg-red-600"
-                          : "bg-atlantis-500"
-                          } `}
+                        className={`border-2 p-[3px] f hover:bg-atlantis-600 cursor-pointer rounded-xl ${
+                          impuesto.eliminado
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-atlantis-500"
+                        } `}
                       >
                         <div
                           key={impuesto.id}
@@ -424,10 +431,11 @@ export default function AM_ProductService() {
                       ? { disabled: true }
                       : {})}
                     onClick={handleSubmit}
-                    className={`${!isFormComplete() || !!errorsForm().length
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-denim-400 hover:bg-denim-500"
-                      } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
+                    className={`${
+                      !isFormComplete() || !!errorsForm().length
+                        ? "bg-gray-300 cursor-not-allowed"
+                        : "bg-denim-400 hover:bg-denim-500"
+                    } px-4 py-2 rounded-md text-white font-medium tracking-wide`}
                   >
                     {idToModify !== undefined && idToModify !== null
                       ? "Modificar"
@@ -435,8 +443,8 @@ export default function AM_ProductService() {
                     {location.pathname.includes("/AMProductos")
                       ? "producto"
                       : location.pathname.includes("/AMServicios")
-                        ? "servicio"
-                        : ""}
+                      ? "servicio"
+                      : ""}
                   </button>
 
                   <VolverBtn fnOnClick={goBack} />

@@ -5,13 +5,14 @@ import { useCrud } from "../hooks/useCrud";
 import BorrarBtn from "./UI Elements/BorrarBtn";
 import { PedidoType, SendPedidoType } from "./types/UserLogged";
 
-const HOST_API_IMPUESTOS: string = "http://localhost:8080/api/impuestos";
+const VITE_URL_HOST_API = import.meta.env.VITE_URL_HOST_API;
+const HOST_API_IMPUESTOS: string = `${VITE_URL_HOST_API}/impuestos`;
 
 export default function SelectedProdsServs() {
   const { pedido, setPedido, userLogged } = useContext(UserLoggedContext);
   let total: number = 0;
   const {
-    estado: { loading, json }
+    estado: { loading, json },
   } = useCrud(HOST_API_IMPUESTOS);
 
   const filteredImpuestos = () => {
@@ -22,12 +23,25 @@ export default function SelectedProdsServs() {
   };
 
   function taxTotal(row: ProductServiceType) {
-    return row.costo * row.impuestos.reduce((acc, el) => acc + el.porcentaje, 0) / 100;
+    return (
+      (row.costo * row.impuestos.reduce((acc, el) => acc + el.porcentaje, 0)) /
+      100
+    );
   }
 
   // Calculate total with taxes, support, and warranty
   function rowTotal(row: ProductServiceType) {
-    return Math.round(((row.costo + (row.soporte || 0) - (row.descuento || 0) + (row.garantia || 0) * row.costo * 0.02 + taxTotal(row)) * row.cantidad) * 100) / 100;
+    return (
+      Math.round(
+        (row.costo +
+          (row.soporte || 0) -
+          (row.descuento || 0) +
+          (row.garantia || 0) * row.costo * 0.02 +
+          taxTotal(row)) *
+          row.cantidad *
+          100
+      ) / 100
+    );
   }
 
   const removeFromPedido = (row: ProductServiceType) => {
@@ -42,7 +56,7 @@ export default function SelectedProdsServs() {
   // Se trae funcion de AM_Pedidos
   function createPedidoObject(pedido: PedidoType): SendPedidoType {
     return {
-      idCliente: (pedido.cliente.id < 1) ? null : pedido.cliente.id,
+      idCliente: pedido.cliente.id < 1 ? null : pedido.cliente.id,
       idUsuario: userLogged.id,
       detalleOrden:
         pedido.prods_servs?.map(({ id, cantidad, garantia }) => ({
@@ -54,46 +68,61 @@ export default function SelectedProdsServs() {
   }
 
   async function getEngine(pedido: PedidoType) {
-    try{
-      const prods_servs:ProductServiceType[] = (await (await fetch("http://localhost:8080/api/orden/calcular", {
-        method: "POST",
-        body: JSON.stringify(createPedidoObject(pedido)),
-        headers: {
-          Authorization: userLogged.token,
-          "Content-Type": "application/json",
-        }
-      })).json()).map((el: { nombre: any; productoServicio: { id: any; tipo: any; }; cantidad: any; descuento: any; costo: any; garantia: any; garantiaCosto: any; impuesto: any; servicioSoporte: any; impuestos: any[]; }): ProductServiceType => ({
-        nombre: el.nombre,
-        id: el.productoServicio.id,
-        cantidad: el.cantidad,
-        descuento: el.descuento,
-        costo: el.costo,
-        garantia: el.garantia,
-        garantiaCosto: el.garantiaCosto,
-        impuesto: el.impuesto,
-        soporte: el.servicioSoporte,
-        
-        tipo: el.productoServicio.tipo,
-        impuestos: el.impuestos,
-        idImpuestos: el.impuestos.map(imp => imp.id),
-        eliminado: false
-      }))
+    try {
+      const prods_servs: ProductServiceType[] = (
+        await (
+          await fetch(`${VITE_URL_HOST_API}/orden/calcular`, {
+            method: "POST",
+            body: JSON.stringify(createPedidoObject(pedido)),
+            headers: {
+              Authorization: userLogged.token,
+              "Content-Type": "application/json",
+            },
+          })
+        ).json()
+      ).map(
+        (el: {
+          nombre: any;
+          productoServicio: { id: any; tipo: any };
+          cantidad: any;
+          descuento: any;
+          costo: any;
+          garantia: any;
+          garantiaCosto: any;
+          impuesto: any;
+          servicioSoporte: any;
+          impuestos: any[];
+        }): ProductServiceType => ({
+          nombre: el.nombre,
+          id: el.productoServicio.id,
+          cantidad: el.cantidad,
+          descuento: el.descuento,
+          costo: el.costo,
+          garantia: el.garantia,
+          garantiaCosto: el.garantiaCosto,
+          impuesto: el.impuesto,
+          soporte: el.servicioSoporte,
 
-      setPedido({... pedido, prods_servs});
-    }
-    catch(error) {
+          tipo: el.productoServicio.tipo,
+          impuestos: el.impuestos,
+          idImpuestos: el.impuestos.map((imp) => imp.id),
+          eliminado: false,
+        })
+      );
+
+      setPedido({ ...pedido, prods_servs });
+    } catch (error) {
       console.error("Ocurrió un error al consultar motor:", error);
       throw error;
     }
   }
 
   useEffect(() => {
-
     if (pedido.prods_servs.length)
       getEngine({
-      ...pedido,
-      prods_servs: pedido.prods_servs,
-    });
+        ...pedido,
+        prods_servs: pedido.prods_servs,
+      });
   }, [pedido.prods_servs.length, pedido.cliente.id]);
 
   // Refactorear hasta aca
@@ -171,8 +200,7 @@ export default function SelectedProdsServs() {
                       <td className="px-2 py-1">{row.tipo}</td>
                       <td className="px-2 py-1">{row.costo.toFixed(2)}</td>
                       <td className="px-2 py-1">
-                        {row.tipo === "PRODUCTO"
-                        ?
+                        {row.tipo === "PRODUCTO" ? (
                           <input
                             style={{
                               width: "60px",
@@ -187,38 +215,51 @@ export default function SelectedProdsServs() {
                             value={row.cantidad}
                             onChange={({ target }) => handleChange(target, row)}
                           ></input>
-                        : row.cantidad
-                          }
+                        ) : (
+                          row.cantidad
+                        )}
                       </td>
                       <td className="px-2 py-1">
-                        {row.tipo === "PRODUCTO"
-                          ?
-                            <input
-                              style={{
-                                width: "60px",
-                                backgroundColor: "lightgrey",
-                                padding: "5px",
-                                borderRadius: "10%",
-                              }}
-                              type="number"
-                              max={5}
-                              min={0}
-                              name="garantia"
-                              value={row.garantia || 0}
-                              onChange={({ target }) => handleChange(target, row)}
-                            ></input>
-                          : "-"
-                        }
+                        {row.tipo === "PRODUCTO" ? (
+                          <input
+                            style={{
+                              width: "60px",
+                              backgroundColor: "lightgrey",
+                              padding: "5px",
+                              borderRadius: "10%",
+                            }}
+                            type="number"
+                            max={5}
+                            min={0}
+                            name="garantia"
+                            value={row.garantia || 0}
+                            onChange={({ target }) => handleChange(target, row)}
+                          ></input>
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="px-2 py-1">
-                        {(row.garantiaCosto === null) ? "-" : (row.garantiaCosto * row.cantidad).toFixed(2)}
+                        {row.garantiaCosto === null
+                          ? "-"
+                          : (row.garantiaCosto * row.cantidad).toFixed(2)}
                       </td>
                       <td className="px-2 py-1">
-                        {(row.soporte === null) ? "-" : (row.soporte * row.cantidad).toFixed(2)}
+                        {row.soporte === null
+                          ? "-"
+                          : (row.soporte * row.cantidad).toFixed(2)}
                       </td>
-                      <td className="px-2 py-1">{(taxTotal(row) * row.cantidad).toFixed(2)}</td>
-                      <td className="px-2 py-1">{(row.descuento === null) ? "-" : (row.descuento * row.cantidad).toFixed(2)}</td>
-                      <td className="px-2 py-1">{(-total + (total += rowTotal(row))).toFixed(2)}</td>
+                      <td className="px-2 py-1">
+                        {(taxTotal(row) * row.cantidad).toFixed(2)}
+                      </td>
+                      <td className="px-2 py-1">
+                        {row.descuento === null
+                          ? "-"
+                          : (row.descuento * row.cantidad).toFixed(2)}
+                      </td>
+                      <td className="px-2 py-1">
+                        {(-total + (total += rowTotal(row))).toFixed(2)}
+                      </td>
                       <td className="px-2 py-1 flex justify-content-center">
                         <BorrarBtn fnOnClick={() => removeFromPedido(row)} />
                       </td>

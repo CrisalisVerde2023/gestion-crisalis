@@ -8,7 +8,7 @@ import { DropdownImpuestosProductos } from "./DropdownImpuestosProductos";
 import { useSearchParams } from "react-router-dom";
 import SelectedProdsServs from "../SelectedProdsServs";
 
-const HOST_API_PRODUCTOS = "http://localhost:8080/api/prods_servs";
+const HOST_API_PRODUCTOS = `${import.meta.env.VITE_URL_HOST_API}/prods_servs`;
 const defaultProduct = {
   id: null,
   tipo: "",

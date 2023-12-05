@@ -1,7 +1,7 @@
 import { UsuariosType } from "../components/types/userType";
 import { useFetch, HTTPMethod, useFetchReturnType } from "./../hooks/useFetch";
 
-const URL_API_USUARIOS = "http://localhost:8080/api/usuarios";
+const URL_API_USUARIOS = `${import.meta.env.VITE_URL_HOST_API}/usuarios`;
 
 export const useFetchUsuarios = (
   id?: number,

@@ -3,6 +3,8 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { defaultPedidoState } from "../components/types/UserLogged";
 
+const VITE_URL_HOST = import.meta.env.VITE_URL_HOST;
+
 export const useLogin = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<string[]>([]);
@@ -47,7 +49,7 @@ export const useLogin = () => {
     try {
       if (validateLoginForm()) {
         setLoading(true);
-        const response = await fetch("http://localhost:8080/login", settings);
+        const response = await fetch(`${VITE_URL_HOST}/login`, settings);
         const json = await response.json();
         if (!response.ok) {
           setLoading(false);
