@@ -353,7 +353,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
   };
 
   const actionButtons = (row: ClienteResponseDTO) => (
-    <div className="d-flex flex-row align-items-center justify-content-center spaceHorizontalChilds">
+    <div className="flex-row d-flex align-items-center justify-content-center spaceHorizontalChilds">
       <ToggleEstadoBtn
         fnOnClick={() => handleClickedElement(row)}
         estado={row.eliminado}
@@ -363,15 +363,15 @@ export default function LB_Clientes(props: LB_ClientesProps) {
   );
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 antialiased">
-      <div className="mx-auto max-w-screen-xl px-4 lg:px-12 bg-white dark:bg-gray-800 shadow-md sm:rounded-lg overflow-hidden">
-        <div className="flex flex-row justify-center items-center mt-4 mb-4 ">
+    <section className="p-3 antialiased bg-gray-50 dark:bg-gray-900 sm:p-5">
+      <div className="max-w-screen-xl px-4 mx-auto overflow-hidden bg-white shadow-md lg:px-12 dark:bg-gray-800 sm:rounded-lg">
+        <div className="flex flex-row items-center justify-center mt-4 mb-4 ">
           <div
             className={` bg-white flex flex-column justify-content-center align-items-center px-4 text-sm text-left text-gray-500 dark:text-gray-400 shadow-md shadow-gray-300 rounded-lg`}
           >
             <label
               htmlFor="persona_id"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white pt-1"
+              className="block pt-1 mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               Persona:
             </label>
@@ -379,15 +379,15 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               <SelectSearch options={personasOption} search name="persona_id" id="persona_id" placeholder="Seleccione persona" onChange={handleSelectChangePersona} />
 
               <div
-                onClick={() => navigate("/personas/AMPersonas")}
-                className="flex items-center ml-1 cursor-pointer px-2 text-blue-400"
+                onClick={() => navigate("/personas")}
+                className="flex items-center px-2 ml-1 text-blue-400 cursor-pointer"
               >
                 <PersonWorkspace className="text-2xl"/> +
               </div>
             </div>
             <label
               htmlFor="empresa_id"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white pt-3"
+              className="block pt-3 mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
               Empresa:
             </label>
@@ -395,8 +395,8 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               <SelectSearch options={empresasOption} search name="pempresa_id" id="empresa_id" placeholder="Seleccione empresa" onChange={handleSelectChangeEmpresa} />
 
               <div
-                onClick={() => navigate("/empresas/AMEmpresas")}
-                className="flex items-center ml-1 cursor-pointer px-2 text-green-400"
+                onClick={() => navigate("/empresas")}
+                className="flex items-center px-2 ml-1 text-green-400 cursor-pointer"
               >
                 <Building className="text-2xl"/> +
               </div>
@@ -415,14 +415,14 @@ export default function LB_Clientes(props: LB_ClientesProps) {
               disabled={clienteDTO?.persona_id === null ? true : false}
             >
               {clienteDTO?.empresa_id === null
-                ? <p>CREAR CLIENTE PERSONA <PersonWorkspace className="text-blue-400 inline text-2xl ml-1" /></p>
-                : <p>CREAR CLIENTE EMPRESA <Building className="text-green-400 inline text-2xl ml-1" /></p>}
+                ? <p>CREAR CLIENTE PERSONA <PersonWorkspace className="inline ml-1 text-2xl text-blue-400" /></p>
+                : <p>CREAR CLIENTE EMPRESA <Building className="inline ml-1 text-2xl text-green-400" /></p>}
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col justify-center items-center mb-4">
-          <div className="flex-auto flex justify-center mb-4">
+        <div className="flex flex-col items-center justify-center mb-4">
+          <div className="flex justify-center flex-auto mb-4">
             <BuscarBar fnOnChange={handleSearchChange} value={searchTerm} />
             <div className="flex items-center ml-4">
               <label className="flex items-center cursor-pointer">
@@ -483,15 +483,15 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                           className={`border-b text-center ${cliente.eliminado && "bg-gray-300"
                             }`}
                         >
-                          <td className="py-2 px-4">{cliente.id}</td>
-                          <td className="py-2 px-4">
+                          <td className="px-4 py-2">{cliente.id}</td>
+                          <td className="px-4 py-2">
                             {cliente.empresa_id ? "Empresa" : "Persona"}
                           </td>
-                          <td className="py-2 px-4">
+                          <td className="px-4 py-2">
                             {`${persona?.nombre} ${persona?.apellido}`}
                           </td>
-                          <td className="py-2 px-4">{empresa?.nombre}</td>
-                          <td className="py-2 px-4 flex justify-content-center">
+                          <td className="px-4 py-2">{empresa?.nombre}</td>
+                          <td className="flex px-4 py-2 justify-content-center">
                             {!props.seleccion && actionButtons(cliente)}
                             {props.seleccion === "simple" &&
                               !cliente.eliminado && (
@@ -510,7 +510,7 @@ export default function LB_Clientes(props: LB_ClientesProps) {
                     })}
                   {showingClients?.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="py-2 px-4 text-center">
+                      <td colSpan={6} className="px-4 py-2 text-center">
                         No hay datos...
                       </td>
                     </tr>
