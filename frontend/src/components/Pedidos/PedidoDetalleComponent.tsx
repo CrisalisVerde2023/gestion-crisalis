@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useCrud } from "../../hooks/useCrud";
 import VolverBtn from "../UI Elements/VolverBtn";
 
-const HOST_API_DETALLEPEDIDOS = "http://localhost:8080/api/orden/";
+const HOST_API_DETALLEPEDIDOS = `${import.meta.env.VITE_URL_HOST_API}/orden/`;
 
 function PedidoDetalleComponent() {
   const { idPedido } = useParams<{ idPedido: string }>();

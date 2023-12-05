@@ -4,7 +4,7 @@ import { RowUsuarios } from "./RowUsuarios";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
 
-const HOST_API_USUARIOS = "http://localhost:8080/api/usuarios";
+const HOST_API_USUARIOS = `${import.meta.env.VITE_URL_HOST_API}/usuarios`;
 
 export const TableUsuarios = () => {
   const [search, setSearch] = useState("");

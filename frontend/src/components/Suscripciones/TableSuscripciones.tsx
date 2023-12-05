@@ -4,7 +4,9 @@ import { RowSuscripciones } from "./RowSuscripciones";
 import VolverBtn from "../UI Elements/VolverBtn";
 import BuscarBar from "../UI Elements/BuscarBar";
 
-const HOST_API_SUSCRIPCIONES = "http://localhost:8080/api/suscripciones";
+const HOST_API_SUSCRIPCIONES = `${
+  import.meta.env.VITE_URL_HOST_API
+}/suscripciones`;
 
 export const TableSuscripciones = () => {
   const [search, setSearch] = useState("");

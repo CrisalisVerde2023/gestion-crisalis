@@ -10,7 +10,7 @@ import {
 } from "./../hooks/useFetch";
 import { ClienteDTO, ClientesType } from "../components/types/clientType";
 
-const URL_API_CLIENTES = "http://localhost:8080/api/clientes";
+const URL_API_CLIENTES = `${import.meta.env.VITE_URL_HOST_API}/clientes`;
 
 export const useFetchClientes = (
   id?: number,

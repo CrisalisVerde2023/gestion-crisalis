@@ -3,7 +3,9 @@ import { RowPedidosCliente } from "./RowPedidosCliente";
 import VolverBtn from "../../UI Elements/VolverBtn";
 import { useInformes } from "../../../hooks/useInformes";
 
-const HOST_API_PEDIDOS_CLIENTE = "http://localhost:8080/api/reportes/historial";
+const HOST_API_PEDIDOS_CLIENTE = `${
+  import.meta.env.VITE_URL_HOST_API
+}/reportes/historial`;
 
 export const TablePedidosCliente = () => {
   const [search, setSearch] = useState("");

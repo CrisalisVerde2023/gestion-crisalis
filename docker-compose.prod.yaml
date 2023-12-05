@@ -1,8 +1,18 @@
 version: "3"
 services:
+  react-app:
+    container_name: react-app
+    image: miguemaisares/frontend-crisalis:2.0.0
+    #build: .
+    ports:
+      - 5173:5173
+    restart: always
+    depends_on:
+      - java-app
+
   java-app:
     container_name: java-app
-    image: miguemaisares/gestion-crisalis:1.0.0
+    image: miguemaisares/gestion-crisalis:2.0.0
     #build: .
     ports:
       - 8080:8080

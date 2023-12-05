@@ -1,7 +1,7 @@
 import { EnterpriseType } from "../components/types/enterpriseType";
 import { HTTPMethod, useFetch } from "../hooks/useFetch";
 
-const URL_API_EMPRESAS = "http://localhost:8080/api/empresas";
+const URL_API_EMPRESAS = `${import.meta.env.VITE_URL_HOST_API}/empresas`;
 
 export const useFetchEmpresas = (
   id?: number,

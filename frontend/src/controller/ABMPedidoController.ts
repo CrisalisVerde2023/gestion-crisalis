@@ -7,7 +7,7 @@ import { ProductServiceType } from "../components/types/productServiceType";
 import { UserLoggedContext } from "../contexts/UserLoggedContext";
 import { HTTPMethod, useFetch } from "../hooks/useFetch";
 
-const URL_API_ORDEN = "http://localhost:8080/api/orden";
+const URL_API_ORDEN = `${import.meta.env.VITE_URL_HOST_API}/orden`;
 
 export const useFetchPedidos = (
   id?: number,

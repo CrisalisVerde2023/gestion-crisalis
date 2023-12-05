@@ -4,7 +4,7 @@ import {
 } from "../components/types/productServiceType";
 import { useFetch, HTTPMethod, useFetchReturnType } from "./../hooks/useFetch";
 
-const URL_API_PRODS_SERVS = "http://localhost:8080/api/prods_servs";
+const URL_API_PRODS_SERVS = `${import.meta.env.VITE_URL_HOST_API}/prods_servs`;
 
 export const useFetchProds_Servs = (
   id?: number,
