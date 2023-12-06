@@ -65,6 +65,7 @@ export const TableDescuentosTotales = () => {
                       descuento: 0,
                     })
                     .map((el, idx) => {
+                      if (!el.descuento) el.descuento = 0;
                       cantidadRegistros++;
                       cantidadTotal++;
                       total += el.descuento;

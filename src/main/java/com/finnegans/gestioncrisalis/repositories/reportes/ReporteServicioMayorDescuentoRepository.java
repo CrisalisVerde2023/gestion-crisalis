@@ -33,6 +33,6 @@ public interface ReporteServicioMayorDescuentoRepository extends JpaRepository<R
             "\t\tWHERE DATE(ord.fecha_creacion) BETWEEN :fecha_desde AND :fecha_hasta\r\n" + //
             "\t\tGROUP BY cliente, servicio\r\n" + //
             "\t\tORDER BY descuento DESC) AS sq1) AS sq2\r\n" + //
-            "WHERE sq2.rnk = 1", nativeQuery = true)
+            "WHERE sq2.rnk = 1 AND sq2.descuento > 0", nativeQuery = true)
     List<ReporteServicioMayorDescuento> getServicioMayorDescuento(@Param("fecha_desde") LocalDate fechaDesde, @Param("fecha_hasta") LocalDate fechaHasta);
 }

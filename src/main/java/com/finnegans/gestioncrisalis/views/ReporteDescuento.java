@@ -32,7 +32,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                 "INNER JOIN personas per ON per.id = cli.persona_id " +
                 "LEFT JOIN empresas emp ON emp.id = cli.empresa_id " +
                 "GROUP BY cliente, servicio, fecha " +
-                "ORDER BY cliente, servicio, descuento DESC) sq1")
+                "ORDER BY cliente, servicio, descuento DESC) sq1 " +
+                "WHERE sq1.descuento > 0")
 @Data
 public class ReporteDescuento{
     @Id

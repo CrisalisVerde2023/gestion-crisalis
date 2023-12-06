@@ -85,7 +85,7 @@ export const TableServicioMayorDescuento = () => {
                             {el.servicio}
                           </td>
                           <td className="p-4 font-semibold text-center">
-                            $ {el.descuento.toFixed(2)}
+                            $ {(el.descuento || 0).toFixed(2)}
                           </td>
                         </tr>
                       </React.Fragment>
