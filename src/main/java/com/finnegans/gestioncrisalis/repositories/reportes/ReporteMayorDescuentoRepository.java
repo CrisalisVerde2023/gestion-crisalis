@@ -56,6 +56,7 @@ public interface ReporteMayorDescuentoRepository extends JpaRepository<ReporteMa
             "\t\tservicio,\n" +
             "\t\tid_orden\n" +
             "\tORDER BY\n" +
-            "\t\tcliente, servicio, descuento DESC) AS sq3", nativeQuery = true)
+            "\t\tcliente, servicio, descuento DESC) AS sq3\n" +
+            "\t\tWHERE sq3.descuento > 0", nativeQuery = true)
     List<ReporteMayorDescuento> getMayorDescuento(@Param("fecha_desde") LocalDate fechaDesde, @Param("fecha_hasta") LocalDate fechaHasta);
 }

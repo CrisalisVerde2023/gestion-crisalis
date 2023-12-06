@@ -95,7 +95,7 @@ export const TablePedidoMayorDescuento = () => {
                             {el.idOrden}
                           </td>
                           <td className="p-4 font-semibold text-right">
-                            $ {el.descuento.toFixed(2)}
+                            $ {(el.descuento || 0).toFixed(2)}
                           </td>
                         </tr>
                       </React.Fragment>
